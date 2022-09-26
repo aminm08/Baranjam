@@ -1,0 +1,150 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load jalali_tags %}
+{% load persian_trans_tags %}
+{% block title %}Todo list{% endblock title %}
+
+
+
+
+{% block content %}
+    <section class="vh-100">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col">
+                    <div class="card" id="list1" style="border-radius: .75rem; background-color: #eff1f2;">
+                        <div class="card-body py-4 px-4 px-md-5">
+
+                            <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
+                                <i class="fas fa-check-square me-1"></i>
+                                <u>My Todo-s</u>
+                            </p>
+
+                            <div class="pb-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex form-row align-items-center">
+                                            <form action="{% url 'job_create' %}" method="post" class="form-inline">
+
+                                                {% csrf_token %}
+                                                <div class="col">
+
+                                                    <input type="text" class="form-control form-control-lg"
+                                                           id="exampleFormControlInput1"
+                                                           placeholder="Add new..." name="text">
+                                                </div>
+                                                <div class="col">
+
+                                                    <input type="datetime-local" class="form-control form-control-lg"
+                                                           name="user_datetime">
+                                                </div>
+
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary ">Add</button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-end align-items-center mb-4 pt-2 pb-3">
+                                {#                                <form method="get">#}
+                                {#                                    {{ filter.form.as_p }}#}
+                                {#                                    <button type="submit">submit</button>#}
+                                {#                                </form>#}
+                                <form method="get">
+
+                                    <p class="small mb-0 me-2 text-muted">Filter</p>
+
+                                    <select class="select  me-3" name="filter" onchange="this.form.submit();">
+                                        <option disabled selected value> -- select an option --</option>
+                                        <option value="1">All</option>
+                                        <option value="2">Completed</option>
+                                        <option value="3">Active</option>
+
+                                    </select>
+
+
+                                    {#                                    <button type="submit" class="btn btn-info">apply</button>#}
+                                </form>
+                                <a href="#!" style="color: #23af89;" data-mdb-toggle="tooltip" title="Ascending"><i
+                                        class="fas fa-sort-amount-down-alt ms-2"></i></a>
+                            </div>
+                            {% if user_jobs %}
+
+
+                                {% for user_job in user_jobs %}
+
+                                    <ul class="list-group list-group-horizontal rounded-0">
+
+                                        <li class="list-group-item px-3 d-flex align-items-center flex-grow-1 border-0 bg-transparent ">
+                                            {% if user_job.is_done %}
+                                                <p class="lead fw-normal mb-0 "><strike>{{ user_job.text }}</strike></p>
+                                            {% else %}
+                                                <p class="lead fw-normal mb-0 ">{{ user_job.text }}</p>
+                                            {% endif %}
+                                        </li>
+
+                                        <li class="list-group-item ps-3 pe-0  rounded-0 border-0 bg-transparent">
+                                            <div class="d-flex flex-row justify-content-end ">
+                                                {% if not user_job.is_done %}
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="text-primary"
+                                                                data-mdb-toggle="tooltip" title="Delete todo"
+                                                                name="{{ user_job.id }}">
+                                                            <i class="fas fa-border-none fa-solid fa-check "></i>
+                                                        </button>
+                                                    </form>
+
+                                                {% endif %}
+{#                                                <form method="post">#}
+{#                                                    {% csrf_token %}#}
+                                                    <button type="submit" class="text-info" data-mdb-toggle="tooltip"
+                                                            title="Edit todo"><i
+                                                            class="fas fa-pencil-alt "></i></button>
+{#                                                </form>#}
+
+
+
+                                                <form method="post" action="{% url 'job_delete' user_job.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="text-danger" data-mdb-toggle="tooltip"
+                                                            title="Edit todo"><i
+                                                            class="fas fa-trash "></i></button>
+                                                </form>
+
+                                            </div>
+                                            <div class="text-end text-muted">
+                                                <a href="#!" class="text-muted" data-mdb-toggle="tooltip"
+                                                   title="Created date">
+                                                    {% if user_job.user_datetime %}
+
+                                                        <p class="small mb-0"><i
+                                                                class="fas fa-info-circle me-2">{{ user_job.user_datetime|to_jalali:'%Y %B %d'|translate_numbers }}</i>
+                                                        </p>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+
+                            {% else %}
+                                <h5>Nothing to see here</h5>
+
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
