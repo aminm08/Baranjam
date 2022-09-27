@@ -25,7 +25,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="d-flex form-row align-items-center">
-                                            <form action="{% url 'job_create' %}" method="post" class="form-inline">
+                                            <form action="{% url 'job_create' todo.id %}" method="post" class="form-inline">
 
                                                 {% csrf_token %}
                                                 <div class="col">
