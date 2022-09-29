@@ -45,20 +45,21 @@ def todo_list_main_page(request, signed_pk):
             job = get_object_or_404(Job, pk=id)
             if not job.is_done:
                 job.is_done = True
+                messages.success(request, _('job completed! congrats'))
             else:
                 job.is_done = False
             job.save()
-            messages.success(request, _('job completed! congrats'))
 
-        return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form':JobForm()})
+        return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form': JobForm()})
     else:
         raise PermissionDenied
 
 
-class AddTodo(LoginRequiredMixin, generic.CreateView):
+class AddTodo(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Todo
     fields = ('name',)
     success_url = reverse_lazy('user_todos')
+    success_message = _('Todo list successfully created')
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -67,9 +68,10 @@ class AddTodo(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
+class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.CreateView):
     model = Job
     form_class = JobForm
+    success_message = _('Task successfully added to your list')
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -87,8 +89,9 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView)
         return self.request.user == todo.user
 
 
-class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Job
+    success_message = _('Task successfully deleted of your list')
 
     def get_success_url(self):
         return self.get_object().get_absolute_url()
@@ -97,9 +100,10 @@ class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView)
         return self.request.user == self.get_object().todo.user
 
 
-class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Todo
     success_url = reverse_lazy('user_todos')
+    success_message = _('todo list successfully deleted')
 
     def test_func(self):
         return self.request.user == self.get_object().user
