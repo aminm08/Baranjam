@@ -1,12 +1,19 @@
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from django.utils.translation import gettext as _
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
+from .forms import JobForm
 from .models import Todo, Job
 
 
+@login_required()
 def all_user_todos(request):
     todos = Todo.objects.filter(user=request.user)
 
@@ -14,30 +21,41 @@ def all_user_todos(request):
 
 
 @login_required()
-def todo_list_main_page(request, todo_slug):
-    todo = get_object_or_404(Todo, slug=todo_slug)
-    user_jobs = Job.objects.filter(todo__user=request.user).order_by('is_done', '-datetime_created')
-
-    filter = request.GET.get('filter')
-
-    if filter == '1':
+def todo_list_main_page(request, signed_pk):
+    pk = Todo.signer.unsign(signed_pk)
+    todo = get_object_or_404(Todo, pk=pk)
+    if request.user == todo.user:
         user_jobs = Job.objects.filter(todo__user=request.user).order_by('is_done', '-datetime_created')
-    elif filter == '2':
-        user_jobs = Job.objects.filter(todo__user=request.user, is_done=True).order_by('is_done', '-datetime_created')
-    elif filter == '3':
-        user_jobs = Job.objects.filter(todo__user=request.user, is_done=False).order_by('is_done', '-datetime_created')
 
-    # user_jobs_filter = JobFilter(request.GET, queryset=user_jobs)
-    if request.method == 'POST':
-        id = list(request.POST.keys())[1]
-        job = get_object_or_404(Job, pk=id)
-        job.is_done = True
-        job.save()
+        user_filter = request.GET.get('filter')
 
-    return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo})
+        if user_filter == '1':
+            user_jobs = Job.objects.filter(todo__user=request.user).order_by('is_done', '-datetime_created')
+
+        elif user_filter == '2':
+            user_jobs = Job.objects.filter(todo__user=request.user, is_done=True).order_by('is_done',
+                                                                                           '-datetime_created')
+        elif user_filter == '3':
+            user_jobs = Job.objects.filter(todo__user=request.user, is_done=False).order_by('is_done',
+                                                                                            '-datetime_created')
+
+        if request.method == 'POST':
+
+            id = list(request.POST.keys())[1]
+            job = get_object_or_404(Job, pk=id)
+            if not job.is_done:
+                job.is_done = True
+            else:
+                job.is_done = False
+            job.save()
+            messages.success(request, _('job completed! congrats'))
+
+        return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form':JobForm()})
+    else:
+        raise PermissionDenied
 
 
-class AddTodo(generic.CreateView):
+class AddTodo(LoginRequiredMixin, generic.CreateView):
     model = Todo
     fields = ('name',)
     success_url = reverse_lazy('user_todos')
@@ -49,9 +67,9 @@ class AddTodo(generic.CreateView):
         return super().form_valid(form)
 
 
-class CreateJobView(generic.CreateView):
+class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
     model = Job
-    fields = ['text', 'user_datetime']
+    form_class = JobForm
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -64,9 +82,35 @@ class CreateJobView(generic.CreateView):
         obj.save()
         return super().form_valid(form)
 
+    def test_func(self):
+        todo = get_object_or_404(Todo, pk=int(self.kwargs['todo_id']))
+        return self.request.user == todo.user
 
-class JobDeleteView(generic.DeleteView):
+
+class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Job
 
     def get_success_url(self):
         return self.get_object().get_absolute_url()
+
+    def test_func(self):
+        return self.request.user == self.get_object().todo.user
+
+
+class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Todo
+    success_url = reverse_lazy('user_todos')
+
+    def test_func(self):
+        return self.request.user == self.get_object().user
+
+# def render_to_pdf(template_src, context_dict):
+#     template = get_template(template_src)
+#     context = Context(context_dict)
+#     html  = template.render(context)
+#     result = StringIO.StringIO()
+#
+#     pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+#     if not pdf.err:
+#         return HttpResponse(result.getvalue(), content_type='application/pdf')
+#     return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))

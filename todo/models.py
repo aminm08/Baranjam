@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.signing import Signer
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -8,7 +9,8 @@ from django.utils.translation import gettext_lazy as _
 class Todo(models.Model):
     name = models.CharField(max_length=50)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    slug = models.SlugField(null=True, unique=True)
+
+    signer = Signer(sep='/', salt='todo.Todo')
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_modified = models.DateTimeField(auto_now=True)
@@ -17,18 +19,19 @@ class Todo(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('todo_list', args=[self.slug])
+        signed_pk = self.signer.sign(self.pk)
+        return reverse('todo_list', args=[str(signed_pk)])
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(self.name)
+    #     return super().save(*args, **kwargs)
 
 
 class Job(models.Model):
     text = models.CharField(max_length=300, verbose_name=_('your job text'))
-    todo = models.ForeignKey('todo.Todo', on_delete=models.CASCADE, null=True)
-    # user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
+
     is_done = models.BooleanField(default=False)
     user_datetime = models.DateTimeField(verbose_name=_("this job's due"), blank=True, null=True)
 
@@ -39,4 +42,5 @@ class Job(models.Model):
         return self.text
 
     def get_absolute_url(self):
-        return reverse('todo_list', args=[self.todo.slug])
+        signed_pk = self.todo.signer.sign(self.todo.pk)
+        return reverse('todo_list', args=[signed_pk])
