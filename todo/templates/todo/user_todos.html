@@ -3,7 +3,8 @@
 {% load crispy_forms_tags %}
 {% load jalali_tags %}
 {% load persian_trans_tags %}
-{% block title %}Todo list{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans 'Todo list' %}{% endblock title %}
 
 {% static 'hi' %}
 
@@ -14,13 +15,13 @@
         <div class="card shadow bg-dark mt-5">
             <div class="card-header">
 
-                <a href="" class="float-end btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add
-                    todo-list</a>
+                <a href="" class="float-end btn btn-primary" data-bs-toggle="modal"
+                   data-bs-target="#exampleModal">{% trans 'Add todo-list' %}</a>
                 {% if todos %}
 
-                    <h2 class=" text-white">Your todo lists</h2>
+                    <h2 class=" text-white">{% trans 'Your todo lists' %}</h2>
                 {% else %}
-                    <h2 class=" text-white">Add todo-list to start</h2>
+                    <h2 class=" text-white">{% trans 'Add todo-list to start' %}</h2>
                 {% endif %}
             </div>
             <div class="card-body">
@@ -59,7 +60,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add a new list' %}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -70,21 +71,19 @@
                                     {% csrf_token %}
                                     <input type="text" name="name" class="form-control "
                                            placeholder="Add Todo-list">
-                                    <button type="submit" class="btn btn-primary ml-3">Submit</button>
+                                    <button type="submit" class="btn btn-primary ml-3">{% trans 'Submit' %}</button>
                                 </form>
                             </div>
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
 
                         </div>
                     </div>
                 </div>
             </div>
             <!--Modal add-->
-
-
 
 
         </div>

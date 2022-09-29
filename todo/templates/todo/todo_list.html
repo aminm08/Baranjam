@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 {% load jalali_tags %}
 {% load persian_trans_tags %}
-{% block title %}Todo list{% endblock title %}
+{% block title %}{% trans 'Todo list' %}{% endblock title %}
 
 
 
@@ -101,7 +101,7 @@
 
 
                                                 <p class="small mr-lg-3  mb-0 text-muted" title="Created date"><i
-                                                        class="fas fa-info-circle me-2"></i>created:
+                                                        class="fas fa-info-circle me-2"></i>{% trans 'created' %}:
                                                     {{ user_job.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
                                                 </p>
 
@@ -134,7 +134,7 @@
 
                                 </ul>
                             {% else %}
-                                <h3>Nothing to see here</h3>
+                                <h3>{% trans 'Nothing to see here' %}</h3>
 
                             {% endif %}
                         </div>
