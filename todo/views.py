@@ -8,12 +8,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.template.loader import get_template
-from django.template import Context
-from django.http import HttpResponse
-
-from xhtml2pdf import pisa
-from cgi import escape
+from django.http import FileResponse
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Table, SimpleDocTemplate
 
 from .forms import JobForm
 from .models import Todo, Job
@@ -31,19 +31,19 @@ def todo_list_main_page(request, signed_pk):
     pk = Todo.signer.unsign(signed_pk)
     todo = get_object_or_404(Todo, pk=pk)
     if request.user == todo.user:
-        user_jobs = Job.objects.filter(user=request.user, todo=todo).order_by('is_done', '-datetime_created')
+
+        user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
 
         user_filter = request.GET.get('filter')
 
         if user_filter == '1':
-            user_jobs = Job.objects.filter(todo__user=request.user).order_by('is_done', '-datetime_created')
+            user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
 
         elif user_filter == '2':
-            user_jobs = Job.objects.filter(todo__user=request.user, is_done=True).order_by('is_done',
-                                                                                           '-datetime_created')
+            user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('is_done', '-datetime_created')
+
         elif user_filter == '3':
-            user_jobs = Job.objects.filter(todo__user=request.user, is_done=False).order_by('is_done',
-                                                                                            '-datetime_created')
+            user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('is_done', '-datetime_created')
 
         if request.method == 'POST':
 
@@ -117,13 +117,28 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         return self.request.user == self.get_object().user
 
 
-def render_to_pdf(template_src, context_dict):
-    template = get_template(template_src)
-    context = Context(context_dict)
-    html = template.render(context)
-    result = StringIO.StringIO()
+def render_pdf(request, todo_id):
+    # pulling todo and its jobs
+    todo = get_object_or_404(Todo, pk=todo_id)
+    jobs = todo.jobs.filter(user=request.user)
 
-    pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+    buf = io.BytesIO()
+
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    text_obj = c.beginText()
+    text_obj.setTextOrigin(inch, inch)
+    text_obj.setFont('Helvetica', 14)
+
+    data = [i.text for i in jobs]
+
+    for d in data:
+        text_obj.textLine(d)
+
+
+    # write the document to disk
+    c.drawText(text_obj)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf, as_attachment=True, filename='out.pdf')
