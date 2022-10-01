@@ -8,6 +8,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
+
+from xhtml2pdf import pisa
+from cgi import escape
 
 from .forms import JobForm
 from .models import Todo, Job
@@ -15,7 +21,7 @@ from .models import Todo, Job
 
 @login_required()
 def all_user_todos(request):
-    todos = Todo.objects.filter(user=request.user)
+    todos = Todo.objects.filter(user=request.user).order_by('-datetime_created')
 
     return render(request, 'todo/user_todos.html', {'todos': todos})
 
@@ -25,7 +31,7 @@ def todo_list_main_page(request, signed_pk):
     pk = Todo.signer.unsign(signed_pk)
     todo = get_object_or_404(Todo, pk=pk)
     if request.user == todo.user:
-        user_jobs = Job.objects.filter(todo__user=request.user).order_by('is_done', '-datetime_created')
+        user_jobs = Job.objects.filter(user=request.user, todo=todo).order_by('is_done', '-datetime_created')
 
         user_filter = request.GET.get('filter')
 
@@ -43,6 +49,7 @@ def todo_list_main_page(request, signed_pk):
 
             id = list(request.POST.keys())[1]
             job = get_object_or_404(Job, pk=id)
+
             if not job.is_done:
                 job.is_done = True
                 messages.success(request, _('job completed! congrats'))
@@ -80,6 +87,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
         todo = get_object_or_404(Todo, pk=todo_id)
 
         obj.todo = todo
+        obj.user = self.request.user
 
         obj.save()
         return super().form_valid(form)
@@ -108,13 +116,14 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     def test_func(self):
         return self.request.user == self.get_object().user
 
-# def render_to_pdf(template_src, context_dict):
-#     template = get_template(template_src)
-#     context = Context(context_dict)
-#     html  = template.render(context)
-#     result = StringIO.StringIO()
-#
-#     pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
-#     if not pdf.err:
-#         return HttpResponse(result.getvalue(), content_type='application/pdf')
-#     return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+
+def render_to_pdf(template_src, context_dict):
+    template = get_template(template_src)
+    context = Context(context_dict)
+    html = template.render(context)
+    result = StringIO.StringIO()
+
+    pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))

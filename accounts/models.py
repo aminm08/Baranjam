@@ -12,3 +12,7 @@ class CustomUser(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('profile')
+
+    def get_user_completed_tasks_length(self):
+        completed = self.jobs.filter(is_done=True)
+        return completed
