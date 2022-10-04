@@ -1,0 +1,234 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-04 05:14+0330\n"
+"PO-Revision-Date: 2022-10-04 05:38+0330\n"
+"Last-Translator: amin forouzan <>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Translated-Using: django-rosetta 0.9.8\n"
+
+#: .\accounts\models.py:8
+msgid "your birth date"
+msgstr "تاریخ تولد شما"
+
+#: .\accounts\models.py:9
+msgid "your profile picture"
+msgstr "تصویر پروفایل شما"
+
+#: .\accounts\models.py:10
+msgid "your Mobile number"
+msgstr "شماره موبایل"
+
+#: .\accounts\views.py:19
+msgid "your profile updated successfully"
+msgstr "پروفایل شما با موفقیت بروزرسانی شد"
+
+#: .\template\_base.html:29
+msgid "django-todo"
+msgstr "django-todo"
+
+#: .\template\_base.html:38
+msgid "My todo lists"
+msgstr "لیست های  انجام کار من"
+
+#: .\template\_base.html:42 .\template\dashboard.html:356
+msgid "Dashboard"
+msgstr "داشبورد"
+
+#: .\template\_base.html:46 .\template\_base.html:77
+#: .\template\account\profile.html:7 .\template\dashboard.html:409
+msgid "Profile"
+msgstr "پروفایل"
+
+#: .\template\_base.html:50
+msgid "About us"
+msgstr "درباره ما"
+
+#: .\template\_base.html:54
+msgid "Contact us"
+msgstr "ارتباط با ما"
+
+#: .\template\_base.html:84
+msgid "Logout"
+msgstr "خروج"
+
+#: .\template\account\login.html:10 .\template\account\login.html:42
+#: .\template\account\logout.html:10 .\template\account\signup.html:29
+msgid "Login"
+msgstr "ورود"
+
+#: .\template\account\login.html:44
+msgid "NotRegistered?"
+msgstr "ثبت نام نکردی؟ "
+
+#: .\template\account\login.html:46
+msgid "Create an Account"
+msgstr "ساخت حساب"
+
+#: .\template\account\logout.html:13
+msgid "Are you sure?"
+msgstr "ایا اطمینان داری؟"
+
+#: .\template\account\logout.html:19
+msgid "Yes, logout"
+msgstr "بله خارج شو"
+
+#: .\template\account\profile.html:33
+msgid "Profile Information"
+msgstr "اطلاعات پروفایل"
+
+#: .\template\account\profile.html:50
+msgid "Save Profile"
+msgstr "ذخیره پروفایل"
+
+#: .\template\account\signup.html:12 .\template\account\signup.html:25
+msgid "Signup"
+msgstr "ثبت نام"
+
+#: .\template\account\signup.html:28
+msgid "Already Registered?"
+msgstr "قبلا ثبت نام کردی؟"
+
+#: .\template\dashboard.html:367
+msgid "All tasks you have done"
+msgstr "تمام کارهایی که تا الان انجام دادی"
+
+#: .\template\dashboard.html:411
+msgid "Your profile"
+msgstr "پروفایل شما"
+
+#: .\template\dashboard.html:457
+msgid "Your todos"
+msgstr "لیست های  انجام کار شما"
+
+#: .\template\homepage.html:6
+msgid "Homepage"
+msgstr "خانه"
+
+#: .\template\homepage.html:28
+msgid "Welcome to django todo-list"
+msgstr "به لیست انجام کار های جنگو خوش اومدی !"
+
+#: .\template\homepage.html:32
+msgid ""
+"django todo list is a free app that you can use to manage your activities "
+"during the day"
+msgstr ""
+"لیست انجام کار جنگو اپلیکیشنی بر پایه وب است که برای برنامه ریزی و مدیریت "
+"فعالیت های روزانه به شما کمک می کند . فقط کافیه یک حساب داشته باشی!"
+
+#: .\template\homepage.html:33
+msgid "find out more"
+msgstr "بیشتر"
+
+#: .\template\homepage.html:49
+msgid "Get started--it's free!"
+msgstr "شروع کن . کاملا رایگانه!"
+
+#: .\todo\forms.py:16
+msgid "Due date time"
+msgstr "تاریخ پایان "
+
+#: .\todo\models.py:38
+msgid "your job text"
+msgstr "متن کار شما "
+
+#: .\todo\models.py:42
+msgid "this job's due"
+msgstr "تاریخ پایان این کار"
+
+#: .\todo\templates\todo\todo_list.html:8
+#: .\todo\templates\todo\user_todos.html:7
+msgid "Todo list"
+msgstr "لیست انجام کارها"
+
+#: .\todo\templates\todo\todo_list.html:24
+msgid "my todo-s"
+msgstr "لیست های انجام کار من"
+
+#: .\todo\templates\todo\todo_list.html:58
+msgid "Add"
+msgstr "اضافه کردن"
+
+#: .\todo\templates\todo\todo_list.html:75
+msgid "Filter"
+msgstr "فیلتر"
+
+#: .\todo\templates\todo\todo_list.html:77
+msgid "--Apply filter--"
+msgstr "اعمال فیلتر"
+
+#: .\todo\templates\todo\todo_list.html:78
+msgid "All"
+msgstr "همه"
+
+#: .\todo\templates\todo\todo_list.html:79
+msgid "Completed"
+msgstr "کامل شده ها"
+
+#: .\todo\templates\todo\todo_list.html:80
+msgid "Active"
+msgstr "فعال ها"
+
+#: .\todo\templates\todo\todo_list.html:120
+msgid "created"
+msgstr "ساخته شده در"
+
+#: .\todo\templates\todo\todo_list.html:153
+msgid "Nothing to see here"
+msgstr "چیزی وجود ندارد"
+
+#: .\todo\templates\todo\user_todos.html:19
+msgid "Add todo-list"
+msgstr "اضافه کردن لیست جدید"
+
+#: .\todo\templates\todo\user_todos.html:22
+msgid "Your todo lists"
+msgstr "لیست های انجام کار شما"
+
+#: .\todo\templates\todo\user_todos.html:24
+msgid "Add todo-list to start"
+msgstr "یک لیست جدید برای شروع اضافه کنید"
+
+#: .\todo\templates\todo\user_todos.html:63
+msgid "Add a new list"
+msgstr "اضافه کردن لیست جدید"
+
+#: .\todo\templates\todo\user_todos.html:74
+msgid "Submit"
+msgstr "ثبت"
+
+#: .\todo\templates\todo\user_todos.html:80
+msgid "Close"
+msgstr "بستن"
+
+#: .\todo\views.py:62
+msgid "job completed! congrats"
+msgstr "فعالیت انجام شد . آفرین !"
+
+#: .\todo\views.py:76
+msgid "Todo list successfully created"
+msgstr "لیست انجام کار شما با موفقیت ساخته شد"
+
+#: .\todo\views.py:88
+msgid "Task successfully added to your list"
+msgstr "فعالیت با موفقیت به لیست شما اضافه شد"
+
+#: .\todo\views.py:109
+msgid "Task successfully deleted of your list"
+msgstr "فعالیت با موفقیت از لیست شما حذف شد"
+
+#: .\todo\views.py:121
+msgid "todo list successfully deleted"
+msgstr "لیست شما با موفقیت حذف شد"

@@ -26,6 +26,7 @@ urlpatterns = [
     path('todo/', include('todo.urls')),
     path('rosetta/', include('rosetta.urls')),
 
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

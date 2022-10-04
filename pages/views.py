@@ -4,6 +4,7 @@ from todo.models import Todo
 
 
 def homepage(request):
+
     return render(request, 'homepage.html')
 
 

@@ -8,12 +8,19 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse, HttpResponse
+from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
+import json
 import io
+
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import Table, SimpleDocTemplate
+
+from webpush import send_user_notification
 
 from .forms import JobForm
 from .models import Todo, Job
@@ -134,7 +141,6 @@ def render_pdf(request, todo_id):
     for d in data:
         text_obj.textLine(d)
 
-
     # write the document to disk
     c.drawText(text_obj)
     c.showPage()
@@ -142,3 +148,4 @@ def render_pdf(request, todo_id):
     buf.seek(0)
 
     return FileResponse(buf, as_attachment=True, filename='out.pdf')
+

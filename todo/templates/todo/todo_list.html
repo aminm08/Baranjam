@@ -4,6 +4,7 @@
 {% load crispy_forms_tags %}
 {% load jalali_tags %}
 {% load persian_trans_tags %}
+
 {% block title %}{% trans 'Todo list' %}{% endblock title %}
 
 
@@ -20,12 +21,12 @@
                             <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
                                 <i class="fas fa-check-square me-1"></i>
                                 {{ todo.name|capfirst }}
-                                <p class="text-muted text-center">my todo-s</p>
+                            <p class="text-muted text-center">{% trans 'my todo-s' %}</p>
 
                             <div>
-                                <form action="{% url 'pdf' todo.id%}" method="post">
+                                <form action="{% url 'pdf' todo.id %}" method="post">
                                     {% csrf_token %}
-                                    <button type="submit"  class="bg-transparent border-0">
+                                    <button type="submit" class="bg-transparent border-0">
 
                                         <i class='fas fa-file-pdf ' style="font-size:36px; color:red;"></i>
                                     </button>
@@ -67,7 +68,10 @@
 
                             <div class="d-flex justify-content-end align-items-center mb-4 pt-2 pb-3">
                                 <form method="get">
+                                    <div>
 
+
+                                    </div>
                                     <p class="small mb-0 me-2 text-muted">{% trans 'Filter' %}</p>
                                     <select class="select" onchange="this.form.submit();" name="filter">
                                         <option selected disabled>{% trans '--Apply filter--' %}</option>
