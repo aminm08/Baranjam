@@ -22,6 +22,9 @@ class Todo(models.Model):
         signed_pk = self.signer.sign(self.pk)
         return reverse('todo_list', args=[str(signed_pk)])
 
+    def get_signed_pk(self):
+        return self.signer.sign(self.pk)
+
     def complete_rate(self):
         completed_jobs = self.jobs.filter(is_done=True)
         not_completed = self.jobs.filter(is_done=False)

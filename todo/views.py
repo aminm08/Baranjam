@@ -71,6 +71,7 @@ def todo_list_main_page(request, signed_pk):
 
 class AddTodo(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Todo
+    http_method_names = ['post']
     fields = ('name',)
     success_url = reverse_lazy('user_todos')
     success_message = _('Todo list successfully created')
@@ -107,6 +108,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Job
     success_message = _('Task successfully deleted of your list')
+    http_method_names = ['post']
 
     def get_success_url(self):
         return self.get_object().get_absolute_url()
@@ -117,6 +119,7 @@ class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 
 class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Todo
+    http_method_names = ['post']
     success_url = reverse_lazy('user_todos')
     success_message = _('todo list successfully deleted')
 
@@ -124,6 +127,7 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         return self.request.user == self.get_object().user
 
 
+@login_required()
 def render_pdf(request, todo_id):
     # pulling todo and its jobs
     todo = get_object_or_404(Todo, pk=todo_id)
@@ -148,4 +152,3 @@ def render_pdf(request, todo_id):
     buf.seek(0)
 
     return FileResponse(buf, as_attachment=True, filename='out.pdf')
-
