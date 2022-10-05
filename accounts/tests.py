@@ -63,3 +63,14 @@ class AuthenticationPagesTest(TestCase):
     def test_logout_url_redirect_anonymous_user(self):
         response = self.client.get(reverse('account_logout'))
         self.assertEqual(response.status_code, 302)
+
+    # profile
+    def test_profile_urls_by_name(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(reverse('profile'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_profile_url(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get('/accounts/profile/')
+        self.assertEqual(response.status_code, 200)
