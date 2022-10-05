@@ -179,9 +179,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-#
-# # messages framework
-#
+
+# messages framework
+
 MESSAGE_TAGS = {
     co.ERROR: 'danger',
     co.WARNING: 'warning'

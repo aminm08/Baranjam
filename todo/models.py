@@ -25,13 +25,8 @@ class Todo(models.Model):
     def complete_rate(self):
         completed_jobs = self.jobs.filter(is_done=True)
         not_completed = self.jobs.filter(is_done=False)
-        print(completed_jobs, not_completed)
-        return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed)))
 
-    # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(self.name)
-    #     return super().save(*args, **kwargs)
+        return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed)))
 
 
 class Job(models.Model):
