@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-&nmn3h0ewd!q0k^x4oi0^and_*e72n9^m$mg_jt)f5-k$&m3du
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['db50-5-75-124-229.eu.ngrok.io','127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://db50-5-75-124-229.eu.ngrok.io']
+ALLOWED_HOSTS = ['db50-5-75-124-229.eu.ngrok.io', '127.0.0.1']
+# CSRF_TRUSTED_ORIGINS = ['https://db50-5-75-124-229.eu.ngrok.io']
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,13 +44,13 @@ INSTALLED_APPS = [
     'allauth.account',
     'jalali_date',
     'rosetta',
-    'webpush',
 
     # my apps
     'accounts',
     'persian_translating',
     'pages',
     'todo',
+
 
 ]
 
@@ -148,6 +148,7 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -188,10 +189,3 @@ MESSAGE_TAGS = {
 }
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-# django webpush settings
-
-WEBPUSH_SETTINGS = {
-    "VAPID_PUBLIC_KEY": "BBmbiB7DP44kWDqj98c3UVnj-fI2zxc8uMXoja1_PwU5Mk7ofKUut3FJ6qW6lIicw1FB82H1nB5ZiVKoqueIE38",
-    "VAPID_PRIVATE_KEY": "BH8WLS0kqzKcByhMmirsJqtJXa1ibFlQN-N2kS06KAw",
-    "VAPID_ADMIN_EMAIL": "maf081378@gmail.com"
-}
