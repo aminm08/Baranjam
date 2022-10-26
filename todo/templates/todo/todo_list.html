@@ -11,6 +11,7 @@
 
 {% block content %}
 
+
     <section class="vh-100">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -23,15 +24,6 @@
                                 {{ todo.name|capfirst }}
                             <p class="text-muted text-center">{% trans 'my todo-s' %}</p>
 
-                            <div>
-                                <form action="{% url 'pdf' todo.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="bg-transparent border-0">
-
-                                        <i class='fas fa-file-pdf ' style="font-size:36px; color:red;"></i>
-                                    </button>
-                                </form>
-                            </div>
 
                             </p>
 
@@ -122,26 +114,26 @@
                                                 </p>
 
                                             </div>
-                                            <div class="py-2 px-3 me-2 border border-warning rounded-3 d-flex  align-items-center bg-light">
-                                                <p class="small mb-0">
+                                            {% if user_job.user_datetime %}
+                                                <div class="py-2 px-3 me-2 border border-warning rounded-3 d-flex  align-items-center bg-light">
+                                                    <p class="small mb-0">
 
-                                                    <i class="fas fa-hourglass-half me-2 text-warning"></i>
-                                                    {{ user_job.user_datetime|to_jalali:'%Y %B %d'|translate_numbers }}
-                                                    <i class="fas fa-solid fa-clock me-2 text-info ml-1"></i>
-                                                    {{ user_job.user_datetime|to_jalali:'%H: %M: %S'|translate_numbers }}
-                                                </p>
-                                            </div>
+                                                        <i class="fas fa-hourglass-half me-2 text-warning"></i>
+                                                        {{ user_job.user_datetime|to_jalali:'%Y %B %d'|translate_numbers }}
+                                                        <i class="fas fa-solid fa-clock me-2 text-info ml-1"></i>
+                                                        {{ user_job.user_datetime|to_jalali:'%H: %M: %S'|translate_numbers }}
+                                                    </p>
+                                                </div>
+                                            {% endif %}
                                             <div class="image-parent form-inline">
-
                                                 <form action="{% url 'job_delete' user_job.id %}" method="post"
                                                       class="ml-auto">
                                                     {% csrf_token %}
                                                     <button type="submit" class="text-danger bg-transparent border-0"
                                                             data-mdb-toggle="tooltip"
                                                             title="Delete todo"><i
-                                                            class="fas fa-trash-alt"></i></button>
+                                                            class="fa fa-trash-alt"></i></button>
                                                 </form>
-
 
                                             </div>
                                         </li>
@@ -153,234 +145,17 @@
                                 <h3>{% trans 'Nothing to see here' %}</h3>
 
                             {% endif %}
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </section>
 
 {% endblock content %}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{##}
-{#{% block content %}#}
-{#    <section class="vh-100">#}
-{#        <div class="container py-5 h-100">#}
-{#            <div class="row d-flex justify-content-center align-items-center h-100">#}
-{#                <div class="col">#}
-{#                    <div class="card" id="list1" style="border-radius: .75rem; background-color: #eff1f2;">#}
-{#                        <div class="card-body py-4 px-4 px-md-5">#}
-{##}
-{#                            <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">#}
-{#                                <i class="fas fa-check-square me-1"></i>#}
-{#                                <u>My Todo-s</u>#}
-{#                            </p>#}
-{##}
-{#                            <div class="pb-2">#}
-{#                                <div class="card">#}
-{#                                    <div class="card-body">#}
-{##}
-{#                                        <form action="{% url 'job_create' todo.id %}" method="post"#}
-{#                                              class="form-inline d-flex">#}
-{##}
-{#                                            {% csrf_token %}#}
-{#                                            <div class="col">#}
-{##}
-{#                                                <input type="text" class="form-control form-control-lg"#}
-{#                                                       id="exampleFormControlInput1"#}
-{#                                                       placeholder="Add new..." name="text">#}
-{#                                            </div>#}
-{#                                            <div class="col">#}
-{##}
-{#                                                <input type="datetime-local" class="form-control form-control-lg"#}
-{#                                                       name="user_datetime">#}
-{#                                            </div>#}
-{##}
-{#                                            <div>#}
-{#                                                <button type="submit"#}
-{#                                                        class="btn btn-primary justify-content-end">Add#}
-{#                                                </button>#}
-{#                                            </div>#}
-{#                                        </form>#}
-{##}
-{##}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            </div>#}
-{##}
-{#                            <hr class="my-4">#}
-{##}
-{#                            <div class="d-flex justify-content-end align-items-center mb-2 pb-3">#}
-{#                                <form method="get">#}
-{##}
-{#                                    <p class="small mb-0 me-2 ">Filter</p>#}
-{##}
-{#                                    <select class="select me-3" name="filter" onchange="this.form.submit();">#}
-{#                                        <option disabled selected value> -- select an option --</option>#}
-{#                                        <option value="1">All</option>#}
-{#                                        <option value="2">Completed</option>#}
-{#                                        <option value="3">Active</option>#}
-{##}
-{#                                    </select>#}
-{##}
-{##}
-{#                                </form>#}
-{##}
-{#                            </div>#}
-{#                        </div>#}
-{#                        {% if user_jobs %}#}
-{#                            {% for user_job in user_jobs %}#}
-{#                                <div class="row mx-1 px-5 pb-3 w-80">#}
-{#                                <div class="col mx-auto">#}
-{#                                <!-- Todo Item 1 -->#}
-{#                                <div class="row px-3 align-items-center todo-item rounded">#}
-{#                                    <div class="col px-1 m-1 d-flex align-items-center">#}
-{#                                        <input type="text"#}
-{#                                               class="form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3"#}
-{#                                               readonly value="Buy groceries for next week"#}
-{#                                               title="Buy groceries for next week"/>#}
-{#                                        <input type="text"#}
-{#                                               class="form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none"#}
-{#                                               value="{{ user_job.name }}"/>#}
-{#                                    </div>#}
-{#                                    <div class="col-auto m-1 p-0 px-3 d-none">#}
-{#                                    </div>#}
-{#                                    <div class="col-auto m-1 p-0 todo-actions">#}
-{#                                        <div class="row d-flex align-items-center justify-content-end">#}
-{##}
-{#                                            <h5 class="m-0 p-0 px-2">#}
-{#                                                {% if not user_job.is_done %}#}
-{#                                                    <form method="post">#}
-{#                                                        {% csrf_token %}#}
-{#                                                        <button type="submit" class="text-primary"#}
-{#                                                                data-mdb-toggle="tooltip" title="Delete todo"#}
-{#                                                                name="{{ user_job.id }}">#}
-{#                                                            <i class="fas fa-border-none fa-solid fa-check "></i>#}
-{#                                                        </button>#}
-{#                                                    </form>#}
-{##}
-{#                                                {% endif %}#}
-{#                                            </h5>#}
-{##}
-{#                                            <h5 class="m-0 p-0 px-2">#}
-{#                                                <form method="post" action="{% url 'job_delete' user_job.id %}">#}
-{#                                                    {% csrf_token %}#}
-{#                                                    <button type="submit" class="text-danger"#}
-{#                                                            data-mdb-toggle="tooltip"#}
-{#                                                            title="Edit todo"><i#}
-{#                                                            class="fas fa-trash "></i></button>#}
-{#                                                </form>#}
-{##}
-{#                                            </h5>#}
-{#                                        </div>#}
-{#                                        <div class="row todo-created-info">#}
-{#                                            <div class="col-auto d-flex align-items-center pr-2">#}
-{#                                                <i class="fa fa-info-circle my-2 px-2 text-black-50 btn"#}
-{#                                                   data-toggle="tooltip"#}
-{#                                                   data-placement="bottom" title=""#}
-{#                                                   data-original-title="Created date"></i>#}
-{#                                                <label class="date-label my-2 text-black-50">{{ user_job.datetime_created }}</label>#}
-{#                                            </div>#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            {% endfor %}#}
-{##}
-{#                        {% else %}#}
-{#                            <h5>Nothing to see here</h5>#}
-{##}
-{#                        {% endif %}#}
-{##}
-{##}
-{##}
-{##}
-{##}
-{##}
-{##}
-{##}
-{#                        </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#    </section>#}
-{##}
-{##}
-{#{% endblock content %}#}

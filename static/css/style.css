@@ -76,3 +76,12 @@
     cursor: pointer;
     border: solid 1px #BA68C8
 }
+
+
+.css-shadow {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 2px solid #cddc39;
+    filter: drop-shadow(0 0 8px #ff5722);
+  }

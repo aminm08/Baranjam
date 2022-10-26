@@ -1,15 +1,12 @@
 from django.shortcuts import render
-from django.views import generic
-from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+
 from .forms import CustomUserChangeForm
 
 
-class DashBoard(generic.TemplateView):
-    template_name = ''
-
-
+@login_required
 def user_profile(request):
     form = CustomUserChangeForm(instance=request.user)
     if request.method == 'POST':

@@ -13,4 +13,6 @@ class JobForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(JobForm, self).__init__(*args, **kwargs)
-        self.fields['user_datetime'] = SplitJalaliDateTimeField(label=_('Due date time'), widget=AdminSplitJalaliDateTime)
+        self.fields['user_datetime'] = SplitJalaliDateTimeField(label=_('Due date time'),
+                                                                widget=AdminSplitJalaliDateTime)
+        self.fields['user_datetime'].required = False

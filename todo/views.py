@@ -1,28 +1,15 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.urls import reverse_lazy
-from django.contrib.auth import get_user_model
-from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import FileResponse, JsonResponse, HttpResponse
-from django.views.decorators.http import require_POST, require_GET
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
-
-import json
-import io
-
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
-
-from webpush import send_user_notification
+from django.contrib import messages
 
 from .forms import JobForm
+
 from .models import Todo, Job
 
 
@@ -125,30 +112,3 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.request.user == self.get_object().user
-
-
-@login_required()
-def render_pdf(request, todo_id):
-    # pulling todo and its jobs
-    todo = get_object_or_404(Todo, pk=todo_id)
-    jobs = todo.jobs.filter(user=request.user)
-
-    buf = io.BytesIO()
-
-    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
-    text_obj = c.beginText()
-    text_obj.setTextOrigin(inch, inch)
-    text_obj.setFont('Helvetica', 14)
-
-    data = [i.text for i in jobs]
-
-    for d in data:
-        text_obj.textLine(d)
-
-    # write the document to disk
-    c.drawText(text_obj)
-    c.showPage()
-    c.save()
-    buf.seek(0)
-
-    return FileResponse(buf, as_attachment=True, filename='out.pdf')

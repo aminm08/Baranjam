@@ -30,14 +30,14 @@
                 </div>
                 <div class="col-lg-8 align-self-baseline">
                     <p class="text-white-75 mb-5">{% trans 'django todo list is a free app that you can use to manage your activities during the day' %}</p>
-                    <a class="btn btn-primary btn-xl" href="#about">{% trans 'find out more' %}</a>
+                    <a class="btn btn-primary btn-xl" href="{% url 'user_todos' %}">{% trans 'Start' %}</a>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- About-->
-    <section class="page-section bg-primary" id="about">
+    <!-- <section class="page-section bg-primary" id="about">
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-lg-8 text-center">
@@ -50,9 +50,9 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Services-->
-    <section class="page-section" id="services">
+    <section class="page-section bg-dark text-white" id="services">
         <div class="container px-4 px-lg-5">
             <h2 class="text-center mt-0">At Your Service</h2>
             <hr class="divider"/>

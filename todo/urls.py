@@ -11,9 +11,6 @@ urlpatterns = [
     path('job/delete/<int:pk>/', views.JobDeleteView.as_view(), name='job_delete'),
     path('delete/<int:pk>/', views.TodoDeleteView.as_view(), name='todo_delete'),
 
-    # pdf render
-    path('pdf/<int:todo_id>/', views.render_pdf, name='pdf'),
 
-    # notif
 
 ]
