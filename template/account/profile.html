@@ -15,13 +15,13 @@
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     {% if user.profile_picture %}
 
-                        <img class="profile-img rounded-circle mt-5" width="150px"
+                        <img class="rounded-3 mt-5" width="150px"
                              src="{{ user.profile_picture.url }}">
 
                     {% else %}
 
-                        <img class="profile-img rounded-circle mt-5" width="150px"
-                             src="{% static 'img/blank_user.jpg' %}">
+                        <img class="rounded-circle mt-5" width="150px"
+                             src="{% static 'img/blank_user.png' %}">
 
                     {% endif %}
                     <span class="font-weight-bold">{{ user.username }}</span><span
@@ -30,28 +30,28 @@
             <div class="col-md-5 border-right">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="text-right">{% trans 'Profile Information' %}</h4>
+                        <h4 class="text-center" style="color:#f4623a;">{% trans 'Profile Information' %}</h4>
                     </div>
-                   
-                    <div class="row mt-3">
+
+                    <div class="row mt-3 text-right text-dark" dir="rtl">
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             {{ form|crispy }}
                             {{ form.media }}
                             <div class="mt-5 text-center">
-                                <button class="btn btn-primary profile-button"
-                                        type="submit">{% trans 'Save Profile' %}</button>
+                                <button class="btn text-dark fw-bold profile-button"
+                                        type="submit" style="background-color: #f4623a;">{% trans 'Save Profile' %}</button>
                             </div>
 
                         </form>
-                    
+
                     </div>
 
                 </div>
             </div>
-            
+
         </div>
     </div>
-
+    {% include 'footer.html' %}
 
 {% endblock content %}

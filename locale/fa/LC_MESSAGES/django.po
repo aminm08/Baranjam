@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-04 05:14+0330\n"
-"PO-Revision-Date: 2022-10-25 16:36+0330\n"
+"POT-Creation-Date: 2022-10-28 01:50+0330\n"
+"PO-Revision-Date: 2022-10-28 01:50+0330\n"
 "Last-Translator:   <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,53 +26,63 @@ msgstr "تاریخ تولد شما"
 msgid "your profile picture"
 msgstr "تصویر پروفایل شما"
 
-#: .\accounts\models.py:10
-msgid "your Mobile number"
-msgstr "شماره موبایل"
-
-#: .\accounts\views.py:19
+#: .\accounts\views.py:16
 msgid "your profile updated successfully"
 msgstr "پروفایل شما با موفقیت بروزرسانی شد"
 
 #: .\template\_base.html:29
-msgid "django-todo"
-msgstr "django-todo"
+msgid "BarAnjam"
+msgstr "بَراَنجام"
 
 #: .\template\_base.html:38
 msgid "My todo lists"
-msgstr "لیست های  انجام کار من"
+msgstr "لیست-انجام های من"
 
-#: .\template\_base.html:42 .\template\dashboard.html:356
+#: .\template\_base.html:43 .\template\dashboard.html:26
 msgid "Dashboard"
 msgstr "داشبورد"
 
-#: .\template\_base.html:46 .\template\_base.html:77
-#: .\template\account\profile.html:7 .\template\dashboard.html:409
+#: .\template\_base.html:47 .\template\account\profile.html:7
 msgid "Profile"
 msgstr "پروفایل"
 
-#: .\template\_base.html:50
-msgid "About us"
-msgstr "درباره ما"
+#: .\template\_base.html:52
+#| msgid "About us"
+msgid "About me"
+msgstr "درباره من"
 
-#: .\template\_base.html:54
-msgid "Contact us"
-msgstr "ارتباط با ما"
+#: .\template\_base.html:56
+#| msgid "Contact us"
+msgid "Contact me"
+msgstr "ارتباط با من"
 
-#: .\template\_base.html:84
+#: .\template\_base.html:75 .\template\account\logout.html:10
 msgid "Logout"
 msgstr "خروج"
 
-#: .\template\account\login.html:10 .\template\account\login.html:42
-#: .\template\account\logout.html:10 .\template\account\signup.html:29
+#: .\template\_base.html:79 .\template\account\login.html:10
+#: .\template\account\login.html:45 .\template\account\signup.html:32
 msgid "Login"
 msgstr "ورود"
 
-#: .\template\account\login.html:44
+#: .\template\_base.html:80 .\template\account\signup.html:13
+#: .\template\account\signup.html:28
+msgid "Signup"
+msgstr "ثبت نام"
+
+#: .\template\account\login.html:35
+msgid "Email"
+msgstr "رایانامه"
+
+#: .\template\account\login.html:41
+msgid "password"
+msgstr "رمز عبور"
+
+#: .\template\account\login.html:47
 msgid "NotRegistered?"
 msgstr "ثبت نام نکردی؟ "
 
-#: .\template\account\login.html:46
+#: .\template\account\login.html:49
 msgid "Create an Account"
 msgstr "ساخت حساب"
 
@@ -80,7 +90,11 @@ msgstr "ساخت حساب"
 msgid "Are you sure?"
 msgstr "ایا اطمینان داری؟"
 
-#: .\template\account\logout.html:19
+#: .\template\account\logout.html:20
+msgid "No back home"
+msgstr "نه . برگشت به خانه"
+
+#: .\template\account\logout.html:23
 msgid "Yes, logout"
 msgstr "بله خارج شو"
 
@@ -88,49 +102,41 @@ msgstr "بله خارج شو"
 msgid "Profile Information"
 msgstr "اطلاعات پروفایل"
 
-#: .\template\account\profile.html:50
+#: .\template\account\profile.html:43
 msgid "Save Profile"
 msgstr "ذخیره پروفایل"
 
-#: .\template\account\signup.html:12 .\template\account\signup.html:25
-msgid "Signup"
-msgstr "ثبت نام"
-
-#: .\template\account\signup.html:28
+#: .\template\account\signup.html:31
 msgid "Already Registered?"
 msgstr "قبلا ثبت نام کردی؟"
 
-#: .\template\dashboard.html:367
+#: .\template\dashboard.html:37
 msgid "All tasks you have done"
 msgstr "تمام کارهایی که تا الان انجام دادی"
 
-#: .\template\dashboard.html:411
-msgid "Your profile"
-msgstr "پروفایل شما"
-
-#: .\template\dashboard.html:457
+#: .\template\dashboard.html:59
 msgid "Your todos"
-msgstr "لیست های  انجام کار شما"
+msgstr "لیست-انجام های شما "
 
 #: .\template\homepage.html:6
 msgid "Homepage"
 msgstr "خانه"
 
 #: .\template\homepage.html:28
-msgid "Welcome to django todo-list"
-msgstr "به لیست انجام کار های جنگو خوش اومدی !"
+msgid "Welcome to BarAnjam"
+msgstr "به اپلیکیشن بَراَنجام خوش  آمدید"
 
 #: .\template\homepage.html:32
 msgid ""
-"django todo list is a free app that you can use to manage your activities "
-"during the day"
+"BarAnjam is a free app that you can use to manage your activities during the"
+" day"
 msgstr ""
-"لیست انجام کار جنگو اپلیکیشنی بر پایه وب است که برای برنامه ریزی و مدیریت "
-"فعالیت های روزانه به شما کمک می کند . با ساخت یک حساب شروع کنید."
+" بَراَنجام  یک  اپلیکیشن بر پایه وب است که برای برنامه ریزی و مدیریت فعالیت "
+"های روزانه به شما کمک می کند . با ساخت یک حساب شروع کنید."
 
 #: .\template\homepage.html:33
-msgid "find out more"
-msgstr "بیشتر"
+msgid "Start"
+msgstr "شروع"
 
 #: .\template\homepage.html:49
 msgid "Get started--it's free!"
@@ -151,41 +157,41 @@ msgstr "تاریخ پایان این کار"
 #: .\todo\templates\todo\todo_list.html:8
 #: .\todo\templates\todo\user_todos.html:7
 msgid "Todo list"
-msgstr "لیست انجام کارها"
+msgstr "لیست-انجام"
 
-#: .\todo\templates\todo\todo_list.html:24
+#: .\todo\templates\todo\todo_list.html:26
 msgid "my todo-s"
 msgstr "لیست کارهای من"
 
-#: .\todo\templates\todo\todo_list.html:58
+#: .\todo\templates\todo\todo_list.html:60
 msgid "Add"
 msgstr "اضافه کردن"
 
-#: .\todo\templates\todo\todo_list.html:75
+#: .\todo\templates\todo\todo_list.html:77
 msgid "Filter"
 msgstr "فیلتر"
 
-#: .\todo\templates\todo\todo_list.html:77
+#: .\todo\templates\todo\todo_list.html:81
 msgid "--Apply filter--"
 msgstr "اعمال فیلتر"
 
-#: .\todo\templates\todo\todo_list.html:78
+#: .\todo\templates\todo\todo_list.html:82
 msgid "All"
 msgstr "همه"
 
-#: .\todo\templates\todo\todo_list.html:79
+#: .\todo\templates\todo\todo_list.html:83
 msgid "Completed"
 msgstr "کامل شده ها"
 
-#: .\todo\templates\todo\todo_list.html:80
+#: .\todo\templates\todo\todo_list.html:84
 msgid "Active"
 msgstr "فعال ها"
 
-#: .\todo\templates\todo\todo_list.html:120
+#: .\todo\templates\todo\todo_list.html:124
 msgid "created"
 msgstr "ساخته شده در"
 
-#: .\todo\templates\todo\todo_list.html:153
+#: .\todo\templates\todo\todo_list.html:157
 msgid "Nothing to see here"
 msgstr "چیزی وجود ندارد"
 
@@ -195,40 +201,99 @@ msgstr "اضافه کردن لیست جدید"
 
 #: .\todo\templates\todo\user_todos.html:22
 msgid "Your todo lists"
-msgstr "لیست های انجام کار شما"
+msgstr "لیست-انجام های شما"
 
 #: .\todo\templates\todo\user_todos.html:24
 msgid "Add todo-list to start"
 msgstr "یک لیست جدید برای شروع اضافه کنید"
 
-#: .\todo\templates\todo\user_todos.html:63
+#: .\todo\templates\todo\user_todos.html:47
+msgid "actions"
+msgstr "انجام عملیات"
+
+#: .\todo\templates\todo\user_todos.html:53
+msgid "clear this list"
+msgstr "خالی کردن لیست"
+
+#: .\todo\templates\todo\user_todos.html:57
+msgid "delete finished jobs"
+msgstr "حذف فعالیت های مختوم"
+
+#: .\todo\templates\todo\user_todos.html:88
 msgid "Add a new list"
 msgstr "اضافه کردن لیست جدید"
 
-#: .\todo\templates\todo\user_todos.html:74
+#: .\todo\templates\todo\user_todos.html:98
+msgid "Add Todo-list"
+msgstr "اضافه کردن لیست جدید"
+
+#: .\todo\templates\todo\user_todos.html:100
 msgid "Submit"
 msgstr "ثبت"
 
-#: .\todo\templates\todo\user_todos.html:80
+#: .\todo\templates\todo\user_todos.html:107
 msgid "Close"
 msgstr "بستن"
 
-#: .\todo\views.py:62
+#: .\todo\views.py:37
+msgid "todo list successfully cleared"
+msgstr "لیست-انجام شما با موفقیت ساخته شد"
+
+#: .\todo\views.py:40
+msgid "sorry there is no job in your list"
+msgstr "هیچ فعالیتی در لیست شما وجود ندارد"
+
+#: .\todo\views.py:48
+msgid "finished jobs has deleted successfully"
+msgstr "فعالیت های مختوم با موفقیت حذف شدند"
+
+#: .\todo\views.py:51
+msgid "sorry there is no finished jobs in your list"
+msgstr "هیچ فعالیت مختومی در لیست شما وجود ندارد"
+
+#: .\todo\views.py:82
 msgid "job completed! congrats"
 msgstr "فعالیت انجام شد . آفرین !"
 
-#: .\todo\views.py:76
+#: .\todo\views.py:97
 msgid "Todo list successfully created"
-msgstr "لیست انجام کار شما با موفقیت ساخته شد"
+msgstr "لیست-انجام  شما با موفقیت ساخته شد"
 
-#: .\todo\views.py:88
+#: .\todo\views.py:109
 msgid "Task successfully added to your list"
 msgstr "فعالیت با موفقیت به لیست شما اضافه شد"
 
-#: .\todo\views.py:109
+#: .\todo\views.py:131
+msgid "error during saving job. plz fill date and/or time fields "
+msgstr ""
+"خطا در هنگام ایجاد فعالیت جدید . لطفا ورودی زمان و/ یا  تاریخ را پر کنید"
+
+#: .\todo\views.py:142
 msgid "Task successfully deleted of your list"
 msgstr "فعالیت با موفقیت از لیست شما حذف شد"
 
-#: .\todo\views.py:121
+#: .\todo\views.py:156
 msgid "todo list successfully deleted"
 msgstr "لیست شما با موفقیت حذف شد"
+
+#~ msgid "date"
+#~ msgstr "تاریخ"
+
+#, fuzzy
+#~ msgid "time"
+#~ msgstr "فعال ها"
+
+#~ msgid "django-todo"
+#~ msgstr "django-todo"
+
+#~ msgid "Your profile"
+#~ msgstr "پروفایل شما"
+
+#~ msgid "Welcome to django todo-list"
+#~ msgstr "به لیست انجام کار های جنگو خوش اومدی !"
+
+#~ msgid "your Mobile number"
+#~ msgstr "شماره موبایل"
+
+#~ msgid "find out more"
+#~ msgstr "بیشتر"

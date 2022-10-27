@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import gettext as _
-from jalali_date.fields import SplitJalaliDateTimeField
+from jalali_date.fields import SplitJalaliDateTimeField, JalaliDateTimeField
 from jalali_date.admin import AdminSplitJalaliDateTime
 
 from .models import Job
@@ -16,3 +16,4 @@ class JobForm(forms.ModelForm):
         self.fields['user_datetime'] = SplitJalaliDateTimeField(label=_('Due date time'),
                                                                 widget=AdminSplitJalaliDateTime)
         self.fields['user_datetime'].required = False
+        self.fields['text'].required = True

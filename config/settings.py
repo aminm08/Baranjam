@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     # 3rd party apps
     'crispy_forms',
     'crispy_bootstrap5',
@@ -50,7 +51,6 @@ INSTALLED_APPS = [
     'persian_translating',
     'pages',
     'todo',
-
 
 ]
 
@@ -93,13 +93,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-     'default': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
-        
 
     # }
 }
@@ -127,8 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'fa-ir'
 LANGUAGES = (
-    ('en', 'English'),
-    ('fa', 'Persian')
+    ('fa', 'Persian'),
 )
 TIME_ZONE = 'Asia/Tehran'
 
@@ -147,7 +145,6 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -188,4 +185,3 @@ MESSAGE_TAGS = {
     co.WARNING: 'warning'
 }
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-

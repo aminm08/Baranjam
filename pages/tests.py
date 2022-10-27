@@ -31,7 +31,7 @@ class PagesTests(TestCase):
 
     def test_homepage_content(self):
         response = self.client.get(reverse('homepage'))
-        self.assertContains(response, 'لیست انجام کار های جنگو')
+        self.assertContains(response, 'به اپلیکیشن بَراَنجام خوش آمدید ')
 
     # ------------------ABOUT US--------------
 
@@ -91,4 +91,4 @@ class PagesTests(TestCase):
         response = self.client.get(reverse('dashboard'))
         self.assertContains(response, 'داشبورد')
         self.assertContains(response, 'تمام کارهایی که تا الان انجام دادی')
-        self.assertContains(response, 'پروفایل شما')
+

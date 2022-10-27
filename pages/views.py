@@ -4,7 +4,6 @@ from todo.models import Todo
 
 
 def homepage(request):
-
     return render(request, 'homepage.html')
 
 
@@ -14,6 +13,7 @@ def about_us(request):
 
 def contact_us(request):
     return render(request, 'contact_us.html')
+
 
 @login_required
 def dashboard_view(request):

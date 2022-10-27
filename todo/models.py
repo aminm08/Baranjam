@@ -24,11 +24,14 @@ class Todo(models.Model):
     def get_signed_pk(self):
         return self.signer.sign(self.pk)
 
+    # returns completed jobs percent if there is
     def complete_rate(self):
         completed_jobs = self.jobs.filter(is_done=True)
         not_completed = self.jobs.filter(is_done=False)
-
-        return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed)))
+        if self.jobs:
+            return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed)))
+        else:
+            return None
 
 
 class Job(models.Model):

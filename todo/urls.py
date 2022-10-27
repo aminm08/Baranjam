@@ -10,6 +10,7 @@ urlpatterns = [
     path('job/create/<int:todo_id>/', views.CreateJobView.as_view(), name='job_create'),
     path('job/delete/<int:pk>/', views.JobDeleteView.as_view(), name='job_delete'),
     path('delete/<int:pk>/', views.TodoDeleteView.as_view(), name='todo_delete'),
+    path('apply/<int:pk>/', views.todo_apply_options_post_view, name='apply_todo_actions')
 
 
 

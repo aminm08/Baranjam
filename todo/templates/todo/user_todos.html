@@ -13,21 +13,21 @@
 
     <div class="container-fluid">
         <div class="card shadow bg-dark mt-5">
-            <div class="card-header">
+            <div class="card-header " style="background-color: #f4623a;">
 
-                <a href="" class="float-end btn btn-primary" data-bs-toggle="modal"
+                <a href="" class="float-start btn btn-dark text-left" data-bs-toggle="modal"
                    data-bs-target="#exampleModal">{% trans 'Add todo-list' %}</a>
                 {% if todos %}
 
-                    <h2 class=" text-white">{% trans 'Your todo lists' %}</h2>
+                    <h2 class=" text-white text-right">{% trans 'Your todo lists' %}</h2>
                 {% else %}
-                    <h2 class=" text-white">{% trans 'Add todo-list to start' %}</h2>
+                    <h2 class=" text-white text-right">{% trans 'Add todo-list to start' %}</h2>
                 {% endif %}
             </div>
-            <div class="card-body">
+            <div class="card-body bg-dark">
 
 
-                <ol class="list-group list-group-flush list-group-numbered">
+                <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
                     {% for todo in todos %}
                         <li class="list-group-item d-flex justify-content-between align-items-start">
 
@@ -38,11 +38,35 @@
                                 {{ todo.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
                             </div>
 
+                            <form action="{% url 'apply_todo_actions' todo.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="dropdown me-3">
+                                    <button class="btn btn-dark w-100 dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false"
+                                            style="background-color: #f4623a">
+                                        {% trans 'actions' %}
+                                    </button>
+
+                                    <ul class="dropdown-menu" onchange="this.form.submit();">
+                                        <li>
+                                            <button class="dropdown-item"
+                                                    name="1">{% trans 'clear this list' %}</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item"
+                                                    name="2">{% trans 'delete finished jobs' %}</button>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </form>
+
                             <form action="{% url 'todo_delete' todo.id %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit" class="btn text-secondary border-end-0 border rounded-pill" value>
+                                <button type="submit" class="btn text-danger shadow  border-secondary rounded-pill "
+                                        value>
 
-                                    <span class="fa fa-solid fa-trash px-3"></span>
+                                    <span class="fa fa-solid fa-trash px-3 "></span>
                                 </button>
                             </form>
                         </li>
@@ -60,24 +84,27 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add a new list' %}</h5>
+                            <h5 class="text ml-lg-3" id="exampleModalLabel"
+                                style="color:#f4623a;">{% trans 'Add a new list' %}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
 
-                            <div class="d-flex justify-content-center">
+                            <div class="d-flex justify-content-end">
 
                                 <form action="{% url 'add_todo' %}" class="form-inline" method="post">
                                     {% csrf_token %}
-                                    <input type="text" name="name" class="form-control "
-                                           placeholder="Add Todo-list">
-                                    <button type="submit" class="btn btn-primary ml-3">{% trans 'Submit' %}</button>
+                                    <input type="text" name="name" class="form-control form-text"
+                                           placeholder="{% trans 'Add Todo-list' %}">
+                                    <button type="submit"
+                                            class="btn  ml-3 mr-0" style="background-color: #f4623a;">{% trans 'Submit' %}</button>
                                 </form>
                             </div>
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-outline-danger mr-0"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
 
                         </div>
                     </div>
@@ -88,5 +115,7 @@
 
         </div>
     </div>
+
+    {% include 'footer.html' %}
 
 {% endblock content %}

@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 from .forms import JobForm
 
@@ -18,6 +19,38 @@ def all_user_todos(request):
     todos = Todo.objects.filter(user=request.user).order_by('-datetime_created')
 
     return render(request, 'todo/user_todos.html', {'todos': todos})
+
+
+@login_required()
+@require_POST
+def todo_apply_options_post_view(request, pk):
+    todo = get_object_or_404(Todo, pk=pk)
+
+    option_number = int(list(request.POST.keys())[1])
+
+    if option_number == 1:
+        all_jobs_query = todo.jobs.all()
+
+        if all_jobs_query.exists():
+
+            all_jobs_query.delete()
+            messages.success(request, _('todo list successfully cleared'))
+
+        else:
+            messages.error(request, _('sorry there is no job in your list'))
+
+    elif option_number == 2:
+        finished_jobs_query = todo.jobs.filter(is_done=True)
+
+        if finished_jobs_query.exists():
+
+            finished_jobs_query.delete()
+            messages.success(request, _('finished jobs has deleted successfully'))
+
+        else:
+            messages.error(request, _('sorry there is no finished jobs in your list'))
+
+    return redirect('user_todos')
 
 
 @login_required()
@@ -75,17 +108,29 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
     form_class = JobForm
     success_message = _('Task successfully added to your list')
 
+    def get_todo_from_kwargs(self):
+        todo_id = int(self.kwargs['todo_id'])
+        todo = get_object_or_404(Todo, pk=todo_id)
+        return todo
+
     def form_valid(self, form):
         obj = form.save(commit=False)
 
-        todo_id = int(self.kwargs['todo_id'])
-        todo = get_object_or_404(Todo, pk=todo_id)
+        todo = self.get_todo_from_kwargs()
 
         obj.todo = todo
         obj.user = self.request.user
 
         obj.save()
         return super().form_valid(form)
+
+    # for the only error that happens when user only fills one of two date & time fields
+    def form_invalid(self, form):
+        todo = self.get_todo_from_kwargs()
+
+        messages.error(self.request, _('error during saving job. plz fill date and/or time fields '))
+
+        return redirect(todo.get_absolute_url())
 
     def test_func(self):
         todo = get_object_or_404(Todo, pk=int(self.kwargs['todo_id']))
