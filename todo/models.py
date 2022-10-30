@@ -36,6 +36,10 @@ class Todo(models.Model):
         else:
             return None
 
+    def get_jobs(self, finished=True):
+
+        return self.jobs.all().filter(is_done=finished)
+
 
 class Job(models.Model):
     text = models.CharField(max_length=300, verbose_name=_('your job text'))

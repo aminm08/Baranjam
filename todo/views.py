@@ -29,26 +29,32 @@ def todo_apply_options_post_view(request, pk):
     option_number = int(list(request.POST.keys())[1])
 
     if option_number == 1:
-        all_jobs_query = todo.jobs.all()
-
-        if all_jobs_query.exists():
-
-            all_jobs_query.delete()
-            messages.success(request, _('todo list successfully cleared'))
-
-        else:
-            messages.error(request, _('sorry there is no job in your list'))
+        todo.jobs.all().delete()
+        messages.success(request, _('todo list successfully cleared'))
 
     elif option_number == 2:
-        finished_jobs_query = todo.jobs.filter(is_done=True)
+        finished_jobs = todo.get_jobs()
 
-        if finished_jobs_query.exists():
+        finished_jobs.delete()
+        messages.success(request, _('finished jobs has deleted successfully'))
 
-            finished_jobs_query.delete()
-            messages.success(request, _('finished jobs has deleted successfully'))
+    elif option_number == 3:
+        finished_jobs = todo.get_jobs()
 
-        else:
-            messages.error(request, _('sorry there is no finished jobs in your list'))
+        if finished_jobs:
+            for job in finished_jobs:
+                job.is_done = False
+                job.save()
+            messages.success(request, _('all jobs are now active'))
+
+    elif option_number == 4:
+        unfinished_jobs = todo.get_jobs(finished=False)
+      
+        if unfinished_jobs:
+            for job in unfinished_jobs:
+                job.is_done = True
+                job.save()
+            messages.success(request, _('all jobs are now checked'))
 
     return redirect('user_todos')
 
