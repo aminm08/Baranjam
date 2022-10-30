@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Todo(models.Model):
     name = models.CharField(max_length=50)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='todos')
 
     signer = Signer(sep='/', salt='todo.Todo')
 
