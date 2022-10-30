@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 
-from .forms import JobForm
+from .forms import JobForm, TodoForm
 
 from .models import Todo, Job
 
@@ -92,7 +92,7 @@ def todo_list_main_page(request, signed_pk):
 class AddTodo(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Todo
     http_method_names = ['post']
-    fields = ('name',)
+    form_class = TodoForm
     success_url = reverse_lazy('user_todos')
     success_message = _('Todo list successfully created')
 

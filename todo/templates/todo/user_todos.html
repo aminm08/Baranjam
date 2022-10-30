@@ -4,9 +4,17 @@
 {% load jalali_tags %}
 {% load persian_trans_tags %}
 {% load i18n %}
-{% block title %}{% trans 'Todo list' %}{% endblock title %}
 
-{% static 'hi' %}
+{% block meta %}
+
+    <meta name="description" content="Create and use new baranjam lists">
+
+{% endblock meta %}
+
+
+{% block title %}Baranjam list{% endblock title %}
+
+
 
 
 {% block content %}
@@ -95,9 +103,10 @@
                                 <form action="{% url 'add_todo' %}" class="form-inline" method="post">
                                     {% csrf_token %}
                                     <input type="text" name="name" class="form-control form-text"
-                                           placeholder="{% trans 'Add Todo-list' %}">
+                                           placeholder="{% trans 'Add Todo-list' %}" required>
                                     <button type="submit"
-                                            class="btn  ml-3 mr-0" style="background-color: #f4623a;">{% trans 'Submit' %}</button>
+                                            class="btn  ml-3 mr-0"
+                                            style="background-color: #f4623a;">{% trans 'Submit' %}</button>
                                 </form>
                             </div>
 

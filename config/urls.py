@@ -20,11 +20,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('aminm08_todo_admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
     path('', include('pages.urls')),
     path('todo/', include('todo.urls')),
     path('rosetta/', include('rosetta.urls')),
+    path('api/v1/', include('apis.urls'))
 
 
 

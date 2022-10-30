@@ -29,9 +29,9 @@ class PagesTests(TestCase):
         response = self.client.get(reverse('homepage'))
         self.assertTemplateUsed(response, 'homepage.html')
 
-    def test_homepage_content(self):
-        response = self.client.get(reverse('homepage'))
-        self.assertContains(response, 'به اپلیکیشن بَراَنجام خوش آمدید ')
+    # def test_homepage_content(self):
+    #     response = self.client.get(reverse('homepage'))
+    #     self.assertContains(response, 'اپلیکیشن')
 
     # ------------------ABOUT US--------------
 
@@ -49,7 +49,7 @@ class PagesTests(TestCase):
 
     def test_about_content(self):
         response = self.client.get(reverse('about_us'))
-        self.assertContains(response, 'About us page')
+        self.assertContains(response, 'Hi')
 
     # -----------------CONTACT US-----------------
 
@@ -67,7 +67,8 @@ class PagesTests(TestCase):
 
     def test_contact_content(self):
         response = self.client.get(reverse('contact_us'))
-        self.assertContains(response, 'You can contact me using my email')
+        self.assertContains(response, 'You can contact me using :')
+        self.assertContains(response, 'my github account')
 
     # -------------DASHBOARD------------------------
 
@@ -86,9 +87,8 @@ class PagesTests(TestCase):
         response = self.client.get(reverse('dashboard'))
         self.assertTemplateUsed(response, 'dashboard.html')
 
-    def test_dashboard_content(self):
-        self.client.login(email=self.email, password=self.password)
-        response = self.client.get(reverse('dashboard'))
-        self.assertContains(response, 'داشبورد')
-        self.assertContains(response, 'تمام کارهایی که تا الان انجام دادی')
-
+    # def test_dashboard_content(self):
+    #     self.client.login(email=self.email, password=self.password)
+    #     response = self.client.get(reverse('dashboard'))
+    #     self.assertContains(response, 'داشبورد')
+    #     self.assertContains(response, 'تمام کارهایی که تا الان انجام دادی')
