@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
@@ -49,7 +49,7 @@ def todo_apply_options_post_view(request, pk):
 
     elif option_number == 4:
         unfinished_jobs = todo.get_jobs(finished=False)
-      
+
         if unfinished_jobs:
             for job in unfinished_jobs:
                 job.is_done = True
@@ -95,6 +95,32 @@ def todo_list_main_page(request, signed_pk):
         raise PermissionDenied
 
 
+@login_required()
+def job_update_view(request, signed_pk, job_id):
+    pk_todo = Todo.signer.unsign(signed_pk)
+    todo = get_object_or_404(Todo, pk=pk_todo)
+    if todo.user == request.user:
+
+        job = get_object_or_404(Job, pk=job_id)
+        form = JobForm(instance=job)
+
+        if request.method == 'POST':
+            form = JobForm(request.POST, instance=job)
+
+            if form.is_valid():
+                job_obj = form.save(commit=False)
+
+                job_obj.user = request.user
+                job_obj.todo = todo
+
+                job_obj.save()
+                messages.success(request, _('your job updated successfully'))
+
+        return render(request, 'todo/update_job.html', {'form': form, 'todo': todo})
+    else:
+        raise PermissionDenied
+
+
 class AddTodo(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = Todo
     http_method_names = ['post']
@@ -130,7 +156,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
         obj.save()
         return super().form_valid(form)
 
-    # for the only error that happens when user only fills one of two date & time fields
+    # for the only error that happens when user only fills one of two date or time fields
     def form_invalid(self, form):
         todo = self.get_todo_from_kwargs()
 

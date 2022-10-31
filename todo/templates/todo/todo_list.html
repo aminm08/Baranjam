@@ -40,6 +40,7 @@
                                                 <input type="text" class="form-control form-control-lg  border-dark"
                                                        id="exampleFormControlInput1"
                                                        placeholder="Add new job" name="text" required>
+                                                <input type="hidden" name="next" value="{{ request.path }}{{ request.get }}">
                                             </div>
                                             <div class=" datetime col me-3 ">
 
@@ -53,7 +54,6 @@
                                                 <input type="text" name="user_datetime_1"
                                                        class="vTimeField form-control border-dark" size="8"
                                                        id="id_user_datetime_1" placeholder="HH:MM:SS">
-
 
 
                                             </div>
@@ -77,9 +77,11 @@
 
 
                                     </div>
-                                    <p class="small mb-0 me-2 text-right font-weight-bold text-dark">:{% trans 'Filter' %}</p>
+                                    <p class="small mb-0 me-2 text-right font-weight-bold text-dark">
+                                        :{% trans 'Filter' %}</p>
                                     <br>
-                                    <select class="form-select border-dark text-dark fw-bold bg-light shadow" onchange="this.form.submit();"
+                                    <select class="form-select border-dark text-dark fw-bold bg-light shadow"
+                                            onchange="this.form.submit();"
                                             name="filter" aria-label="size 3 select example">
                                         <option selected disabled>{% trans '--Apply filter--' %}</option>
                                         <option value="1">{% trans 'All' %}</option>
@@ -116,10 +118,16 @@
                                                     {% endif %}
                                                 </form>
                                                 {% if user_job.is_done %}
-                                                    <p class="lead fw-normal mb-0"><strike>{{ user_job.text }}</strike>
+                                                    <a href="{{ todo.get_absolute_url }}/{{ user_job.id }}/"
+                                                       style="color:#000000"><p
+                                                            class="lead fw-normal mb-0">
+                                                        <strike>{{ user_job.text|truncatechars:30 }}</strike></a>
                                                     </p>
                                                 {% else %}
-                                                    <p class="lead fw-normal mb-0">{{ user_job.text }}</p>
+                                                    <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
+                                                       style="color:#000000"><p
+                                                            class="lead fw-normal mb-0">{{ user_job.text|truncatechars:30 }}</p>
+                                                    </a>
                                                 {% endif %}
 
 

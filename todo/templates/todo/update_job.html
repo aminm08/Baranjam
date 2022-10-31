@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block title %}Update your job{% endblock title %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+
+{% block content %}
+    <div class="container mt-5">
+
+        <h2 class="text-center">{% trans 'Update job' %}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="text-right" dir="rtl">
+
+                {{ form|crispy }}
+            </div>
+            {{ form.media }}
+
+            <button type="submit" class="btn btn-success float-end">{% trans 'Submit' %}</button>
+            <a href="{{ todo.get_absolute_url }}" class="btn btn-info">{% trans 'Back to list' %}</a>
+
+        </form>
+    </div>
+
+    {% include 'footer.html' %}
+
+
+{% endblock content %}
