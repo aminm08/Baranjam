@@ -15,3 +15,4 @@ class CustomUser(AbstractUser):
     def get_user_completed_tasks_length(self):
         completed = self.jobs.filter(is_done=True)
         return completed
+

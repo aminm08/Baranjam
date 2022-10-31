@@ -28,8 +28,8 @@ urlpatterns = [
     path('rosetta/', include('rosetta.urls')),
     # api
     path('api/v1/', include('apis.urls')),
-    path('api/v1/dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('api/v1/dj-rest-auth/signup/', include('dj_rest_auth.registration.urls')),
+    # path('api/v1/dj-rest-auth/', include('dj_rest_auth.urls')),
+    # path('api/v1/dj-rest-auth/signup/', include('dj_rest_auth.registration.urls')),
 
 ]
 if settings.DEBUG:

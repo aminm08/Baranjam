@@ -1,10 +1,20 @@
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import generics
-from rest_framework.viewsets import ModelViewSet
-from dj_rest_auth.registration import serializers
+from rest_framework.permissions import IsAuthenticated
 from .serializers import TodoSerializer, UserSerializer
 from todo.models import Todo, Job
+
+
+class Hello(APIView):
+    # permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        print(request.POST)
+
+        content = {'hello': 'hi'}
+        return Response(content)
 
 
 class TodoList(generics.ListCreateAPIView):
@@ -27,5 +37,3 @@ class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
-
-

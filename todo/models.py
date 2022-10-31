@@ -57,3 +57,5 @@ class Job(models.Model):
     def get_absolute_url(self):
         signed_pk = self.todo.signer.sign(self.todo.pk)
         return reverse('todo_list', args=[signed_pk])
+
+

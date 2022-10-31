@@ -17,7 +17,6 @@ from .models import Todo, Job
 @login_required()
 def all_user_todos(request):
     todos = Todo.objects.filter(user=request.user).order_by('-datetime_created')
-
     return render(request, 'todo/user_todos.html', {'todos': todos})
 
 
@@ -25,7 +24,6 @@ def all_user_todos(request):
 @require_POST
 def todo_apply_options_post_view(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
-
     option_number = int(list(request.POST.keys())[1])
 
     if option_number == 1:
@@ -34,54 +32,41 @@ def todo_apply_options_post_view(request, pk):
 
     elif option_number == 2:
         finished_jobs = todo.get_jobs()
-
         finished_jobs.delete()
         messages.success(request, _('finished jobs has deleted successfully'))
 
     elif option_number == 3:
         finished_jobs = todo.get_jobs()
-
-        if finished_jobs:
-            for job in finished_jobs:
-                job.is_done = False
-                job.save()
-            messages.success(request, _('all jobs are now active'))
+        for job in finished_jobs:
+            job.is_done = False
+            job.save()
+        messages.success(request, _('all jobs are now active'))
 
     elif option_number == 4:
         unfinished_jobs = todo.get_jobs(finished=False)
-
-        if unfinished_jobs:
-            for job in unfinished_jobs:
-                job.is_done = True
-                job.save()
-            messages.success(request, _('all jobs are now checked'))
+        for job in unfinished_jobs:
+            job.is_done = True
+            job.save()
+        messages.success(request, _('all jobs are now checked'))
 
     return redirect('user_todos')
 
 
 @login_required()
 def todo_list_main_page(request, signed_pk):
-    pk = Todo.signer.unsign(signed_pk)
-    todo = get_object_or_404(Todo, pk=pk)
+    todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
     if request.user == todo.user:
-
         user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
-
         user_filter = request.GET.get('filter')
 
-        if user_filter == '1':
+        if user_filter == 'all':
             user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
-
-        elif user_filter == '2':
-            user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('is_done', '-datetime_created')
-
-        elif user_filter == '3':
-            user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('is_done', '-datetime_created')
+        else:
+            user_jobs = request.user.jobs.filter(todo=todo, is_done=bool(user_filter)).order_by('is_done',
+                                                                                                '-datetime_created')
 
         if request.method == 'POST':
-
-            id = list(request.POST.keys())[1]
-            job = get_object_or_404(Job, pk=id)
+            job = get_object_or_404(Job, pk=list(request.POST.keys())[1])
 
             if not job.is_done:
                 job.is_done = True
@@ -97,8 +82,7 @@ def todo_list_main_page(request, signed_pk):
 
 @login_required()
 def job_update_view(request, signed_pk, job_id):
-    pk_todo = Todo.signer.unsign(signed_pk)
-    todo = get_object_or_404(Todo, pk=pk_todo)
+    todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
     if todo.user == request.user:
 
         job = get_object_or_404(Job, pk=job_id)
@@ -156,17 +140,14 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
         obj.save()
         return super().form_valid(form)
 
-    # for the only error that happens when user only fills one of two date or time fields
     def form_invalid(self, form):
         todo = self.get_todo_from_kwargs()
-
-        messages.error(self.request, _('error during saving job. plz fill date and/or time fields '))
+        messages.error(self.request, _('error during save job. plz fill date and/or time fields '))
 
         return redirect(todo.get_absolute_url())
 
     def test_func(self):
-        todo = get_object_or_404(Todo, pk=int(self.kwargs['todo_id']))
-        return self.request.user == todo.user
+        return self.request.user == self.get_todo_from_kwargs().user
 
 
 class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
