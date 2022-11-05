@@ -19,7 +19,7 @@
 
 {% block content %}
 
-    <div class="container-fluid">
+    <div class="container-fluid" >
         <div class="card shadow bg-dark mt-5">
             <div class="card-header " style="background-color: #f4623a;">
 
@@ -41,57 +41,20 @@
 
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold"><a href="{{ todo.get_absolute_url }}">{{ todo.name }}
-                                    <span class="badge bg-primary rounded-pill ml-1">{{ todo.jobs.all|length|translate_numbers }}</span></a>
+                                    <span class="badge bg-primary rounded-pill ml-1 " style="font-size: 14px;">{{ todo.jobs.all|length|translate_numbers }}</span></a>
                                 </div>
                                 {{ todo.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
                             </div>
 
                             <div class="mr-auto text-center my-auto">
                                 <p><span class="fw-bolder"
-                                         style="color:#f4623a; ">finished:</span><span class="ml-2 badge bg-success rounded-pill  "> {{ todo.get_jobs|length }}</span></p>
+                                         style="color:#f4623a; ">{% trans 'finished' %}:</span><span
+                                        class="ml-2 badge bg-success rounded-pill  mt-0"> {{ todo.get_jobs|length }}</span>
+                                </p>
                             </div>
-                            <form action="{% url 'apply_todo_actions' todo.id %}" method="post">
-                                {% csrf_token %}
-                                <div class="dropdown me-3">
-                                    <button class="btn btn-dark w-100 dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false"
-                                            style="background-color: #f4623a">
-                                        {% trans 'actions' %}
-                                    </button>
-
-                                    <ul class="dropdown-menu" onchange="this.form.submit();">
-                                        {% if todo.jobs.exists %}
-                                            <li>
-                                                <button class="dropdown-item"
-                                                        name="1">{% trans 'clear this list' %}</button>
-                                            </li>
-                                            {% if todo.get_jobs %}
-                                                <li>
-                                                    <button class="dropdown-item"
-                                                            name="2">{% trans 'delete finished jobs' %}</button>
-                                                </li>
-                                            {% endif %}
-                                            <li>
-                                                <button class="dropdown-item"
-                                                        name="3">{% trans 'make all jobs active' %}</button>
-                                            </li>
-                                            <li>
-                                                <button class="dropdown-item"
-                                                        name="4">{% trans 'check all jobs' %}</button>
-                                            </li>
 
 
-                                        {% else %}
-                                            <li class="text-center " disabled>
-                                                <p class="text-dark fw-bolder">{% trans 'List is empty' %}</p>
-                                            </li>
-
-                                        {% endif %}
-                                    </ul>
-                                </div>
-                            </form>
-
-                            <form action="{% url 'todo_delete' todo.id %}" method="post">
+                            <form action="{% url 'todo_delete' todo.id %}" method="post" class="ml-2">
                                 {% csrf_token %}
                                 <button type="submit" class="btn text-danger shadow  border-secondary rounded-pill "
                                         value>

@@ -3,7 +3,7 @@
 {% load static %}
 {% load i18n %}
 {% block links %}
-{#    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">#}
+    {#    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">#}
 {% endblock links %}
 
 {% block title %}Your baranjam dashboard{% endblock title %}
@@ -64,13 +64,13 @@
                                 <div class="card-body">
                                     {% for todo in todos %}
                                         {% if todo.complete_rate != None %}
-                                            <h4 class="small font-weight-bold">{{ todo.name }}<span
-                                                    class="float-right">{{ todo.complete_rate }}%</span></h4>
-                                            <div class="progress mb-4" dir="ltr">
+                                            <h4 class="small font-weight-bold text-muted float-start">{{ todo.name }}</h4>
+                                            <p class="text-muted font-weight-bold small">{{ todo.complete_rate }}%</p>
+                                            <div class="progress mb-4 mt-1" dir="ltr">
                                                 <div class="progress-bar bg-info " role="progressbar"
                                                      style="width:{{ todo.complete_rate }}%"
                                                      aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
-                                                     aria-valuemax="100" ></div>
+                                                     aria-valuemax="100"></div>
                                             </div>
 
                                         {% endif %}

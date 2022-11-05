@@ -46,7 +46,8 @@ class Job(models.Model):
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
     is_done = models.BooleanField(default=False)
-    user_datetime = models.DateTimeField(verbose_name=_("this job's due"), blank=True, null=True)
+    user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True)
+    user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_modified = models.DateTimeField(auto_now=True)
@@ -57,5 +58,3 @@ class Job(models.Model):
     def get_absolute_url(self):
         signed_pk = self.todo.signer.sign(self.todo.pk)
         return reverse('todo_list', args=[signed_pk])
-
-

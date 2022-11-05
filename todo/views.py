@@ -24,7 +24,7 @@ def all_user_todos(request):
 @require_POST
 def todo_apply_options_post_view(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
-    option_number = int(list(request.POST.keys())[1])
+    option_number = int(request.POST.get('action'))
 
     if option_number == 1:
         todo.jobs.all().delete()
@@ -49,21 +49,28 @@ def todo_apply_options_post_view(request, pk):
             job.save()
         messages.success(request, _('all jobs are now checked'))
 
-    return redirect('user_todos')
+    return redirect(todo.get_absolute_url())
 
 
 @login_required()
 def todo_list_main_page(request, signed_pk):
     todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
+
     if request.user == todo.user:
+
         user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
         user_filter = request.GET.get('filter')
 
-        if user_filter == 'all':
-            user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
-        else:
-            user_jobs = request.user.jobs.filter(todo=todo, is_done=bool(user_filter)).order_by('is_done',
-                                                                                                '-datetime_created')
+        if user_filter:
+
+            if user_filter == 'all':
+                user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
+            elif user_filter == 'actives':
+                user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('is_done',
+                                                                                        '-datetime_created')
+            elif user_filter == 'done':
+                user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('is_done',
+                                                                                       '-datetime_created')
 
         if request.method == 'POST':
             job = get_object_or_404(Job, pk=list(request.POST.keys())[1])
@@ -142,7 +149,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 
     def form_invalid(self, form):
         todo = self.get_todo_from_kwargs()
-        messages.error(self.request, _('error during save job. plz fill date and/or time fields '))
+        messages.error(self.request, _('plz fill the job title field'))
 
         return redirect(todo.get_absolute_url())
 
