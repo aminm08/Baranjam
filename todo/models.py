@@ -48,9 +48,8 @@ class Job(models.Model):
     is_done = models.BooleanField(default=False)
     user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True)
     user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)
-
+    user_done_date = models.DateField(null=True, blank=True)
     datetime_created = models.DateTimeField(auto_now_add=True)
-    datetime_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.text

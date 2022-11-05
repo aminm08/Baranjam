@@ -78,7 +78,7 @@
                         {% csrf_token %}
                         <input name="next" type="hidden" value="/"/>
 
-                        <select class="form-select" name="language" style="width: auto;" onchange="this.form.submit()">
+                        <select class="form-select bg-dark text-light" name="language" style="width: auto; " onchange="this.form.submit()">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
                             {% get_language_info_list for LANGUAGES as languages %}
@@ -125,7 +125,7 @@
     </div>
 </nav>
 {% if messages %}
-    <div class="container mt-3 bg-transparent">
+    <div class="container mt-3 bg-transparent text-dark fw-bold">
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
         {% endfor %}

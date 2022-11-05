@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from datetime import date
 
 from .forms import JobForm, TodoForm
 
@@ -39,6 +40,7 @@ def todo_apply_options_post_view(request, pk):
         finished_jobs = todo.get_jobs()
         for job in finished_jobs:
             job.is_done = False
+            job.user_done_date = None
             job.save()
         messages.success(request, _('all jobs are now active'))
 
@@ -46,6 +48,7 @@ def todo_apply_options_post_view(request, pk):
         unfinished_jobs = todo.get_jobs(finished=False)
         for job in unfinished_jobs:
             job.is_done = True
+            job.user_done_date = date.today()
             job.save()
         messages.success(request, _('all jobs are now checked'))
 
@@ -77,9 +80,11 @@ def todo_list_main_page(request, signed_pk):
 
             if not job.is_done:
                 job.is_done = True
+                job.user_done_date = date.today()  # for statistics
                 messages.success(request, _('job completed! congrats'))
             else:
                 job.is_done = False
+                job.user_done_date = None
             job.save()
 
         return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form': JobForm()})

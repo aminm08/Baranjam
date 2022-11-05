@@ -41,7 +41,7 @@
 
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold"><a href="{{ todo.get_absolute_url }}">{{ todo.name }}
-                                    <span class="badge bg-primary rounded-pill ml-1 " style="font-size: 14px;">{{ todo.jobs.all|length|translate_numbers }}</span></a>
+                                    <span class="badge bg-primary rounded-pill ml-1 " style="font-size: 14px;">{{ todo.jobs.all|length }}</span></a>
                                 </div>
                                 {{ todo.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
                             </div>
