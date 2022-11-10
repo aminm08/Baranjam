@@ -62,7 +62,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page"
-                           href="{% url 'add_group_list' %}">{% trans 'Group todos' %}</a>
+                           href="{% url 'group_lists' %}">{% trans 'Group todos' %}</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -86,10 +86,18 @@
                             {% for inv in inbox %}
                                 {% if not user in inv.group_list.users.all %}
 
-                                    <li>{{ inv.user_sender }}</li>
-                                    <form action="{% url 'accept_inv' inv.group_list.id %}" method="post">
+                                    <form action="{% url 'accept_inv' inv.group_list.id inv.id %}" method="post">
                                         {% csrf_token %}
-                                        <button type="submit" class="float-end btn btn-sm btn-success">submit</button>
+                                        <div class="ml-2">
+                                            <li>
+                                                {{ inv.user_sender }}
+                                                {{ inv.group_list.todo.name }}
+                                                <button type="submit" class="float-end btn btn-sm btn-success">submit
+                                                </button>
+                                            </li>
+                                            <hr>
+
+                                        </div>
                                     </form>
                                 {% endif %}
                             {% endfor %}

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
     <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+    {{ form.media }}
 {% endblock links %}
 
 
@@ -43,7 +44,7 @@
                                         <form action="{% url 'job_create' todo.id %}" class="form-inline d-flex"
                                               method="post">
                                             {% csrf_token %}
-                                            {{ form.media }}
+
 
                                             <div class="col">
                                                 {{ form.errors }}
