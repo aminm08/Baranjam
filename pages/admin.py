@@ -1,3 +1,12 @@
 from django.contrib import admin
+from .models import Contact, Invitation
 
-# Register your models here.
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ['full_name', 'phone_number', 'email']
+
+
+@admin.register(Invitation)
+class InvitationAdmin(admin.ModelAdmin):
+    list_display = ['user_sender', 'user_receiver', 'datetime_created']

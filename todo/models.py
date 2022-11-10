@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.core.signing import Signer
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import make_aware
+from datetime import datetime, date
 
 
 class Todo(models.Model):
@@ -13,9 +15,6 @@ class Todo(models.Model):
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_modified = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ('name', 'user')
 
     def __str__(self):
         return self.name
@@ -46,6 +45,7 @@ class Job(models.Model):
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
     is_done = models.BooleanField(default=False)
+    # is_important = models.BooleanField(default=False)
     user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True)
     user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)
     user_done_date = models.DateField(null=True, blank=True)
@@ -57,3 +57,10 @@ class Job(models.Model):
     def get_absolute_url(self):
         signed_pk = self.todo.signer.sign(self.todo.pk)
         return reverse('todo_list', args=[signed_pk])
+
+    def get_time_left(self):
+        if not self.is_done:
+            time_left = datetime.combine(self.user_date, self.user_time) - datetime.today()
+            return f'{time_left.days} ,{time_left.seconds // 3600}:{(time_left.seconds // 60) % 60}'
+
+

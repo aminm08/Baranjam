@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'persian_translating',
     'pages',
     'todo',
+    'group_lists',
 
 ]
 
@@ -82,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'pages.context_processors.inbox'
             ],
         },
     },

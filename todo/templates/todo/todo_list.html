@@ -5,7 +5,11 @@
 {% load jalali_tags %}
 {% load persian_trans_tags %}
 
-
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
+    <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+{% endblock links %}
 
 
 {% block title %}<<{{ todo.name }}>> your baranjam list{% endblock title %}
@@ -13,8 +17,6 @@
 
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
-    <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
 
     <section class="vh-100" style="font-family:'Helvetica Neue';">
         <div class=" container py-5 h-100">
@@ -27,7 +29,13 @@
                                 <i class="fas fa-check-square me-1"></i>
                                 {{ todo.name|capfirst }}
                             <p class="text-muted text-center">{% trans 'my todo-s' %}</p>
+                            <form action="{% url 'job_pdf' todo.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-transparent border-0 text-danger">
 
+                                    <i class="fa-solid fa-file-pdf " aria-hidden="true"></i>
+                                </button>
+                            </form>
 
                             <div class="pb-2">
                                 <div class="card">
@@ -143,7 +151,7 @@
                                                     {% endif %}
                                                 </form>
                                                 {% if user_job.is_done %}
-                                                    <a href="{{ todo.get_absolute_url }}/{{ user_job.id }}/"
+                                                    <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                        style="color:#000000"><p
                                                             class="lead fw-normal mb-0">
                                                         <strike>{{ user_job.text|truncatechars:30 }}</strike></a>
@@ -153,6 +161,10 @@
                                                        style="color:#000000"><p
                                                             class="lead fw-normal mb-0">{{ user_job.text|truncatechars:30 }}</p>
                                                     </a>
+
+
+
+
                                                 {% endif %}
 
 
@@ -188,6 +200,7 @@
                                                             title="Delete todo"><i
                                                             class="fa fa-trash-alt"></i></button>
                                                 </form>
+
 
                                             </div>
                                         </li>

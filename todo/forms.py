@@ -34,3 +34,5 @@ class JobForm(forms.ModelForm):
         self.fields['user_date'] = JalaliDateField(label=_('Due date time'), widget=AdminJalaliDateWidget,
                                                    required=False)
         self.fields['text'].required = True
+
+

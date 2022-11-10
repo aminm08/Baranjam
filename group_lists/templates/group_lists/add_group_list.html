@@ -1,0 +1,129 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+    <style>
+        .result-card {
+            width: 50px;
+            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.25);
+            transition: .5s;
+            border-radius: 7px;
+            padding: 15px 15px;
+            margin: auto;
+
+        }
+
+        .not-visible {
+            display: none;
+        }
+
+        .image-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+    </style>
+    <div class="container mt-5">
+        {% for user_group in user_groups %}
+            {{ user_group.todo }}
+            {{ user_group.users }}
+        {% endfor %}
+
+        <form method="post" id="search_form" class="mt-3">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {{ form.errors }}
+            <label for="todo">Todo</label>
+            <select name="todo" id="todo" class="select-input">
+                {% for todo in user.todos.all %}
+                    <option value="{{ todo.id }}">{{ todo.name }}</option>
+                {% endfor %}
+
+            </select>
+            <br>
+            <label for="search_input">search:</label>
+            <input type="text" name="users" class="form-control-sm mt-2" style="margin: auto;" id="search_input">
+
+            <button type="submit" class="btn btn-success">submit</button>
+        </form>
+    </div>
+
+    <div id="result_box" class="result-card not-visible">
+
+    </div>
+
+{% endblock content %}
+
+{% block script %}
+    <script>
+        const SendSearchData = (series) => {
+
+            $.ajax({
+                'type': 'POST',
+                'url': '{% url 's_view'%}',
+                'data': {
+                    'csrfmiddlewaretoken': csrf,
+                    'series': series,
+                },
+                success: (res) => {
+                    const data = res.data;
+
+                    if (Array.isArray(data)) {
+                        result_box.innerHTML = '';
+
+                        data.forEach(series => {
+                            result_box.innerHTML += `
+                            <div class="row mt-2 mb-2">
+                                <div class="col-2">
+                                    <img src="${series.image}" class="image-circle">
+                                </div>
+                                <div class="col-10 mt-2">
+                                    <h5>${series.username}</h5>
+                                </div>
+                            </div>
+
+                            `
+                        });
+                    } else {
+
+                        if (search_input.value.lenght > 0) {
+                            result_box.innerHTML = `<b>${data}</b>`
+
+                        } else {
+
+                            result_box.classList.add('not-visible');
+                        }
+                    }
+                },
+
+                error: (err) => {
+                    console.log(err);
+                }
+
+
+            })
+
+        }
+
+
+        const form = document.getElementById('search_form');
+        const search_input = document.getElementById('search_input');
+        const result_box = document.getElementById('result_box');
+        const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
+
+
+        search_input.addEventListener('keyup', e => {
+
+
+            if (result_box.classList.contains('not-visible')) {
+                result_box.classList.remove('not-visible');
+            }
+            SendSearchData(e.target.value);
+        })
+
+
+    </script>
+
+{% endblock script %}

@@ -60,6 +60,10 @@
                         <a class="nav-link active" aria-current="page"
                            href="{% url 'profile' %}">{% trans 'Profile' %}</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page"
+                           href="{% url 'add_group_list' %}">{% trans 'Group todos' %}</a>
+                    </li>
                 {% endif %}
                 <li class="nav-item">
                     <a class="nav-link " aria-current="page"
@@ -71,6 +75,27 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item dropdown me-3 align-self-center">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            <i class="fas fa-solid fa-inbox text-white " style="font-size: 18px;"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for inv in inbox %}
+                                {% if not user in inv.group_list.users.all %}
+
+                                    <li>{{ inv.user_sender }}</li>
+                                    <form action="{% url 'accept_inv' inv.group_list.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="float-end btn btn-sm btn-success">submit</button>
+                                    </form>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
 
 
                 <li class="nav-item no-arrow mr-3 align-self-center">
@@ -78,7 +103,8 @@
                         {% csrf_token %}
                         <input name="next" type="hidden" value="/"/>
 
-                        <select class="form-select bg-dark text-light" name="language" style="width: auto; " onchange="this.form.submit()">
+                        <select class="form-select bg-dark text-light" name="language" style="width: auto; "
+                                onchange="this.form.submit()">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
                             {% get_language_info_list for LANGUAGES as languages %}
@@ -147,9 +173,10 @@
 
 
 <script src="{% static 'js/script.js' %}"></script>
-
+<script src="{% static 'js/jquery.min.js' %}"></script>
 
 {% block script %}
+
 
 
 {% endblock script %}

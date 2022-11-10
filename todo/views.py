@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views import generic
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
@@ -8,10 +9,12 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.http import FileResponse, HttpResponse, JsonResponse
 from datetime import date
 
+from reportlab.pdfgen import canvas
 from .forms import JobForm, TodoForm
-
+import io, json
 from .models import Todo, Job
 
 
@@ -98,6 +101,7 @@ def job_update_view(request, signed_pk, job_id):
     if todo.user == request.user:
 
         job = get_object_or_404(Job, pk=job_id)
+
         form = JobForm(instance=job)
 
         if request.method == 'POST':
@@ -112,7 +116,7 @@ def job_update_view(request, signed_pk, job_id):
                 job_obj.save()
                 messages.success(request, _('your job updated successfully'))
 
-        return render(request, 'todo/update_job.html', {'form': form, 'todo': todo})
+        return render(request, 'todo/update_job.html', {'form': form, 'todo': todo, 'job': job})
     else:
         raise PermissionDenied
 
@@ -182,3 +186,24 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.request.user == self.get_object().user
+
+
+@login_required()
+@require_POST
+def some_view(request, todo_pk):
+    todo = get_object_or_404(Todo, pk=todo_pk)
+    if request.user == todo.user:
+        buffer = io.BytesIO()
+
+        # p = canvas.Canvas(buffer)
+        # p.drawString(1,1, 'hi')
+        # # for i, job in enumerate(todo.jobs.all()):
+        # #     p.drawString(1, i, str(job.text))
+
+        # p.showPage()
+        # p.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+    else:
+        raise PermissionDenied
+

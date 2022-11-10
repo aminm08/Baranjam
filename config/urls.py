@@ -25,8 +25,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('', include('pages.urls')),
     path('todo/', include('todo.urls')),
+    path('group_lists/', include('group_lists.urls')),
     path('rosetta/', include('rosetta.urls')),
-
 
 ]
 if settings.DEBUG:
