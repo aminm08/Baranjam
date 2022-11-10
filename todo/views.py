@@ -64,7 +64,7 @@ def todo_list_main_page(request, signed_pk):
 
     if request.user == todo.user or request.user in group_list_users:
 
-        user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
+        user_jobs = Job.objects.filter(todo=todo).order_by('is_done', '-datetime_created')
         user_filter = request.GET.get('filter')
 
         if user_filter:
@@ -78,7 +78,7 @@ def todo_list_main_page(request, signed_pk):
                 user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('is_done',
                                                                                        '-datetime_created')
 
-        if request.method == 'POST':
+        if request.method == 'POST' and request.user == todo.user:
             job = get_object_or_404(Job, pk=list(request.POST.keys())[1])
 
             if not job.is_done:
