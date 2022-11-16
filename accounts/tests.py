@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 
-class AuthenticationPagesTest(TestCase):
+class AccountsPagesTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.email = 'myusername@user.com'
@@ -29,10 +29,21 @@ class AuthenticationPagesTest(TestCase):
         response = self.client.get('/accounts/signup/')
         self.assertEqual(response.status_code, 200)
 
-    def test_signup_form(self):
+    def test_signup_user(self):
         self.assertEqual(get_user_model().objects.all().count(), 1)
         self.assertEqual(get_user_model().objects.all()[0].email, self.email)
         self.assertEqual(get_user_model().objects.all()[0].check_password(self.password), True)
+
+    def test_signup_form(self):
+        response = self.client.post(reverse('account_signup'),
+                                    {'email': 'hello@hello.com', 'password1': 'hellopass123',
+                                     'password2': 'hellopass123'},
+                                    follow=True)
+
+        self.assertEqual(get_user_model().objects.all().count(), 2)
+        self.assertEqual(get_user_model().objects.last().email, 'hello@hello.com')
+        self.assertEqual(get_user_model().objects.last().check_password('hellopass123'), True)
+        get_user_model().objects.last().delete()
 
     # login
 
@@ -74,3 +85,15 @@ class AuthenticationPagesTest(TestCase):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get('/accounts/profile/')
         self.assertEqual(response.status_code, 200)
+
+    def test_profile_form(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(
+
+            reverse('profile'),
+            {'username': 'amin', 'first_name': 'mohammad', 'last_name': 'forouzan'},
+            follow=True
+        )
+        self.assertEqual(get_user_model().objects.last().first_name, 'mohammad')
+        self.assertEqual(get_user_model().objects.last().last_name, 'forouzan')
+        self.assertEqual(get_user_model().objects.last().username, 'amin')

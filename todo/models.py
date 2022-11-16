@@ -19,6 +19,10 @@ class Todo(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self, *args, **kwargs):
+        self.group_todo.all().delete()
+        super(Todo, self).delete(*args, **kwargs)
+
     def get_absolute_url(self):
         signed_pk = self.signer.sign(self.pk)
         return reverse('todo_list', args=[str(signed_pk)])
@@ -36,8 +40,10 @@ class Todo(models.Model):
             return None
 
     def get_jobs(self, finished=True):
-
         return self.jobs.all().filter(is_done=finished)
+
+    def is_group_list(self):
+        return self.group_todo.exists()
 
 
 class Job(models.Model):
@@ -63,6 +69,4 @@ class Job(models.Model):
             time_left = datetime.combine(self.user_date, self.user_time) - datetime.today()
             return f'{time_left.days} ,{time_left.seconds // 3600}:{(time_left.seconds // 60) % 60}'
         else:
-            return ''
-
-
+            return 'w'

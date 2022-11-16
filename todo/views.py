@@ -115,6 +115,7 @@ def job_update_view(request, signed_pk, job_id):
 
                 job_obj.save()
                 messages.success(request, _('your job updated successfully'))
+                return redirect('job_update', todo.get_signed_pk(), job.id)
 
         return render(request, 'todo/update_job.html', {'form': form, 'todo': todo, 'job': job})
     else:
@@ -186,6 +187,15 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.request.user == self.get_object().user
+
+
+def todo_list_detail_and_settings(request, pk):
+    todo = get_object_or_404(Todo, pk=pk)
+
+    if request.user == todo.user:
+        return render(request, 'todo/todo_settings.html', {'todo': todo})
+    else:
+        raise PermissionDenied
 
 
 @login_required()

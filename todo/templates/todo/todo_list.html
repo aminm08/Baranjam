@@ -30,7 +30,7 @@
                                 <i class="fas fa-check-square me-1"></i>
                                 {{ todo.name|capfirst }}
                                 {% if user != todo.user %}
-                                    <p class="text-muted text-center">{{ todo.user }}</p>
+                                    <p class="text-muted text-center">owner: {{ todo.user }}</p>
                                 {% else %}
                                     <p class="text-muted text-center">{% trans 'my todo-s' %}</p>
 
@@ -48,6 +48,7 @@
                                                 <form action="{% url 'job_create' todo.id %}" class="form-inline d-flex"
                                                       method="post">
                                                     {% csrf_token %}
+                                                    {{ form.media }}
 
 
                                                     <div class="col">
@@ -62,7 +63,7 @@
 
                                                         date:
                                                         <input type="text" name="user_date"
-                                                               class="jalali_date-date form-control border-dark mr-3"
+                                                               class="jalali_date-date form-control border-dark mr-3 hasDatepicker"
                                                                size="10"
                                                                id="id_user_datetime_0" placeholder="YYYY-MM-DD">
 
@@ -70,7 +71,7 @@
                                                         time:
                                                         <input type="time" name="user_time"
                                                                class="vTimeField form-control border-dark"
-                                                               id="id_user_datetime_1">
+                                                               id="id_user_datetime_1" timeformat="24h">
 
 
                                                     </div>
@@ -148,22 +149,27 @@
 
                                         <li class="list-group-item d-flex justify-content-between align-items-center  border-2">
                                             <div class="form-check">
-                                                <form method="post">
-                                                    {% csrf_token %}
-                                                    {% if user_job.is_done %}
-                                                        <input class="form-check-input me-0" type="checkbox" value=""
-                                                               id="checkboxuser"
-                                                               aria-label="..."
-                                                               onchange="this.form.submit();"
-                                                               checked/>
-                                                        <input type="hidden" name="{{ user_job.id }}">
-                                                    {% else %}
-                                                        <input class="form-check-input me-0" type="checkbox" value=""
-                                                               id="checkboxuser"
-                                                               aria-label="..." onchange="this.form.submit();"
-                                                               name="{{ user_job.id }}"/>
-                                                    {% endif %}
-                                                </form>
+                                                {% if user == todo.user %}
+
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        {% if user_job.is_done %}
+                                                            <input class="form-check-input me-0" type="checkbox"
+                                                                   value=""
+                                                                   id="checkboxuser"
+                                                                   aria-label="..."
+                                                                   onchange="this.form.submit();"
+                                                                   checked/>
+                                                            <input type="hidden" name="{{ user_job.id }}">
+                                                        {% else %}
+                                                            <input class="form-check-input me-0" type="checkbox"
+                                                                   value=""
+                                                                   id="checkboxuser"
+                                                                   aria-label="..." onchange="this.form.submit();"
+                                                                   name="{{ user_job.id }}"/>
+                                                        {% endif %}
+                                                    </form>
+                                                {% endif %}
                                                 {% if user_job.is_done %}
                                                     <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                        style="color:#000000"><p

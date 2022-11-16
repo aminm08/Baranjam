@@ -3,197 +3,76 @@
 {% load i18n %}
 {% load jalali_tags %}
 {% load persian_trans_tags %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+{% endblock links %}
+
 
 {% block content %}
-    <style>
-        .result-card {
-            width: 40%;
-            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.25);
-            transition: .5s;
-            border-radius: 7px;
-            padding: 15px 15px;
-            margin: auto;
+    {% get_current_language as LANGUAGE %}
 
-        }
-
-        .not-visible {
-            display: none;
-        }
-
-        .image-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-
-    </style>
     <div class="container-fluid">
-    <div class="card shadow bg-dark mt-5">
-    <div class="card-header " style="background-color: #f4623a;">
-
-        <a href="" class="float-start btn btn-dark text-left" data-bs-toggle="modal"
-           data-bs-target="#exampleModal">{% trans 'Add todo-list' %}</a>
-        {% if todos %}
-
-            <h2 class=" text-white text-right">{% trans 'Your todo lists' %}</h2>
-        {% else %}
-            <h2 class=" text-white text-right">{% trans 'Add todo-list to start' %}</h2>
-        {% endif %}
-    </div>
-    <div class="card-body bg-dark">
+        <div class="card shadow bg-dark mt-5">
+            <div class="card-header " style="background-color: #f4623a;">
 
 
-        <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
-            {% for group in groups %}
-                <li class="list-group-item d-flex justify-content-between align-items-start">
+                <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group lists' %}</h2>
 
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold"><a href="{{ group.todo.get_absolute_url }}">{{ group.todo }}</a>
+            </div>
+            <div class="card-body bg-dark">
 
-                        </div>
+                {% if groups %}
 
-                    </div>
+                    <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
+                        {% for group in groups %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold"><a
+                                            href="{{ group.todo.get_absolute_url }}">{{ group.todo }}</a>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="mr-auto text-center my-auto">
+                                    <p><span class="fw-bolder"
+                                             style="color:#f4623a; ">{% trans 'Members' %}:</span><span
+                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.users.all|length }}</span>
+                                    </p>
+                                </div>
 
 
-                    <div class="mr-auto text-center my-auto">
-                        {% for user in group.users.all %}
-                            <p>{{ user.username }}</p>
+                                <p><span class="text-success fw-bolder">{% trans 'owner' %}</span>:
+                                    {% if group.todo.user.profile_picture %}
+                                        <img src="{{ group.todo.user.profile_picture.url }}" alt="user_profile"
+                                             width="30px"
+                                             height="30px" class="ml-1">
+                                    {% else %}
+                                        <img src="{% static 'img/blank_user.png' %}" alt="blank_profile"
+                                             width="30px"
+                                             height="30px" class="ml-1">
+                                    {% endif %} {{ group.todo.user.username }}</p>
+
+
+                            </li>
+
+
+
+
                         {% endfor %}
+                    </ol>
+                {% else %}
+                    <p class="text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'you have no shared group yet' %}</p>
 
-                    </div>
-
-                    {% if user == group.todo.user %}
-                        <form action="{% url 'delete_group_list' group.id %}" method="post" class="ml-2">
-                            {% csrf_token %}
-                            <button type="submit" class="btn text-danger shadow  border-secondary rounded-pill "
-                                    value>
-
-                                <span class="fa fa-solid fa-trash px-3 "></span>
-                            </button>
-                        </form>
-
-                    {% endif %}
-                </li>
-
-
-
-
-            {% endfor %}
-        </ol>
-    </div>
-
-    <!-- Modal add-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="text ml-lg-3" id="exampleModalLabel"
-                        style="color:#f4623a;">{% trans 'Add a new list' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <div class="d-flex justify-content-end">
-
-                        <form action="{% url 'add_group_list' %}" class="form-inline" method="post"
-                              id="search_form">
-                            {% csrf_token %}
-                            <select name="todo" id="todo" class="select-input me-3">
-                                {% for todo in user.todos.all %}
-                                    <option value="{{ todo.id }}">{{ todo.name }}</option>
-                                {% endfor %}
-
-                            </select>
-                            <input type="text" name="users" class="form-control form-text"
-                                   placeholder="{% trans 'choose user' %}" id="search_input" required>
-                            <div id="result_box" class="result-card not-visible">
-
-                            </div>
-                            <button type="submit"
-                                    class="btn  ml-3 mr-0"
-                                    style="background-color: #f4623a;">{% trans 'Submit' %}</button>
-                        </form>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger mr-0"
-                            data-bs-dismiss="modal">{% trans 'Close' %}</button>
-
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
+    {% include 'footer.html' %}
 
 {% endblock content %}
-
-{% block script %}
-    <script>
-        const SendSearchData = (series) => {
-
-            $.ajax({
-                'type': 'POST',
-                'url': '{% url 's_view'%}',
-                'data': {
-                    'csrfmiddlewaretoken': csrf,
-                    'series': series,
-                },
-                success: (res) => {
-                    const data = res.data;
-
-                    if (Array.isArray(data)) {
-                        result_box.innerHTML = '';
-
-                        data.forEach(series => {
-
-
-                            result_box.innerHTML += `
-
-                                    <img src="${series.image}" class="image-circle">
-                                    ${series.username}<br> `
-
-
-                        });
-                    } else {
-
-                        if (search_input.value.lenght > 0) {
-                            result_box.innerHTML = `<b>${data}</b>`
-
-                        } else {
-
-                            result_box.classList.add('not-visible');
-                        }
-                    }
-                },
-
-                error: (err) => {
-                    console.log(err);
-                }
-
-
-            })
-
-        }
-
-
-        const form = document.getElementById('search_form');
-        const search_input = document.getElementById('search_input');
-        const result_box = document.getElementById('result_box');
-        const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
-
-
-        search_input.addEventListener('keyup', e => {
-
-
-            if (result_box.classList.contains('not-visible')) {
-                result_box.classList.remove('not-visible');
-            }
-            SendSearchData(e.target.value);
-        })
-
-
-    </script>
-
-{% endblock script %}

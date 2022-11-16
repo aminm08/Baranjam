@@ -80,27 +80,31 @@
                     <li class="nav-item dropdown me-3 align-self-center">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            <i class="fas fa-solid fa-inbox text-white " style="font-size: 18px;"></i>
+                            <i class="fas fa-solid fa-inbox text-white " style="font-size: 18px;"></i><span
+                                class="badge badge-info rounded-circle">{{ inbox|length }}</span>
                         </a>
                         <ul class="dropdown-menu">
-                            {% for inv in inbox %}
-                                {% if not user in inv.group_list.users.all %}
+                            {% if inbox %}
 
+                                {% for inv in inbox %}
                                     <form action="{% url 'accept_inv' inv.group_list.id inv.id %}" method="post">
                                         {% csrf_token %}
                                         <div class="ml-2">
                                             <li>
-                                                {{ inv.user_sender }}
-                                                {{ inv.group_list.todo.name }}
-                                                <button type="submit" class="float-end btn btn-sm btn-success">submit
+                                                {% trans 'from' %}: {{ inv.user_sender }}<br>
+                                                {% trans 'group-list' %}: {{ inv.group_list.todo.name }}
+                                                <button type="submit" class="float-end btn btn-sm btn-success">{% trans 'join' %}
                                                 </button>
                                             </li>
-                                            <hr>
+
 
                                         </div>
                                     </form>
-                                {% endif %}
-                            {% endfor %}
+
+                                {% endfor %}
+                            {% else %}
+                                {% trans 'nothing here' %}
+                            {% endif %}
                         </ul>
                     </li>
                 {% endif %}
@@ -137,10 +141,12 @@
                             <a href="{% url 'profile' %}"><img class="rounded-circle mr-2"
                                                                src="{{ user.profile_picture.url }}" width="50"></a>
 
+
                         {% else %}
                             <a href="{% url 'profile' %}">
                                 <img class="rounded-circle mr-2 " src="{% static 'img/blank_user.png' %}"
                                      width="50"></a>
+
                         {% endif %}
                         <a href="{% url 'account_logout' %}" class="btn btn-outline-danger">{% trans 'Logout' %}</a>
 

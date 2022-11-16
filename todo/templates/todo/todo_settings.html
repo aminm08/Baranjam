@@ -1,0 +1,84 @@
+{% extends '_base.html' %}
+
+
+{% load static %}
+{% load i18n %}
+
+
+{% block title %}{{ todo.name }}{% endblock title %}
+
+
+{% block content %}
+    {% get_current_language as LANGUAGE %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 ml-auto mr-auto mt-lg-5">
+
+                <div class="card shadow">
+
+                    <p class="text-center fw-bolder mt-2"
+                       style="font-size: 18px;">{{ todo.name }} {% trans 'settings' %}</p>
+                    <p class="text-center"><span class="text-success fw-bolder ml-2">{% trans 'owner' %}
+
+                    </span>:
+                        {% if todo.user.profile_pic %}
+
+                            <img src="{{ todo.user.profile_pic.url }}" alt="todo user profile" width="40" height="40">
+                        {% else %}
+                            <img src="{% static 'img/blank_user.png' %}" alt="blank user profile" width="40"
+                                 height="40">
+                        {% endif %} {{ todo.user }}</p>
+
+
+                    <div class="card-body" {% if LANGUAGE == 'fa' %} dir="rtl" {% else %} dir="ltr" {% endif %}>
+
+                        {% if todo.group_todo.exists %}
+                            <h5>{% trans 'group members' %}:</h5>
+                            <div class="mt-3">
+
+                                {% for group_user in todo.group_todo.last.users.all %}
+                                    <p>
+
+                                        {% if group_user.profile_pic %}
+                                            <img src="{{ group_user.profile_pic.url }}" alt="user profile"
+                                                 width="40"
+                                                 height="40">
+                                        {% else %}
+                                            <img src="{% static 'img/blank_user.png' %}" alt="blank user profile"
+                                                 width="40" height="40">
+                                        {% endif %} {{ group_user.username }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+
+
+                        <h5 class="mt-lg-5">{% trans 'share your list with other users and create a group-level list' %}: </h5>
+                        <div class="mt-3">
+
+                            <form action="{% url 'add_group_list' %}" dir="ltr"
+                                  class="{% if LANGUAGE == 'fa' %}float-end {% endif %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="todo" value="{{ todo.id }}">
+                                <input type="text" name="users" class="form-control-sm me-2"
+                                       placeholder="{% trans 'enter users' %}">
+
+                                <button type="submit" class="btn btn-success">{% trans 'Invite users' %}</button>
+
+
+                            </form>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock content %}

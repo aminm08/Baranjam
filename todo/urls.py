@@ -9,6 +9,7 @@ urlpatterns = [
             name='job_update'),
     path('', views.all_user_todos, name='user_todos'),
     path('add/', views.AddTodo.as_view(), name='add_todo'),
+    path('settings/<int:pk>/', views.todo_list_detail_and_settings, name='todo_settings'),
     path('job/create/<int:todo_id>/', views.CreateJobView.as_view(), name='job_create'),
     path('job/delete/<int:pk>/', views.JobDeleteView.as_view(), name='job_delete'),
     path('delete/<int:pk>/', views.TodoDeleteView.as_view(), name='todo_delete'),
@@ -16,6 +17,5 @@ urlpatterns = [
 
     # pdf
     path('job/get_pdf/<int:todo_pk>/', views.some_view, name='job_pdf'),
-
 
 ]
