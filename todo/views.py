@@ -189,6 +189,7 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         return self.request.user == self.get_object().user
 
 
+@login_required()
 def todo_list_detail_and_settings(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
 
@@ -196,6 +197,18 @@ def todo_list_detail_and_settings(request, pk):
         return render(request, 'todo/todo_settings.html', {'todo': todo})
     else:
         raise PermissionDenied
+
+
+@login_required()
+@require_POST
+def todo_update_list_name(request, pk):
+    todo = get_object_or_404(Todo, pk=pk)
+    if request.user == todo.user:
+        new_name = str(request.POST['name'])
+        todo.name = new_name
+        todo.save()
+        messages.success(request, _('your list name successfully updated'))
+    return redirect('todo_settings', todo.id)
 
 
 @login_required()

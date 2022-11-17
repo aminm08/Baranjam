@@ -15,9 +15,26 @@
             <div class="col-md-10 ml-auto mr-auto mt-lg-5">
 
                 <div class="card shadow">
+                    <div id="setting_title">
 
-                    <p class="text-center fw-bolder mt-2"
-                       style="font-size: 18px;">{{ todo.name }} {% trans 'settings' %}</p>
+                        <p class="text-center fw-bolder mt-2"
+                           style="font-size: 18px;" id="p_title">{{ todo.name }} {% trans 'settings' %}
+                            <button class="bg-transparent border-0 text-info" id="edit_button"><i class="fas fa-edit"
+                                                                                                  id="icon"></i>
+                            </button>
+                        </p>
+                    </div>
+                    <div style="display: none;" id="update_name_form" class="mr-auto ml-auto mt-2">
+
+                        <p class="mt-2" style="display: None;">
+                        <form action="{% url 'update_todo_name' todo.id %}" method="post" class="ml-auto mr-auto">
+                            {% csrf_token %}
+                            <input type="text" name="name" class="form-control-sm" value="{{ todo.name }}">
+                            <button type="submit" id="update_button"><i class="fa fa-sync-alt"></i></button>
+
+                        </form>
+                        </p>
+                    </div>
                     <p class="text-center"><span class="text-success fw-bolder ml-2">{% trans 'owner' %}
 
                     </span>:
@@ -37,16 +54,27 @@
                             <div class="mt-3">
 
                                 {% for group_user in todo.group_todo.last.users.all %}
-                                    <p>
 
-                                        {% if group_user.profile_pic %}
-                                            <img src="{{ group_user.profile_pic.url }}" alt="user profile"
-                                                 width="40"
-                                                 height="40">
-                                        {% else %}
-                                            <img src="{% static 'img/blank_user.png' %}" alt="blank user profile"
-                                                 width="40" height="40">
-                                        {% endif %} {{ group_user.username }}</p>
+                                    <p>
+                                        <form action="{% url 'delete_group_user' todo.id %}" method="post">
+                                            {% csrf_token %}
+                                            {% if group_user.profile_pic %}
+                                                <img src="{{ group_user.profile_pic.url }}" alt="user profile"
+                                                     width="40"
+                                                     height="40">
+                                            {% else %}
+                                                <img src="{% static 'img/blank_user.png' %}" alt="blank user profile"
+                                                     width="40" height="40">
+                                            {% endif %} {{ group_user.username }}
+                                            {% if group_user != todo.user %}
+                                                <button type="submit" class="bg-transparent border-0"
+                                                        name="{{ group_user.id }}"><i
+                                                        class="fa fa-trash mr-1 text-danger"></i>
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </p>
+
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -55,7 +83,6 @@
 
                         <h5 class="mt-lg-5">{% trans 'share your list with other users and create a group-level list' %}: </h5>
                         <div class="mt-3">
-
                             <form action="{% url 'add_group_list' %}" dir="ltr"
                                   class="{% if LANGUAGE == 'fa' %}float-end {% endif %}" method="post">
                                 {% csrf_token %}
@@ -64,8 +91,6 @@
                                        placeholder="{% trans 'enter users' %}">
 
                                 <button type="submit" class="btn btn-success">{% trans 'Invite users' %}</button>
-
-
                             </form>
                         </div>
 
@@ -82,3 +107,27 @@
 
 
 {% endblock content %}
+
+
+{% block script %}
+    <script>
+        update_name_form = document.getElementById('update_name_form');
+        title = document.getElementById('setting_title');
+        button_edit = document.getElementById('edit_button');
+        button_update_name = document.getElementById('update_button');
+
+
+        button_edit.addEventListener('click', function () {
+            title.setAttribute('style', 'display:none;');
+            update_name_form.removeAttribute('style');
+        });
+        button_update_name.addEventListener('click', function () {
+            title.style.removeProperty();
+            update_name_form.setAttribute('style', 'display:none;');
+
+        })
+
+
+    </script>
+
+{% endblock script %}

@@ -76,6 +76,7 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
+                    {% get_current_language as LANGUAGE %}
 
                     <li class="nav-item dropdown me-3 align-self-center">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -83,7 +84,7 @@
                             <i class="fas fa-solid fa-inbox text-white " style="font-size: 18px;"></i><span
                                 class="badge badge-info rounded-circle">{{ inbox|length }}</span>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu text-center" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif %}>
                             {% if inbox %}
 
                                 {% for inv in inbox %}

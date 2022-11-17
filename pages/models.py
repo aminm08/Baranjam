@@ -16,7 +16,7 @@ class Contact(models.Model):
 class Invitation(models.Model):
     user_sender = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='sender')
     user_receiver = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='receiver')
-    group_list = models.ForeignKey(GroupList, on_delete=models.CASCADE)
+    group_list = models.ForeignKey(GroupList, on_delete=models.CASCADE, related_name='invitations')
     datetime_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

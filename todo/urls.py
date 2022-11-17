@@ -8,6 +8,7 @@ urlpatterns = [
     re_path(r'todo_list/(?P<signed_pk>[0-9]+/[A-Za-z0-9_=-]+)/(?P<job_id>[0-9]+)/$', views.job_update_view,
             name='job_update'),
     path('', views.all_user_todos, name='user_todos'),
+    path('update_name/<int:pk>/', views.todo_update_list_name, name='update_todo_name'),
     path('add/', views.AddTodo.as_view(), name='add_todo'),
     path('settings/<int:pk>/', views.todo_list_detail_and_settings, name='todo_settings'),
     path('job/create/<int:todo_id>/', views.CreateJobView.as_view(), name='job_create'),

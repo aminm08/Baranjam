@@ -18,6 +18,18 @@ from .models import GroupList
 @login_required()
 def user_group_lists(request):
     groups = [i for i in GroupList.objects.filter(users__in=[request.user]) if request.user != i.todo.user]
+    if request.method == 'POST':
+        try:
+            group = get_object_or_404(GroupList, pk=list(request.POST.keys())[1])
+            if request.user in group.users.all():
+                group.users.remove(request.user)
+                messages.success(request, _('you successfully left the group'))
+        except:
+
+            messages.error(request, _('error while leaving group'))
+
+        return redirect('group_lists')
+
     return render(request, 'group_lists/add_group_list.html', {'groups': groups})
 
 
@@ -30,17 +42,17 @@ def add_group_list_and_send_invitation(request):
     if request.user == todo.user:
         group_list = todo.group_todo.all()
 
-        if not todo.is_group_list() and request.user.username not in users:
+        if not todo.is_group_list():
             new_list = GroupList.objects.create(todo=todo)
             new_list.users.add(request.user)
             send_group_list_invitation(request, users, new_list)
             messages.success(request, _('group-list successfully created & invitation sent for users'))
 
-        elif group_list.exists():
+        else:
             send_group_list_invitation(request, users, group_list[0])
             messages.success(request, _('invitations sent successfully'))
 
-        return redirect('user_todos')
+        return redirect('todo_settings', todo.id)
     else:
         raise PermissionDenied
 
@@ -48,8 +60,11 @@ def add_group_list_and_send_invitation(request):
 def send_group_list_invitation(request, users, group_list):
     for user in users:
         user = get_object_or_404(get_user_model(), username=user)
-        if user not in group_list.users.all():
-            Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
+
+        if not group_list.invitations.filter(user_receiver=user, user_sender=request.user).exists():
+
+            if user not in group_list.users.all() and user != group_list.todo.user:
+                Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
 
 
 @login_required()
@@ -64,6 +79,18 @@ def accept_invite(request, group_id, inv_id):
     return redirect('group_lists')
 
 
+@login_required()
+@require_POST
+def remove_user_from_list(request, todo_id):
+    todo = get_object_or_404(Todo, pk=todo_id)
+    if todo.is_group_list() and request.user == todo.user:
+        user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
+        if user != todo.user:
+            todo.group_todo.last().users.remove(user)
+            messages.success(request, _('user successfully removed from group list'))
+        else:
+            messages.error(request, _('you cant delete the owner user'))
+    return redirect('todo_settings', todo.id)
 # def search_view(request):
 #     if request.method == 'POST':
 #         series = str(request.POST['series'])
