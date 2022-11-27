@@ -18,7 +18,11 @@
                     <div id="setting_title">
 
                         <p class="text-center fw-bolder mt-2"
-                           style="font-size: 18px;" id="p_title">{{ todo.name }} {% trans 'settings' %}
+                           style="font-size: 18px;" id="p_title">{% if LANGUAGE != 'fa' %}
+                            ( {{ todo.name }} ) {% trans 'settings' %}
+                        {% else %}
+                            {% trans 'settings' %} ( {{ todo.name }} )
+                        {% endif %}
                             <button class="bg-transparent border-0 text-info" id="edit_button"><i class="fas fa-edit"
                                                                                                   id="icon"></i>
                             </button>
@@ -56,23 +60,23 @@
                                 {% for group_user in todo.group_todo.last.users.all %}
 
                                     <p>
-                                        <form action="{% url 'delete_group_user' todo.id %}" method="post">
-                                            {% csrf_token %}
-                                            {% if group_user.profile_pic %}
-                                                <img src="{{ group_user.profile_pic.url }}" alt="user profile"
-                                                     width="40"
-                                                     height="40">
-                                            {% else %}
-                                                <img src="{% static 'img/blank_user.png' %}" alt="blank user profile"
-                                                     width="40" height="40">
-                                            {% endif %} {{ group_user.username }}
-                                            {% if group_user != todo.user %}
-                                                <button type="submit" class="bg-transparent border-0"
-                                                        name="{{ group_user.id }}"><i
-                                                        class="fa fa-trash mr-1 text-danger"></i>
-                                                </button>
-                                            {% endif %}
-                                        </form>
+                                    <form action="{% url 'delete_group_user' todo.id %}" method="post">
+                                        {% csrf_token %}
+                                        {% if group_user.profile_pic %}
+                                            <img src="{{ group_user.profile_pic.url }}" alt="user profile"
+                                                 width="40"
+                                                 height="40">
+                                        {% else %}
+                                            <img src="{% static 'img/blank_user.png' %}" alt="blank user profile"
+                                                 width="40" height="40">
+                                        {% endif %} {{ group_user.username }}
+                                        {% if group_user != todo.user %}
+                                            <button type="submit" class="bg-transparent border-0"
+                                                    name="{{ group_user.id }}"><i
+                                                    class="fa fa-trash mr-1 text-danger"></i>
+                                            </button>
+                                        {% endif %}
+                                    </form>
                                     </p>
 
                                 {% endfor %}

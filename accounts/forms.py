@@ -15,8 +15,4 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ['profile_picture', 'email', 'username', 'first_name', 'last_name', 'birth_date']
-
-    def __init__(self, *args, **kwargs):
-        super(CustomUserChangeForm, self).__init__(*args, **kwargs)
-        self.fields['birth_date'] = JalaliDateField(label='birth date', widget=AdminJalaliDateWidget, required=False)
+        fields = ['profile_picture', 'email', 'username', 'first_name', 'last_name']

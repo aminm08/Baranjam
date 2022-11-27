@@ -63,10 +63,11 @@ class Job(models.Model):
     def get_absolute_url(self):
         signed_pk = self.todo.signer.sign(self.todo.pk)
         return reverse('todo_list', args=[signed_pk])
-
-    def get_time_left(self):
-        if not self.is_done and self.user_time and self.user_date:
-            time_left = datetime.combine(self.user_date, self.user_time) - datetime.today()
-            return f'{time_left.days} ,{time_left.seconds // 3600}:{(time_left.seconds // 60) % 60}'
-        else:
-            return 'w'
+    #
+    # def get_time_left(self):
+    #     if not self.is_done and self.user_time and self.user_date:
+    #         print(datetime.today())
+    #         time_left = datetime.combine(self.user_date, self.user_time) - datetime.today()
+    #         return f'{time_left.days} ,{time_left.seconds // 3600}:{(time_left.seconds // 60) % 60}'
+    #     else:
+    #         return 'w'

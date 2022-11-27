@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-17 04:15+0330\n"
-"PO-Revision-Date: 2022-11-17 04:22+0330\n"
+"POT-Creation-Date: 2022-11-27 20:10+0330\n"
+"PO-Revision-Date: 2022-11-27 20:10+0330\n"
 "Last-Translator:   <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +19,6 @@ msgstr ""
 "X-Translated-Using: django-rosetta 0.9.8\n"
 
 #: .\accounts\models.py:9
-msgid "your birth date"
-msgstr "تاریخ تولد شما"
-
-#: .\accounts\models.py:10
 msgid "your profile picture"
 msgstr "تصویر پروفایل شما"
 
@@ -31,7 +27,6 @@ msgid "your profile updated successfully"
 msgstr "پروفایل شما با موفقیت بروزرسانی شد"
 
 #: .\group_lists\templates\group_lists\add_group_list.html:22
-#| msgid "Your todo lists"
 msgid "Group lists"
 msgstr "لیست-انجام های گروهی"
 
@@ -39,31 +34,78 @@ msgstr "لیست-انجام های گروهی"
 msgid "Members"
 msgstr "اعضا"
 
-#: .\group_lists\templates\group_lists\add_group_list.html:49
-#: .\todo\templates\todo\todo_settings.html:21
+#: .\group_lists\templates\group_lists\add_group_list.html:53
+#: .\todo\templates\todo\todo_settings.html:42
 msgid "owner"
 msgstr "مالک"
 
-#: .\group_lists\templates\group_lists\add_group_list.html:69
+#: .\group_lists\templates\group_lists\add_group_list.html:75
 msgid "you have no shared group yet"
 msgstr "فاقد لیست مشترک"
 
-#: .\group_lists\views.py:37
+#: .\group_lists\views.py:26
+msgid "you successfully left the group"
+msgstr "شما با موفقیت از گروه خارج شدید"
+
+#: .\group_lists\views.py:28
+msgid "error while leaving group"
+msgstr "خطا در هنگام خروج از لیست گروه"
+
+#: .\group_lists\views.py:48
 msgid "group-list successfully created & invitation sent for users"
 msgstr ""
 "لیست گروهی با موفقیت ساخته شد و دعوتنامه ها برای کاربران مورد نظر ارسال شدند"
 
-#: .\group_lists\views.py:41
-#| msgid "finished jobs has deleted successfully"
+#: .\group_lists\views.py:52
 msgid "invitations sent successfully"
 msgstr "دعوتنامه با موفقیت فرستاده شد"
 
-#: .\group_lists\views.py:63
+#: .\group_lists\views.py:80
 msgid "invite accepted you are now a member of the group-list"
 msgstr "دعوت پذیرفته شد . در حال حاضر شما عضوی از این لیست گروهی هستید"
 
+#: .\group_lists\views.py:94
+msgid "user successfully removed from group list"
+msgstr "کاربر مورد نظر با موفقیت از گروه خارج شد"
+
+#: .\group_lists\views.py:96
+msgid "you cant delete the owner user"
+msgstr "شما قادر به حذف مالک گروه نیستید"
+
+#: .\pages\models.py:8
+msgid "your Full Name"
+msgstr "نام کامل شما"
+
+#: .\pages\models.py:9
+msgid "your Email"
+msgstr "ایمیل شما"
+
+#: .\pages\models.py:10
+#| msgid "your Mobile number"
+msgid "your Phone Number"
+msgstr "شماره موبایل شما"
+
+#: .\pages\models.py:11
+msgid "your Message"
+msgstr "پیام شما"
+
+#: .\pages\models.py:19
+msgid "the sender user"
+msgstr "کاربر فرستنده"
+
+#: .\pages\models.py:21
+msgid "the receiver user"
+msgstr "کاربر دریافت کننده"
+
+#: .\pages\models.py:23
+msgid "group list"
+msgstr "لیست گروهی"
+
+#: .\pages\models.py:24
+msgid "date time created"
+msgstr "تاریخ ساخت"
+
 #: .\pages\views.py:25
-#| msgid "Todo list successfully created"
 msgid "successfully sent"
 msgstr "با موفقیت فرستاده شد"
 
@@ -84,7 +126,6 @@ msgid "Profile"
 msgstr "پروفایل"
 
 #: .\template\_base.html:65
-#| msgid "Your todos"
 msgid "Group todos"
 msgstr "لیست-انجام های گروهی"
 
@@ -92,38 +133,37 @@ msgstr "لیست-انجام های گروهی"
 msgid "About me"
 msgstr "درباره من"
 
-#: .\template\_base.html:74
+#: .\template\_base.html:74 .\template\contact_us.html:9
+#: .\template\contact_us.html:13
 msgid "Contact me"
 msgstr "ارتباط با من"
 
-#: .\template\_base.html:94
+#: .\template\_base.html:95
 msgid "from"
 msgstr "از طرف"
 
-#: .\template\_base.html:95
+#: .\template\_base.html:96
 msgid "group-list"
 msgstr "لیست گروهی"
 
-#: .\template\_base.html:96
-#| msgid "Login"
+#: .\template\_base.html:97
 msgid "join"
 msgstr "عضو شوید"
 
-#: .\template\_base.html:106
-#| msgid "Nothing to see here"
+#: .\template\_base.html:107
 msgid "nothing here"
 msgstr "چیزی وجود ندارد"
 
-#: .\template\_base.html:151 .\template\account\logout.html:21
+#: .\template\_base.html:152 .\template\account\logout.html:21
 msgid "Logout"
 msgstr "خروج"
 
-#: .\template\_base.html:155 .\template\account\login.html:19
+#: .\template\_base.html:156 .\template\account\login.html:19
 #: .\template\account\login.html:54 .\template\account\signup.html:43
 msgid "Login"
 msgstr "ورود"
 
-#: .\template\_base.html:156 .\template\account\signup.html:24
+#: .\template\_base.html:157 .\template\account\signup.html:24
 #: .\template\account\signup.html:39
 msgid "Signup"
 msgstr "ثبت نام"
@@ -168,15 +208,20 @@ msgstr "ذخیره پروفایل"
 msgid "Already Registered?"
 msgstr "قبلا ثبت نام کردی؟"
 
+#: .\template\contact_us.html:26 .\todo\templates\todo\update_job.html:23
+#: .\todo\templates\todo\user_todos.html:105
+msgid "Submit"
+msgstr "ثبت"
+
 #: .\template\dashboard.html:25
 msgid "All tasks you have done"
 msgstr "تمام کارهایی که تا الان انجام دادی"
 
-#: .\template\dashboard.html:47
+#: .\template\dashboard.html:46
 msgid "Your todos"
 msgstr "لیست-انجام های شما "
 
-#: .\template\dashboard.html:76
+#: .\template\dashboard.html:75
 msgid "tasks that you have done today"
 msgstr "کارهایی که امروز انجام دادی"
 
@@ -201,8 +246,8 @@ msgid ""
 "use baranjam to have complete control on your tasks and activities during "
 "the day."
 msgstr ""
-" بَراَنجام  یک  اپلیکیشن بر پایه وب است که برای برنامه ریزی و مدیریت فعالیت "
-"های روزانه به شما کمک می کند . با ساخت یک حساب شروع کنید."
+"با استفاده از براَنجام کنترل کامل بر روی فعالیت های خود در شبانه روز داشته "
+"باشید"
 
 #: .\template\homepage.html:52
 msgid "Get started--it's free!"
@@ -226,7 +271,7 @@ msgstr "آمار"
 
 #: .\template\homepage.html:74
 msgid "get to know your impact during the day, week and year"
-msgstr "پی بردن به میزان تاثیر گذاری خود در روز , هفته و سال "
+msgstr "پی بردن به میزان تاثیر گذاری خود در روز , هفته و ماه"
 
 #: .\template\homepage.html:80
 msgid "Available everywhere"
@@ -262,96 +307,92 @@ msgstr "تاریخ فعالیت"
 msgid "job time"
 msgstr "زمان فعالیت"
 
-#: .\todo\templates\todo\todo_list.html:35
+#: .\todo\templates\todo\todo_list.html:41
 msgid "my todo-s"
 msgstr "لیست کارهای من"
 
-#: .\todo\templates\todo\todo_list.html:58
+#: .\todo\templates\todo\todo_list.html:57
 msgid "Add new job"
 msgstr "اضافه کردن فعالیت جدید"
 
-#: .\todo\templates\todo\todo_list.html:81
+#: .\todo\templates\todo\todo_list.html:80
 msgid "Add"
 msgstr "اضافه کردن"
 
-#: .\todo\templates\todo\todo_list.html:100
+#: .\todo\templates\todo\todo_list.html:99
 msgid "--Apply filter--"
 msgstr "اعمال فیلتر"
 
-#: .\todo\templates\todo\todo_list.html:101
+#: .\todo\templates\todo\todo_list.html:100
 msgid "All"
 msgstr "همه"
 
-#: .\todo\templates\todo\todo_list.html:102
+#: .\todo\templates\todo\todo_list.html:101
 msgid "Completed"
 msgstr "کامل شده ها"
 
-#: .\todo\templates\todo\todo_list.html:103
+#: .\todo\templates\todo\todo_list.html:102
 msgid "Active"
 msgstr "فعال ها"
 
-#: .\todo\templates\todo\todo_list.html:106
-#: .\todo\templates\todo\todo_list.html:134
+#: .\todo\templates\todo\todo_list.html:105
+#: .\todo\templates\todo\todo_list.html:133
 msgid "List is empty"
 msgstr "لیست خالی است"
 
-#: .\todo\templates\todo\todo_list.html:118
+#: .\todo\templates\todo\todo_list.html:117
 msgid "actions"
 msgstr "انجام عملیات"
 
-#: .\todo\templates\todo\todo_list.html:121
+#: .\todo\templates\todo\todo_list.html:120
 msgid "clear this list"
 msgstr "خالی کردن لیست"
 
-#: .\todo\templates\todo\todo_list.html:124
+#: .\todo\templates\todo\todo_list.html:123
 msgid "delete finished jobs"
 msgstr "حذف فعالیت های مختوم"
 
-#: .\todo\templates\todo\todo_list.html:127
+#: .\todo\templates\todo\todo_list.html:126
 msgid "make all jobs active"
 msgstr "همه ی فعالیت هارا فعال کن"
 
-#: .\todo\templates\todo\todo_list.html:129
+#: .\todo\templates\todo\todo_list.html:128
 msgid "check all jobs"
 msgstr "همه فعالیت هارا تیک بزن"
 
-#: .\todo\templates\todo\todo_list.html:192
+#: .\todo\templates\todo\todo_list.html:191
 msgid "created"
 msgstr "ساخته شده در"
 
-#: .\todo\templates\todo\todo_list.html:235
+#: .\todo\templates\todo\todo_list.html:234
 msgid "Nothing to see here"
 msgstr "چیزی وجود ندارد"
 
-#: .\todo\templates\todo\todo_settings.html:20
+#: .\todo\templates\todo\todo_settings.html:22
+#: .\todo\templates\todo\todo_settings.html:24
 msgid "settings"
 msgstr "تنظیمات"
 
-#: .\todo\templates\todo\todo_settings.html:36
+#: .\todo\templates\todo\todo_settings.html:57
 msgid "group members"
 msgstr "اعضای گروه"
 
-#: .\todo\templates\todo\todo_settings.html:56
+#: .\todo\templates\todo\todo_settings.html:88
 msgid "share your list with other users and create a group-level list"
 msgstr ""
 "لیست های خود را با اعضای دیگر به اشتراک بگذارید و یک لیست گروهی بسازید"
 
-#: .\todo\templates\todo\todo_settings.html:64
+#: .\todo\templates\todo\todo_settings.html:95
 msgid "enter users"
 msgstr "کاربران مورد نظر"
 
-#: .\todo\templates\todo\todo_settings.html:66
+#: .\todo\templates\todo\todo_settings.html:97
 msgid "Invite users"
 msgstr "دعوت کاربران"
 
 #: .\todo\templates\todo\update_job.html:12
 msgid "Update job"
 msgstr "بروزرسانی فعالیت"
-
-#: .\todo\templates\todo\update_job.html:23
-#: .\todo\templates\todo\user_todos.html:105
-msgid "Submit"
-msgstr "ثبت"
 
 #: .\todo\templates\todo\update_job.html:24
 msgid "Back to list"
@@ -385,49 +426,56 @@ msgstr "اضافه کردن لیست جدید"
 msgid "Close"
 msgstr "بستن"
 
-#: .\todo\views.py:33
+#: .\todo\views.py:31
 msgid "todo list successfully cleared"
 msgstr "لیست-انجام شما با موفقیت خالی شد"
 
-#: .\todo\views.py:38
+#: .\todo\views.py:36
 msgid "finished jobs has deleted successfully"
 msgstr "فعالیت های مختوم با موفقیت حذف شدند"
 
-#: .\todo\views.py:46
+#: .\todo\views.py:44
 msgid "all jobs are now active"
 msgstr "همه ی فعالیت ها فعال شدند"
 
-#: .\todo\views.py:54
+#: .\todo\views.py:52
 msgid "all jobs are now checked"
 msgstr "همه ی فعالیت ها تیک زده شدند"
 
-#: .\todo\views.py:87
+#: .\todo\views.py:85
 msgid "job completed! congrats"
 msgstr "فعالیت انجام شد . آفرین !"
 
-#: .\todo\views.py:117
+#: .\todo\views.py:115
 msgid "your job updated successfully"
 msgstr "فعالیت با موفقیت بروزرسانی شد"
 
-#: .\todo\views.py:130
+#: .\todo\views.py:128
 msgid "Todo list successfully created"
 msgstr "لیست-انجام  شما با موفقیت ساخته شد"
 
-#: .\todo\views.py:142
+#: .\todo\views.py:140
 msgid "Task successfully added to your list"
 msgstr "فعالیت با موفقیت به لیست شما اضافه شد"
 
-#: .\todo\views.py:162
+#: .\todo\views.py:160
 msgid "plz fill the job title field"
 msgstr "لطفا ورودی نام فعالیت را پر کنید"
 
-#: .\todo\views.py:172
+#: .\todo\views.py:170
 msgid "Task successfully deleted of your list"
 msgstr "فعالیت با موفقیت از لیست شما حذف شد"
 
-#: .\todo\views.py:186
+#: .\todo\views.py:184
 msgid "todo list successfully deleted"
 msgstr "لیست شما با موفقیت حذف شد"
+
+#: .\todo\views.py:208
+msgid "your list name successfully updated"
+msgstr "نام لیست-انجام شما با موفقیت بروزرسانی شد"
+
+#~ msgid "your birth date"
+#~ msgstr "تاریخ تولد شما"
 
 #~ msgid "this job's due"
 #~ msgstr "تاریخ پایان این کار"
@@ -462,9 +510,6 @@ msgstr "لیست شما با موفقیت حذف شد"
 
 #~ msgid "Welcome to django todo-list"
 #~ msgstr "به لیست انجام کار های جنگو خوش اومدی !"
-
-#~ msgid "your Mobile number"
-#~ msgstr "شماره موبایل"
 
 #~ msgid "find out more"
 #~ msgstr "بیشتر"

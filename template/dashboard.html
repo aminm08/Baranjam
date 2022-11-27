@@ -9,35 +9,34 @@
 {% block content %}
 
     <div id="wrapper">
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <div class="container-fluid">
-                <div class="d-sm-flex align-items-center justify-content-between mb-4" dir="rtl">
-                    <h1 class="h3 mb-0 text-gray-800 align-self-end py-4">{% trans 'Dashboard' %}</h1>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4" dir="rtl">
+                        <h1 class="h3 mb-0 text-gray-800 align-self-end py-4">{% trans 'Dashboard' %}</h1>
 
-                </div>
-                <div class="row" dir="rtl">
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}:
-                                        </div>
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_completed_tasks|length }}</div>
+                    </div>
+                    <div class="row" dir="rtl">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}:
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_completed_tasks|length }}</div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
 
 
                         <div class="col-lg-6 mb-4">
@@ -67,42 +66,43 @@
 
 
                         </div>
-                     <div class="row" dir="rtl">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}:
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
+                        <div class="row" dir="rtl">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}:
+                                                </div>
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col">
+                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            <div class="col-auto">
+                                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
+                        <!-- /.container-fluid -->
 
                     </div>
-                    <!-- /.container-fluid -->
+                    <!-- End of Main Content -->
+
 
                 </div>
-                <!-- End of Main Content -->
-
+                <!-- End of Content Wrapper -->
 
             </div>
-            <!-- End of Content Wrapper -->
+            <!-- End of Page Wrapper -->
+
 
         </div>
-        <!-- End of Page Wrapper -->
-
-
     </div>
 
 

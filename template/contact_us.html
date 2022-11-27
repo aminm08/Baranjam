@@ -1,26 +1,33 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 {% block meta %}
     <meta name="description" content="share your criticisms and suggestions with me">
 {% endblock meta %}
 
 
-{% block title %}Contact me{% endblock title %}
+{% block title %}{% trans 'Contact me' %}{% endblock title %}
 
 
 {% block content %}
-    <h1 class="text-center mt-3">Contact us</h1>
+    <h1 class="text-center mt-3">{% trans 'Contact me' %}</h1>
     <div class="container">
         <div class="row" dir="rtl">
-            <form method="post">
+            <div  dir="ltr">
+                <button class="fab fa-github bg-transparent border-0" style="font-size: 40px;"
+                        onclick="window.open('https://github.com/aminm08/', '_blank')">
+
+                </button>
+
+            </div>
+            <form method="post" class="mb-lg-5">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="submit" class="btn btn-success">{% trans 'Submit' %}</button>
+
+
             </form>
         </div>
     </div>
 
-    <h1 class="text-center text-muted">You can contact me using : <br> maf081378@gmail.com <br><a
-            href="https://github.com/aminm08">my github account</a></h1>
-    {% include 'footer.html' %}
 {% endblock content %}

@@ -21,11 +21,10 @@ def user_group_lists(request):
     if request.method == 'POST':
         try:
             group = get_object_or_404(GroupList, pk=list(request.POST.keys())[1])
-            if request.user in group.users.all():
+            if request.user in group.users.all() and request.user != group.todo.user:
                 group.users.remove(request.user)
                 messages.success(request, _('you successfully left the group'))
         except:
-
             messages.error(request, _('error while leaving group'))
 
         return redirect('group_lists')
@@ -59,12 +58,15 @@ def add_group_list_and_send_invitation(request):
 
 def send_group_list_invitation(request, users, group_list):
     for user in users:
-        user = get_object_or_404(get_user_model(), username=user)
+        try:
 
-        if not group_list.invitations.filter(user_receiver=user, user_sender=request.user).exists():
+            user = get_object_or_404(get_user_model(), username=user)
+            if not group_list.invitations.filter(user_receiver=user, user_sender=request.user).exists():
 
-            if user not in group_list.users.all() and user != group_list.todo.user:
-                Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
+                if user not in group_list.users.all() and user != group_list.todo.user:
+                    Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
+        except:
+            pass
 
 
 @login_required()
@@ -76,7 +78,9 @@ def accept_invite(request, group_id, inv_id):
         group.users.add(inv.user_receiver)
         inv.delete()
         messages.success(request, _('invite accepted you are now a member of the group-list'))
-    return redirect('group_lists')
+        return redirect('group_lists')
+    else:
+        raise PermissionDenied
 
 
 @login_required()
@@ -90,7 +94,10 @@ def remove_user_from_list(request, todo_id):
             messages.success(request, _('user successfully removed from group list'))
         else:
             messages.error(request, _('you cant delete the owner user'))
-    return redirect('todo_settings', todo.id)
+        return redirect('todo_settings', todo.id)
+    else:
+        raise PermissionDenied
+
 # def search_view(request):
 #     if request.method == 'POST':
 #         series = str(request.POST['series'])

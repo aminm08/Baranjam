@@ -8,10 +8,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from django.http import FileResponse, HttpResponse, JsonResponse
 from datetime import date
 from .forms import JobForm, TodoForm
-import io
 from .models import Todo, Job
 
 
@@ -211,21 +209,3 @@ def todo_update_list_name(request, pk):
     return redirect('todo_settings', todo.id)
 
 
-@login_required()
-@require_POST
-def some_view(request, todo_pk):
-    todo = get_object_or_404(Todo, pk=todo_pk)
-    if request.user == todo.user:
-        buffer = io.BytesIO()
-
-        # p = canvas.Canvas(buffer)
-        # p.drawString(1,1, 'hi')
-        # # for i, job in enumerate(todo.jobs.all()):
-        # #     p.drawString(1, i, str(job.text))
-
-        # p.showPage()
-        # p.save()
-        buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
-    else:
-        raise PermissionDenied

@@ -77,6 +77,7 @@ class TodoPagesTests(TestCase):
         self.assertContains(response, 'finished')
         self.assertContains(response, '1')
 
+    # add todo
     def test_user_todo_lists_add_form(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.post(
@@ -154,6 +155,8 @@ class TodoPagesTests(TestCase):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(self.todo_list1.get_absolute_url())
         self.assertContains(response, self.job1.text)
+        self.assertContains(response, self.job2.text)
+        self.assertContains(response, Job.objects.last().text)
 
     # job delete
 
@@ -200,3 +203,50 @@ class TodoPagesTests(TestCase):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]))
         self.assertTemplateUsed(response, 'todo/update_job.html')
+
+    # todo settings
+    def test_todo_settings_url(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(f'/todo/settings/{self.todo_list1.id}/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_todo_settings_url_by_name(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(reverse('todo_settings', args=[self.todo_list1.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_todo_settings_template_used(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(reverse('todo_settings', args=[self.todo_list1.id]))
+        self.assertTemplateUsed(response, 'todo/todo_settings.html')
+
+    def test_todo_settings_permission_deny_on_not_owner_users(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.get(reverse('todo_settings', args=[self.todo_list1.id]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_todo_settings_show_the_owner(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(reverse('todo_settings', args=[self.todo_list1.id]))
+        self.assertContains(response, self.todo_list1.user)
+
+    # change todo name
+
+    def test_todo_update_name_url(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('update_todo_name', args=[self.todo_list1.id]), {'name': 'new_todo'},
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Todo.objects.last().name, 'new_todo')
+
+    # attention: this test deletes all jobs of todo_list_1
+    def test_todo_apply_options_functionality(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '1'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.todo_list1.jobs.exists(), False)
+
+    def test_todo_apply_options_permission_deny_on_not_owners(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '1'})
+        self.assertEqual(response.status_code, 403)

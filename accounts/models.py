@@ -6,7 +6,6 @@ from django.urls import reverse
 
 
 class CustomUser(AbstractUser):
-    birth_date = models.DateTimeField(verbose_name=_("your birth date"), blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, verbose_name=_('your profile picture'))
 
     def get_absolute_url(self):
@@ -19,4 +18,3 @@ class CustomUser(AbstractUser):
     def get_user_today_completed_tasks(self):
         completed = self.jobs.filter(user_done_date=date.today(), is_done=True)
         return completed
-

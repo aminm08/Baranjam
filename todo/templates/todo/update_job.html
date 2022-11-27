@@ -10,8 +10,8 @@
         <p>
 
         <h2 class="text-center">{% trans 'Update job' %}</h2>
-        <h4 class="text-info fw-bolder text-center">{{ job.get_time_left|translate_numbers }}</h4>
-        </p>
+
+
         <form method="post">
             {% csrf_token %}
             <div class="text-right" dir="rtl">

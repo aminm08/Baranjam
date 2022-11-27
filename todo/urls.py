@@ -16,7 +16,4 @@ urlpatterns = [
     path('delete/<int:pk>/', views.TodoDeleteView.as_view(), name='todo_delete'),
     path('apply/<int:pk>/', views.todo_apply_options_post_view, name='apply_todo_actions'),
 
-    # pdf
-    path('job/get_pdf/<int:todo_pk>/', views.some_view, name='job_pdf'),
-
 ]
