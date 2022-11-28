@@ -11,9 +11,10 @@ urlpatterns = [
     path('update_name/<int:pk>/', views.todo_update_list_name, name='update_todo_name'),
     path('add/', views.AddTodo.as_view(), name='add_todo'),
     path('settings/<int:pk>/', views.todo_list_detail_and_settings, name='todo_settings'),
+
     path('job/create/<int:todo_id>/', views.CreateJobView.as_view(), name='job_create'),
     path('job/delete/<int:pk>/', views.JobDeleteView.as_view(), name='job_delete'),
-    path('delete/<int:pk>/', views.TodoDeleteView.as_view(), name='todo_delete'),
+    re_path('delete/(?P<signed_pk>[0-9]+/[A-Za-z0-9_=-]+)/$', views.TodoDeleteView.as_view(), name='todo_delete'),
     path('apply/<int:pk>/', views.todo_apply_options_post_view, name='apply_todo_actions'),
 
 ]

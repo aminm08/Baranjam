@@ -1,0 +1,31 @@
+{% extends '_base.html' %}
+{% load i18n %}
+
+
+{% block title %}{% trans 'Delete Todo-list' %}{% endblock title %}
+
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-9 ml-auto mr-auto">
+
+                <div class="card shadow mt-lg-5">
+                    <div class="card-title text-center mt-2">
+                        <h5>{% trans 'Are you sure you want to  permenantly delete' %} ({{ todo.name }})?</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">{% trans 'Yes, Delete' %}</button>
+                            <a href="{% url 'user_todos' %}" class="btn btn-info">{% trans 'No back' %}</a>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

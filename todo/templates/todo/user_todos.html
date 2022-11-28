@@ -64,14 +64,13 @@
                                 </a>
                             {% endif %}
 
-                            <form action="{% url 'todo_delete' todo.id %}" method="post" class="ml-2">
+{#                            <form action="{% url 'todo_delete' todo.id %}" method="post" class="ml-2">#}
                                 {% csrf_token %}
-                                <button type="submit" class="btn text-danger shadow  border-secondary rounded-pill "
-                                        value>
+                                <a href="{% url 'todo_delete' todo.get_signed_pk %}" class="btn text-danger shadow  border-secondary rounded-pill">
 
                                     <span class="fa fa-solid fa-trash px-3 "></span>
-                                </button>
-                            </form>
+                                </a>
+{#                            </form>#}
 
                         </li>
 

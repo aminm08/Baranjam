@@ -4,6 +4,7 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
+from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
@@ -179,12 +180,26 @@ class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 
 class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Todo
-    http_method_names = ['post']
+    template_name = 'todo/todo_delete.html'
+    context_object_name = 'todo'
     success_url = reverse_lazy('user_todos')
     success_message = _('todo list successfully deleted')
 
     def test_func(self):
         return self.request.user == self.get_object().user
+
+    def get_object(self, queryset=None):
+        signed_pk = self.kwargs.get('signed_pk')
+        if signed_pk:
+            try:
+                todo_obj = get_object_or_404(self.model, pk=self.model.signer.unsign(signed_pk))
+            except:
+                raise Http404
+
+            return todo_obj
+        raise AttributeError(
+            "Generic Detail view %s must be called"
+            "with signed pk in the URLconf" % self.__class__.__name__)
 
 
 @login_required()
@@ -207,5 +222,3 @@ def todo_update_list_name(request, pk):
         todo.save()
         messages.success(request, _('your list name successfully updated'))
     return redirect('todo_settings', todo.id)
-
-
