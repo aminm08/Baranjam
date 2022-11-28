@@ -1,0 +1,9 @@
+{
+  "app": "baranjam",
+  "disks": [
+    {
+      "name": "baranjam-disk",
+      "mountTo": "media"
+    }
+  ]
+}

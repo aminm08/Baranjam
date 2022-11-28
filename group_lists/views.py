@@ -98,31 +98,32 @@ def remove_user_from_list(request, todo_id):
     else:
         raise PermissionDenied
 
-# def search_view(request):
-#     if request.method == 'POST':
-#         series = str(request.POST['series'])
-#         query_set = get_user_model().objects.filter(username__icontains=series)
-#         res = None
-#         if query_set and series:
-#
-#             data = []
-#
-#             for user in query_set:
-#                 if user != request.user:
-#                     item = {
-#                         'pk': user.pk,
-#                         'username': user.username,
-#                     }
-#
-#                     if user.profile_picture:
-#                         item['image'] = str(user.profile_picture.url)
-#                     else:
-#                         item['image'] = '/static/img/blank_user.png'
-#
-#                     data.append(item)
-#
-#             res = data
-#         else:
-#             res = 'No data'
-#         return JsonResponse({'data': res})
-#     return JsonResponse({})
+
+def search_view(request):
+    if request.method == 'POST':
+        series = str(request.POST['series'])
+        query_set = get_user_model().objects.filter(username__icontains=series)
+        res = None
+        if query_set and series:
+
+            data = []
+
+            for user in query_set:
+                if user != request.user:
+                    item = {
+                        'pk': user.pk,
+                        'username': user.username,
+                    }
+
+                    if user.profile_picture:
+                        item['image'] = str(user.profile_picture.url)
+                    else:
+                        item['image'] = '/static/img/blank_user.png'
+
+                    data.append(item)
+
+            res = data
+        else:
+            res = 'No data'
+        return JsonResponse({'data': res})
+    return JsonResponse({})
