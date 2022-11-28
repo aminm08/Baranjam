@@ -8,102 +8,89 @@
 
 {% block content %}
 
-    <div id="wrapper">
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                <div class="container-fluid">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" dir="rtl">
-                        <h1 class="h3 mb-0 text-gray-800 align-self-end py-4">{% trans 'Dashboard' %}</h1>
-
-                    </div>
-                    <div class="row" dir="rtl">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}:
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_completed_tasks|length }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-6 mb-4">
-
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
-                                </div>
-                                <div class="card-body">
-                                    {% for todo in todos %}
-                                        {% if todo.complete_rate != None %}
-                                            <h4 class="small font-weight-bold text-muted float-start">{{ todo.name }}</h4>
-                                            <p class="text-muted font-weight-bold small">{{ todo.complete_rate }}%</p>
-                                            <div class="progress mb-4 mt-1" dir="ltr">
-                                                <div class="progress-bar bg-info " role="progressbar"
-                                                     style="width:{{ todo.complete_rate }}%"
-                                                     aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
-                                                     aria-valuemax="100"></div>
-                                            </div>
-
-                                        {% endif %}
-                                    {% endfor %}
-
-
-                                </div>
-                            </div>
-
-
-                        </div>
-                        <div class="row" dir="rtl">
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-info shadow h-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}:
-                                                </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col">
-                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- /.container-fluid -->
-
-                    </div>
-                    <!-- End of Main Content -->
-
-
-                </div>
-                <!-- End of Content Wrapper -->
-
-            </div>
-            <!-- End of Page Wrapper -->
-
+    <div class="container-fluid">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4" dir="rtl">
+            <h1 class="h3 mb-0 text-gray-800 align-self-end py-4">{% trans 'Dashboard' %}</h1>
 
         </div>
+        <div class="row" dir="rtl">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}:
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_completed_tasks|length }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% for todo in todos %}
+                            {% if todo.complete_rate != None %}
+                                <h4 class="small font-weight-bold text-muted float-start"><a
+                                        href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
+                                <p class="text-muted font-weight-bold small">{{ todo.complete_rate }}%</p>
+                                <div class="progress mb-4 mt-1" dir="ltr">
+                                    <div class="progress-bar bg-info " role="progressbar"
+                                         style="width:{{ todo.complete_rate }}%"
+                                         aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
+                                         aria-valuemax="100"></div>
+                                </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row" dir="rtl">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}:
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col">
+                                            <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+
     </div>
+    <!-- End of Content Wrapper -->
 
 
     {% include 'footer.html' %}

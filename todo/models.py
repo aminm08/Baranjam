@@ -24,7 +24,7 @@ class Todo(models.Model):
         super(Todo, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        signed_pk = self.signer.sign(self.pk)
+        signed_pk = self.get_signed_pk()
         return reverse('todo_list', args=[str(signed_pk)])
 
     def get_signed_pk(self):
