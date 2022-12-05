@@ -83,10 +83,12 @@ def todo_list_main_page(request, signed_pk):
             if not job.is_done:
                 job.is_done = True
                 job.user_done_date = date.today()  # for statistics
+                request.user.update_done_jobs()
                 messages.success(request, _('job completed! congrats'))
             else:
                 job.is_done = False
                 job.user_done_date = None
+                request.user.update_done_jobs(mode=False)
             job.save()
 
         return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form': JobForm()})

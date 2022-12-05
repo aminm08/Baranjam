@@ -63,15 +63,11 @@
                                     <i class="fa fa-cog" aria-hidden="true"></i>
                                 </a>
                             {% endif %}
-
-{#                            <form action="{% url 'todo_delete' todo.id %}" method="post" class="ml-2">#}
                                 {% csrf_token %}
                                 <a href="{% url 'todo_delete' todo.get_signed_pk %}" class="btn text-danger shadow  border-secondary rounded-pill">
 
                                     <span class="fa fa-solid fa-trash px-3 "></span>
                                 </a>
-{#                            </form>#}
-
                         </li>
 
 

@@ -1,68 +1,136 @@
-{% extends '_base.html' %}
-
 {% load static %}
 {% load i18n %}
-
-{% block meta %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Login so you can use All baranjam's services">
-{% endblock meta %}
+    <title>Login to Baranjam app</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<style>
+    input::placeholder {
+        text-align: right;
+    }
 
 
-{% block title %}Login to Baranjam app{% endblock title %}
+    .icon {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 600;
+    }
+
+    body {
+        background-color: #f0f4f7;
+    }
+
+</style>
 
 
-{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 ml-auto mr-auto">
 
-    <div class="container" style="font-family:'Bitstream Vera Sans Mono';">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
+
+            <div class="text-center">
+                <a href="/"><img src="{% static 'icons/favicon3.png' %}"
+                                 class=" mt-5"
+                                 width="250" height="187" alt="profile"></a>
+            </div>
+            <div class="card mb-3 mt-5">
+
                 <h2 class="text-center  text  mt-5" style="color:#f4623a;">{% trans 'Login' %}</h2>
 
-                <div class="card my-5">
+                <form class="card-body  p-lg-5 " method="post">
+                    {% csrf_token %}
 
-                    <form class="card-body cardbody-color p-lg-5" method="post">
-                        {% csrf_token %}
-
-                        {% if form.non_field_errors %}
+                    {% if form.non_field_errors %}
 
 
-                            <div class="d-flex justify-content-center text-danger my-3" dir="rtl">
-                                {{ form.non_field_errors }}
-                            </div>
-
-
-                        {% endif %}
-                        <div class="text-center">
-                            <img src="{% static 'icons/todo_icon.png' %}"
-                                 class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
-                                 width="300px" alt="profile">
+                        <div class="d-flex justify-content-center text-danger my-3" dir="rtl">
+                            {{ form.non_field_errors }}
                         </div>
 
-                        <div class="my-3" dir="rtl">
 
-                            <input type="email" class="form-control form" id="Username" aria-describedby="emailHelp"
-                                   placeholder="{% trans 'Email' %}" name="login">
+                    {% endif %}
+                    <div class="text-right">
 
-                        </div>
-                        <div class="my-3" dir="rtl">
+                        <input type="email" class="form-control form icon mt-2" id="Username"
+                               aria-describedby="emailHelp"
+                               placeholder="{% trans 'Email' %}   &#xf0e0;" name="login">
 
-                            <input type="password" class="form-control" id="password"
-                                   placeholder="{% trans 'password' %}"
-                                   name="password">
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn text-dark fw-bolder px-5 mb-5 w-100" style="background-color: #f4623a;">{% trans 'Login' %}</button>
-                        </div>
-                        <div id="emailHelp" class="form-text text-black text-center mb-5">{% trans 'NotRegistered?' %}
-                            <a href="{% url 'account_signup' %}"
-                               class="text-dark fw-bold">{% trans 'Create an Account' %}</a>
-                        </div>
-                    </form>
-                </div>
+                        <input type="password" class="form-control icon mt-2" id="password1"
+                               placeholder="{% trans 'password' %}   &#xf023;"
+                               name="password">
+                        <input type="checkbox" onclick="show_pass()" class="mt-3 ">
+                        <label class="mt-3">نمایش گذرواژه
+                        </label>
+                    </div>
 
+                    <div class="text-center mt-1">
+                        <button type="submit" class="btn text-dark fw-bolder px-5 mb-2 w-100"
+                                style="background-color: #f4623a;">{% trans 'Login' %}</button>
+                    </div>
+                    <div id="emailHelp" class="form-text text-black text-right mb-3 ">{% trans 'NotRegistered?' %}
+                        <a href="{% url 'account_signup' %}"
+                           class="text-dark fw-bold">{% trans 'Create an Account' %}</a>
+                    </div>
+                </form>
             </div>
+
         </div>
     </div>
+</div>
+
+<script>
+
+    function show_pass() {
+
+        var password_field = document.getElementById('password1');
+        if (password_field.type === 'password') {
+            password_field.type = "text";
+        } else {
+            password_field.type = 'password';
+        }
+    }
+
+    $('#email').on('keyup', function () {
+        var input = $(this);
+        if (input.val().length === 0) {
+            input.addClass('empty');
+        } else {
+            input.removeClass('empty');
+        }
+    });
 
 
-{% endblock content %}
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+        integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+        crossorigin="anonymous"></script>
+
+
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+</body>
+</html>
+
+

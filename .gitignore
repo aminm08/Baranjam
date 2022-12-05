@@ -3,4 +3,5 @@ __pycache__/
 .idea/
 .git/
 db.sqlite3
+liara.json
 
