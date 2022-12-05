@@ -7,19 +7,34 @@
 
 
 {% block content %}
+    <!-- Card Body -->
+
 
     <div class="container-fluid">
+
         <div class="d-sm-flex align-items-center justify-content-between mb-4" dir="rtl">
             <h1 class="h3 mb-0 text-gray-800 align-self-end py-4">{% trans 'Dashboard' %}</h1>
 
         </div>
-        <div class="row" dir="rtl">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-info shadow h-100 py-2">
+        <div class="row justify-content-start">
+
+            <div class="col-md-9">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="myAreaChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-left-info shadow py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}:
+                                <div class=" text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}
                                 </div>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col">
@@ -31,9 +46,27 @@
                     </div>
                 </div>
             </div>
-
-
-            <div class="col-lg-6 mb-4">
+            <div class="col">
+                <div class="card border-left-info shadow  py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters">
+                            <div class="col mr-2">
+                                <div class="text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-3">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
@@ -43,8 +76,8 @@
                             {% if todo.complete_rate != None %}
                                 <h4 class="small font-weight-bold text-muted float-start"><a
                                         href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
-                                <p class="text-muted font-weight-bold small">{{ todo.complete_rate }}%</p>
-                                <div class="progress mb-4 mt-1" dir="ltr">
+                                <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
+                                <div class="progress mb-4 mt-1">
                                     <div class="progress-bar bg-info " role="progressbar"
                                          style="width:{{ todo.complete_rate }}%"
                                          aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
@@ -57,36 +90,14 @@
 
                     </div>
                 </div>
-
-
             </div>
-            <div class="row" dir="rtl">
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-info shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-sm-center text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}:
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col">
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <!-- /.container-fluid -->
-
         </div>
-        <!-- End of Main Content -->
+
+
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
 
 
     </div>
@@ -99,21 +110,114 @@
 
 {% block script %}
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="{% static  'vendor/jquery-easing/jquery.easing.js' %}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
     <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
+
+    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="{% static 'js/chart-area-demo.js' %}"></script>
+    {#    <script src="/static/js/demo/chart-pie-demo.js"></script>#}
+
+    <script language="JavaScript">
+
+        // Area Chart Example
+        var ctx = document.getElementById("myAreaChart");
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: "tasks done ",
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(78, 115, 223, 0.05)",
+                    borderColor: "rgb(244,98,58)",
+                    pointRadius: 3,
+                    pointBackgroundColor: "rgb(16,16,19)",
+                    pointBorderColor: "rgb(16,16,19)",
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: "rgb(16,16,19)",
+                    pointHoverBorderColor: "rgb(16,16,19)",
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2,
+                    data: {{ data|safe }},
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        time: {
+                            unit: 'date'
+                        },
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 7
+                        }
+
+                    }],
+                    yAxes: [{
+                        ticks: {
+
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            beginAtZero: true,
+
+                        },
+                        gridLines: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }],
+                },
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    titleMarginBottom: 10,
+                    titleFontColor: '#6e707e',
+                    titleFontSize: 14,
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    intersect: false,
+                    mode: 'index',
+                    caretPadding: 10,
+                    callbacks: {
+                        label: function (tooltipItem, chart) {
+                            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                            return datasetLabel + '' + number_format(tooltipItem.yLabel);
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 
 {% endblock script %}
 

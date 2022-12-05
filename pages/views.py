@@ -4,9 +4,12 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
+
+import json
+
 from .forms import ContactForm
 from .models import Contact
-from todo.models import Todo
+from todo.models import Todo, Job
 
 
 def homepage(request):
@@ -28,4 +31,20 @@ class ContactUs(SuccessMessageMixin, generic.CreateView):
 @login_required
 def dashboard_view(request):
     user_todos = Todo.objects.filter(user=request.user)
-    return render(request, 'dashboard.html', {'todos': user_todos})
+    labels, data = [], []
+    user_done_dates = [str(job.user_done_date) for job in
+                       request.user.jobs.filter(is_done=True).order_by('user_done_date')]
+
+    for date in user_done_dates:
+        if date not in labels:
+            labels.append(date)
+
+    data = [user_done_dates.count(i) for i in labels]
+
+    context = {"filename": 'name',
+               "collapse": "",
+               "labels": json.dumps(list(labels)),
+               "data": json.dumps(data),
+               'todos': user_todos
+               }
+    return render(request, 'dashboard.html', context)
