@@ -47,9 +47,9 @@
 
 
                                 <p>
-                                <form method="post" class="me-2">
+                                <form method="post" class="me-2" action="{% url 'leave_group' group.id %}">
                                     {% csrf_token %}
-                                    <button class="btn-sm btn-danger" name="{{ group.id }}" type="submit"><i class="fa fa-sign-out-alt"></i></button>
+                                    <button class="btn-sm btn-danger" type="submit"><i class="fa fa-sign-out-alt"></i></button>
                                     <span class="text-success fw-bolder">{% trans 'owner' %}</span>:
                                     {% if group.todo.user.profile_picture %}
                                         <img src="{{ group.todo.user.profile_picture.url }}" alt="user_profile"

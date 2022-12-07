@@ -74,33 +74,25 @@ class GroupListTests(TestCase):
         self.assertContains(response, '2')
         self.assertContains(response, self.group_list_1.todo.user.username)
 
-    def test_user_group_list_dont_show_list_to_owner_in_page(self):
+    def test_user_group_list_does_not_show_list_to_owner_in_page(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(reverse('group_lists'))
         self.assertNotContains(response, self.group_list_1.todo.name)
 
-    def test_user_group_list_leave_group(self):
-        self.client.login(email=self.email2, password=self.password)
-        response = self.client.post(reverse('group_lists'), {'': '', str(self.group_list_1.id): ['']})
-        self.assertFalse(self.user2 in self.group_list_1.users.all())
-
     def test_add_group_list_and_send_invitations(self):
         self.client.login(email=self.email, password=self.password)
-        post_data = {
-            'users': self.username,
-            'todo': self.todo_list2.id,
-        }
-        response = self.client.post(reverse('add_group_list'), post_data, follow=True)
+        self.client.post(reverse('add_group_list'),
+                         {'users': f'{self.username},{self.username2}', 'todo': self.todo_list2.id}, follow=True)
         self.assertEqual(GroupList.objects.last().todo.name, self.todo_list2.name)
-        self.assertTrue(Invitation.objects.exists())
+        self.assertEqual(Invitation.objects.count(), 2)
+        self.assertTrue(Invitation.objects.filter(user_sender=self.user1, user_receiver=self.user2).exists())
+        self.assertTrue(Invitation.objects.filter(user_sender=self.user1, user_receiver=self.user3).exists())
 
     def test_add_group_or_invite_only_accept_owner_user_demand(self):
         self.client.login(email=self.email2, password=self.password)
-        post_data = {
-            'users': self.username,
-            'todo': self.todo_list2.id,
-        }
-        response = self.client.post(reverse('add_group_list'), post_data, follow=True)
+
+        response = self.client.post(reverse('add_group_list'), {'users': self.username, 'todo': self.todo_list2.id},
+                                    follow=True)
         self.assertEqual(response.status_code, 403)
 
     def test_user_accept_invite_to_join_group(self):
@@ -120,7 +112,7 @@ class GroupListTests(TestCase):
         temporary_todo.delete()
 
     def test_user_accept_invite_to_join_group_permission_deny_on_not_receiver_users(self):
-        self.client.login(email=self.email, password=self.password)
+        self.client.login(email=self.email2, password=self.password)
         temporary_todo = Todo.objects.create(name='temp_todo', user=self.user1)
         temporary_group_list = GroupList.objects.create(todo=temporary_todo)
 
@@ -136,31 +128,55 @@ class GroupListTests(TestCase):
 
     def test_remove_user_from_group_list(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('delete_group_user', args=[self.todo_list1.id]),
+        response = self.client.post(reverse('delete_group_user', args=[self.group_list_1.id]),
                                     {'': '', str(self.user2.id): ['']})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(self.user2 not in self.group_list_1.users.all())
 
     def test_remove_user_from_group_page_accept_only_post(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.get(reverse('delete_group_user', args=[self.todo_list1.id]))
+        response = self.client.get(reverse('delete_group_user', args=[self.group_list_1.id]))
         self.assertEqual(response.status_code, 405)
 
-    def test_remove_user_from_group_page_is_not_deleting_owner_user(self):
+    def test_remove_user_from_group_page_does_not_delete_owner_user(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('delete_group_user', args=[self.todo_list1.id]),
+        response = self.client.post(reverse('delete_group_user', args=[self.group_list_1.id]),
                                     {'': '', str(self.user1.id): ['']})
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
         self.assertTrue(self.user1 in self.group_list_1.users.all())
+
+    def test_remove_user_does_not_delete_not_member_user(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('delete_group_user', args=[self.group_list_1.id]),
+                                    {'': '', str(self.user3.id): ['']})
+        self.assertEqual(response.status_code, 403)
 
     def test_remove_user_from_group_list_is_not_happening_by_not_owner_users(self):
         self.client.login(email=self.email2, password=self.password)
-        response = self.client.post(reverse('delete_group_user', args=[self.todo_list1.id]),
+        response = self.client.post(reverse('delete_group_user', args=[self.group_list_1.id]),
                                     {'': '', str(self.user2.id): ['']})
         self.assertEqual(response.status_code, 403)
 
-    def test_remove_user_from_group_list_only_works_on_group_lists(self):
+    def test_user_leave_group(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]),
+                                    {'': ''})
+        self.assertTrue(self.user2 not in self.group_list_1.users.all())
+
+    def test_leave_group_only_accept_post(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('delete_group_user', args=[self.todo_list2.id]),
-                                    {'': '', str(self.user2.id): ['']})
+        response = self.client.get(reverse('leave_group', args=[self.group_list_1.id]))
+        self.assertEqual(response.status_code, 405)
+
+    def test_leave_group_does_not_delete_owner(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]),
+                                    {'': ''})
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(self.user1 in self.group_list_1.users.all())
+
+    def test_leave_group_only_deletes_group_members(self):
+        self.client.login(email=self.email3, password=self.password)
+        response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]),
+                                    {'': ''})
         self.assertEqual(response.status_code, 403)

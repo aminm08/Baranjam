@@ -18,18 +18,19 @@ from .models import GroupList
 @login_required()
 def user_group_lists(request):
     groups = [i for i in GroupList.objects.filter(users__in=[request.user]) if request.user != i.todo.user]
-    if request.method == 'POST':
-        try:
-            group = get_object_or_404(GroupList, pk=list(request.POST.keys())[1])
-            if request.user in group.users.all() and request.user != group.todo.user:
-                group.users.remove(request.user)
-                messages.success(request, _('you successfully left the group'))
-        except:
-            messages.error(request, _('error while leaving group'))
-
-        return redirect('group_lists')
-
     return render(request, 'group_lists/add_group_list.html', {'groups': groups})
+
+
+@login_required()
+@require_POST
+def leave_group_view(request, group_id):
+    group = get_object_or_404(GroupList, pk=group_id)
+
+    if request.user != group.todo.user and request.user in group.users.all():
+        group.users.remove(request.user)
+        messages.success(request, _('you successfully left the group'))
+        return redirect('group_lists')
+    raise PermissionDenied
 
 
 @login_required()
@@ -39,21 +40,19 @@ def add_group_list_and_send_invitation(request):
     todo_id = request.POST['todo']
     todo = get_object_or_404(Todo, pk=todo_id)
     if request.user == todo.user:
-        group_list = todo.group_todo.all()
-
         if not todo.is_group_list():
             new_list = GroupList.objects.create(todo=todo)
             new_list.users.add(request.user)
             send_group_list_invitation(request, users, new_list)
             messages.success(request, _('group-list successfully created & invitation sent for users'))
-
         else:
-            send_group_list_invitation(request, users, group_list[0])
+            group_list = todo.group_todo.last()
+            send_group_list_invitation(request, users, group_list)
             messages.success(request, _('invitations sent successfully'))
 
         return redirect('todo_settings', todo.id)
-    else:
-        raise PermissionDenied
+
+    raise PermissionDenied
 
 
 def send_group_list_invitation(request, users, group_list):
@@ -79,24 +78,21 @@ def accept_invite(request, group_id, inv_id):
         inv.delete()
         messages.success(request, _('invite accepted you are now a member of the group-list'))
         return redirect('group_lists')
-    else:
-        raise PermissionDenied
+    raise PermissionDenied
 
 
 @login_required()
 @require_POST
-def remove_user_from_list(request, todo_id):
-    todo = get_object_or_404(Todo, pk=todo_id)
-    if todo.is_group_list() and request.user == todo.user:
-        user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
-        if user != todo.user:
-            todo.group_todo.last().users.remove(user)
-            messages.success(request, _('user successfully removed from group list'))
-        else:
-            messages.error(request, _('you cant delete the owner user'))
-        return redirect('todo_settings', todo.id)
-    else:
-        raise PermissionDenied
+def remove_user_from_list(request, group_id):
+    group_list = get_object_or_404(GroupList, pk=group_id)
+    user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
+    if request.user == group_list.todo.user:
+        if user in group_list.users.all() and user != group_list.todo.user:
+            group_list.users.remove(user)
+            messages.success(request, _('user successfully deleted from list'))
+            return redirect('todo_settings', group_list.todo.id)
+
+    raise PermissionDenied
 
 
 def search_view(request):
@@ -125,5 +121,5 @@ def search_view(request):
             res = data
         else:
             res = 'No data'
-        return JsonResponse({'data': res})
+        return JsonResponse({'data': res[:11]})
     return JsonResponse({})

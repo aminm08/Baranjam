@@ -80,7 +80,7 @@
                                 {% for group_user in todo.group_todo.last.users.all %}
 
                                     <p>
-                                    <form action="{% url 'delete_group_user' todo.id %}" method="post">
+                                    <form action="{% url 'delete_group_user' todo.group_todo.last.id %}" method="post">
                                         {% csrf_token %}
                                         {% if group_user.profile_pic %}
                                             <img src="{{ group_user.profile_pic.url }}" alt="user profile"

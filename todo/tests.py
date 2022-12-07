@@ -93,22 +93,27 @@ class TodoPagesTests(TestCase):
         self.assertEqual(response.status_code, 405)
 
     # delete todo
-    def test_delete_todo_page_not_allow_get_request(self):
+    def test_delete_todo_page_url(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.get(reverse('todo_delete', args=[self.todo_list1.id]))
-        self.assertEqual(response.status_code, 405)
+        response = self.client.get(f'/todo/delete/{self.todo_list1.get_signed_pk()}/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_todo_page_url_by_name(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
+        self.assertEqual(response.status_code, 200)
 
     def test_todo_delete_page_permission_deny_on_not_owner_users(self):
         self.client.login(email='testuser2@test.com', password=self.password)
-        response = self.client.post(reverse('todo_delete', args=[self.todo_list1.id]))
+        response = self.client.post(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
         self.assertEqual(response.status_code, 403)
 
     # sorry I had to do 2 tests in 1 case to prevent duplication
     def test_todo_delete_from_db_and_redirect_back(self):
         self.temporary_todo = Todo.objects.create(name='todo2', user=self.user1)
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('todo_delete', args=[self.temporary_todo.id]))
-        self.assertFalse(Todo.objects.filter(name='todo2'))
+        response = self.client.post(reverse('todo_delete', args=[self.temporary_todo.get_signed_pk()]))
+        self.assertFalse(Todo.objects.filter(name='todo2').exists())
         self.assertEqual(response.status_code, 302)
 
     # todolist details

@@ -31,17 +31,17 @@ class AccountsPagesTest(TestCase):
 
     def test_signup_user(self):
         self.assertEqual(get_user_model().objects.all().count(), 1)
-        self.assertEqual(get_user_model().objects.all()[0].email, self.email)
-        self.assertEqual(get_user_model().objects.all()[0].check_password(self.password), True)
+        self.assertEqual(get_user_model().objects.last().email, self.email)
+        self.assertEqual(get_user_model().objects.last().check_password(self.password), True)
 
     def test_signup_form(self):
         response = self.client.post(reverse('account_signup'),
-                                    {'email': 'hello@hello.com', 'password1': 'hellopass123',
-                                     'password2': 'hellopass123'},
+                                    {'username': 'username2', 'email': 'hello@hello.com', 'password1': 'hellopass123'},
                                     follow=True)
 
         self.assertEqual(get_user_model().objects.all().count(), 2)
         self.assertEqual(get_user_model().objects.last().email, 'hello@hello.com')
+        self.assertEqual(get_user_model().objects.last().username, 'username2')
         self.assertEqual(get_user_model().objects.last().check_password('hellopass123'), True)
         get_user_model().objects.last().delete()
 
