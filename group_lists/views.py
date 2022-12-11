@@ -64,7 +64,7 @@ def send_group_list_invitation(request, users, group_list):
 
                 if user not in group_list.users.all() and user != group_list.todo.user:
                     Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
-        except:
+        except Exception as e:
             pass
 
 

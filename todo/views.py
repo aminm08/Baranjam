@@ -9,6 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.db.models import Count
 from datetime import date
 from .forms import JobForm, TodoForm
 from .models import Todo, Job
@@ -16,7 +17,7 @@ from .models import Todo, Job
 
 @login_required()
 def all_user_todos(request):
-    todos = Todo.objects.filter(user=request.user).order_by('-datetime_created')
+    todos = Todo.objects.filter(user=request.user).annotate(Count('jobs')).order_by('-jobs__count')
     return render(request, 'todo/user_todos.html', {'todos': todos})
 
 
@@ -25,32 +26,33 @@ def all_user_todos(request):
 def todo_apply_options_post_view(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
     if request.user == todo.user:
-        option_number = int(request.POST.get('action'))
+        option_number = str(request.POST.get('action'))
+        match option_number:
+            case '1':
+                todo.jobs.all().delete()
+                messages.success(request, _('todo list successfully cleared'))
 
-        if option_number == 1:
-            todo.jobs.all().delete()
-            messages.success(request, _('todo list successfully cleared'))
+            case '2':
+                finished_jobs = todo.get_jobs()
+                finished_jobs.delete()
+                messages.success(request, _('finished jobs has deleted successfully'))
 
-        elif option_number == 2:
-            finished_jobs = todo.get_jobs()
-            finished_jobs.delete()
-            messages.success(request, _('finished jobs has deleted successfully'))
+            case '3':
+                finished_jobs = todo.get_jobs()
+                for job in finished_jobs:
+                    job.is_done = False
+                    job.user_done_date = None
+                    job.save()
+                messages.success(request, _('all jobs are now active'))
 
-        elif option_number == 3:
-            finished_jobs = todo.get_jobs()
-            for job in finished_jobs:
-                job.is_done = False
-                job.user_done_date = None
-                job.save()
-            messages.success(request, _('all jobs are now active'))
+            case '4':
+                unfinished_jobs = todo.get_jobs(finished=False)
+                for job in unfinished_jobs:
+                    job.is_done = True
+                    job.user_done_date = date.today()
+                    job.save()
+                messages.success(request, _('all jobs are now checked'))
 
-        elif option_number == 4:
-            unfinished_jobs = todo.get_jobs(finished=False)
-            for job in unfinished_jobs:
-                job.is_done = True
-                job.user_done_date = date.today()
-                job.save()
-            messages.success(request, _('all jobs are now checked'))
         return redirect(todo.get_absolute_url())
     else:
         raise PermissionDenied
@@ -59,41 +61,44 @@ def todo_apply_options_post_view(request, pk):
 @login_required()
 def todo_list_main_page(request, signed_pk):
     todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
-    group_list_users = todo.group_todo.all()[0].users.all() if todo.group_todo.all().exists() else []
+    group_list_users = todo.group_todo.last().users.all() if todo.is_group_list() else []
 
     if request.user == todo.user or request.user in group_list_users:
 
         user_jobs = Job.objects.filter(todo=todo).order_by('is_done', '-datetime_created')
-        user_filter = request.GET.get('filter')
+        user_filter = str(request.GET.get('filter'))
 
-        if user_filter:
-
-            if user_filter == 'all':
+        match user_filter:
+            case 'all':
                 user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
-            elif user_filter == 'actives':
-                user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('is_done',
-                                                                                        '-datetime_created')
-            elif user_filter == 'done':
-                user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('is_done',
-                                                                                       '-datetime_created')
-
-        if request.method == 'POST' and request.user == todo.user:
-            job = get_object_or_404(Job, pk=list(request.POST.keys())[1])
-
-            if not job.is_done:
-                job.is_done = True
-                job.user_done_date = date.today()  # for statistics
-                request.user.update_done_jobs()
-                messages.success(request, _('job completed! congrats'))
-            else:
-                job.is_done = False
-                job.user_done_date = None
-                request.user.update_done_jobs(mode=False)
-            job.save()
+            case 'actives':
+                user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('-datetime_created')
+            case 'done':
+                user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('-datetime_created')
 
         return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form': JobForm()})
-    else:
-        raise PermissionDenied
+
+    raise PermissionDenied
+
+
+@login_required()
+@require_POST
+def job_is_done_assign(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    if job.todo.user == request.user:
+
+        if not job.is_done:
+            job.is_done = True
+            job.user_done_date = date.today()  # for statistics
+            request.user.update_done_jobs()
+            messages.success(request, _('job completed! congrats'))
+        else:
+            job.is_done = False
+            job.user_done_date = None
+            request.user.update_done_jobs(add=False)
+        job.save()
+        return redirect(job.todo.get_absolute_url())
+    raise PermissionDenied
 
 
 @login_required()
@@ -102,15 +107,12 @@ def job_update_view(request, signed_pk, job_id):
     if todo.user == request.user:
 
         job = get_object_or_404(Job, pk=job_id)
-
         form = JobForm(instance=job)
 
         if request.method == 'POST':
             form = JobForm(request.POST, instance=job)
-
             if form.is_valid():
                 job_obj = form.save(commit=False)
-
                 job_obj.user = request.user
                 job_obj.todo = todo
 
@@ -119,8 +121,7 @@ def job_update_view(request, signed_pk, job_id):
                 return redirect('job_update', todo.get_signed_pk(), job.id)
 
         return render(request, 'todo/update_job.html', {'form': form, 'todo': todo, 'job': job})
-    else:
-        raise PermissionDenied
+    raise PermissionDenied
 
 
 class AddTodo(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
@@ -150,23 +151,20 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
     def form_valid(self, form):
         obj = form.save(commit=False)
 
-        todo = self.get_todo_from_kwargs()
-
-        obj.todo = todo
+        obj.todo = self.get_todo_from_kwargs()
         obj.user = self.request.user
+        obj.user_date = date.today()
 
         obj.save()
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        todo = self.get_todo_from_kwargs()
-        messages.error(self.request, _('plz fill the job title field'))
-
-        return redirect(todo.get_absolute_url())
+        messages.error(self.request, _('invalid field value'))
+        return redirect(self.get_todo_from_kwargs().get_absolute_url())
 
     def test_func(self):
         return self.request.user == self.get_todo_from_kwargs().user
-
+#to here
 
 class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Job

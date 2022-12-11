@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.signing import Signer
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.utils.timezone import make_aware
 from datetime import datetime, date
 
 
@@ -47,12 +46,13 @@ class Todo(models.Model):
 
 
 class Job(models.Model):
-    text = models.CharField(max_length=300, verbose_name=_('your job text'))
+    text = models.CharField(max_length=300, verbose_name=_('your job text'),
+                            error_messages={'required': _('Please enter job text')})
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
     is_done = models.BooleanField(default=False)
     # is_important = models.BooleanField(default=False)
-    user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True)
+    user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True, )
     user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)
     user_done_date = models.DateField(null=True, blank=True)
     datetime_created = models.DateTimeField(auto_now_add=True)

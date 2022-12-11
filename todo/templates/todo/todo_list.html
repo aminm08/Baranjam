@@ -51,7 +51,7 @@
 
 
                                                     <div class="col">
-                                                        {{ form.errors }}
+
                                                         <input type="text"
                                                                class="form-control form-control-lg  border-dark"
                                                                placeholder="{% trans 'Add new job' %}" name="text"
@@ -150,7 +150,7 @@
                                             <div class="form-check">
                                                 {% if user == todo.user %}
 
-                                                    <form method="post">
+                                                    <form method="post" action="{% url 'job_assign' user_job.id %}">
                                                         {% csrf_token %}
                                                         {% if user_job.is_done %}
                                                             <input class="form-check-input me-0" type="checkbox"
@@ -159,13 +159,12 @@
                                                                    aria-label="..."
                                                                    onchange="this.form.submit();"
                                                                    checked/>
-                                                            <input type="hidden" name="{{ user_job.id }}">
+
                                                         {% else %}
                                                             <input class="form-check-input me-0" type="checkbox"
                                                                    value=""
                                                                    id="checkboxuser"
-                                                                   aria-label="..." onchange="this.form.submit();"
-                                                                   name="{{ user_job.id }}"/>
+                                                                   aria-label="..." onchange="this.form.submit();"/>
                                                         {% endif %}
                                                     </form>
                                                 {% endif %}
