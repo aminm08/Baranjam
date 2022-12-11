@@ -164,7 +164,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 
     def test_func(self):
         return self.request.user == self.get_todo_from_kwargs().user
-#to here
+
 
 class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
     model = Job
@@ -205,11 +205,9 @@ class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 @login_required()
 def todo_list_detail_and_settings(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
-
     if request.user == todo.user:
         return render(request, 'todo/todo_settings.html', {'todo': todo})
-    else:
-        raise PermissionDenied
+    raise PermissionDenied
 
 
 @login_required()
@@ -221,4 +219,5 @@ def todo_update_list_name(request, pk):
         todo.name = new_name
         todo.save()
         messages.success(request, _('your list name successfully updated'))
-    return redirect('todo_settings', todo.id)
+        return redirect('todo_settings', todo.id)
+    raise PermissionDenied

@@ -97,34 +97,21 @@ class GroupListTests(TestCase):
 
     def test_user_accept_invite_to_join_group(self):
         self.client.login(email=self.email3, password=self.password)
-        temporary_todo = Todo.objects.create(name='temp_todo', user=self.user1)
-        temporary_group_list = GroupList.objects.create(todo=temporary_todo)
-
         temporary_inv = Invitation.objects.create(user_receiver=self.user3, user_sender=self.user1,
-                                                  group_list=temporary_group_list)
-
-        response = self.client.post(reverse('accept_inv', args=[temporary_group_list.id, temporary_inv.id]),
+                                                  group_list=self.group_list_1)
+        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, temporary_inv.id]),
                                     follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(self.user3 in temporary_group_list.users.all())
-        self.assertFalse(Invitation.objects.filter(group_list=temporary_group_list).exists())
-        temporary_group_list.delete()
-        temporary_todo.delete()
+        self.assertTrue(self.user3 in self.group_list_1.users.all())
+        self.assertFalse(Invitation.objects.filter(group_list=self.group_list_1).exists())
 
     def test_user_accept_invite_to_join_group_permission_deny_on_not_receiver_users(self):
         self.client.login(email=self.email2, password=self.password)
-        temporary_todo = Todo.objects.create(name='temp_todo', user=self.user1)
-        temporary_group_list = GroupList.objects.create(todo=temporary_todo)
-
         temporary_inv = Invitation.objects.create(user_receiver=self.user3, user_sender=self.user1,
-                                                  group_list=temporary_group_list)
-
-        response = self.client.post(reverse('accept_inv', args=[temporary_group_list.id, temporary_inv.id]),
+                                                  group_list=self.group_list_1)
+        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, temporary_inv.id]),
                                     follow=True)
         self.assertEqual(response.status_code, 403)
-
-        temporary_group_list.delete()
-        temporary_todo.delete()
 
     def test_remove_user_from_group_list(self):
         self.client.login(email=self.email, password=self.password)

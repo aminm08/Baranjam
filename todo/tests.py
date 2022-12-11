@@ -82,12 +82,11 @@ class TodoPagesTests(TestCase):
         self.client.login(email=self.email, password=self.password)
         response = self.client.post(
             reverse('add_todo'),
-            {'name': 'my_test_todo'},
-            follow=True,
-        )
+            {'name': 'my_test_todo'})
         self.assertEqual(Todo.objects.last().name, 'my_test_todo')
+        self.assertEqual(response.status_code, 302)
 
-    def test_user_todo_lists_add_page_redirect_get_request(self):
+    def test_user_todo_lists_add_only_accepts_get_request(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(reverse('add_todo'))
         self.assertEqual(response.status_code, 405)
@@ -103,20 +102,23 @@ class TodoPagesTests(TestCase):
         response = self.client.get(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
         self.assertEqual(response.status_code, 200)
 
+    def test_delete_todo_template_used(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
+        self.assertTemplateUsed(response, 'todo/todo_delete.html')
+
     def test_todo_delete_page_permission_deny_on_not_owner_users(self):
         self.client.login(email='testuser2@test.com', password=self.password)
         response = self.client.post(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
         self.assertEqual(response.status_code, 403)
 
-    # sorry I had to do 2 tests in 1 case to prevent duplication
     def test_todo_delete_from_db_and_redirect_back(self):
-        self.temporary_todo = Todo.objects.create(name='todo2', user=self.user1)
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('todo_delete', args=[self.temporary_todo.get_signed_pk()]))
-        self.assertFalse(Todo.objects.filter(name='todo2').exists())
+        response = self.client.post(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
+        self.assertEqual(Todo.objects.count(), 0)
         self.assertEqual(response.status_code, 302)
 
-    # todolist details
+    # todo-list details
     def test_todo_list_page_url(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(f'/todo/todo_list/{self.todo_list1.get_signed_pk()}/')
@@ -143,25 +145,16 @@ class TodoPagesTests(TestCase):
 
     def test_todo_list_add_job_form(self):
         self.client.login(email=self.email, password=self.password)
-        data = {
-            'text': 'my_test_job',
-            'user_date': '1401-07-14',
-            'user_time': '12:55:00',
-        }
-        response = self.client.post(
-            f'/todo/job/create/{self.todo_list1.pk}/',
-            data,
-            follow=True
-        )
-
+        data = {'text': 'my_test_job', 'user_date': '1401-07-14', 'user_time': '12:55:00', }
+        response = self.client.post(f'/todo/job/create/{self.todo_list1.pk}/', data, )
         self.assertEqual(Job.objects.last().text, 'my_test_job')
+        self.assertEqual(response.status_code, 302)
 
     def test_todo_list_show_added_job(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(self.todo_list1.get_absolute_url())
         self.assertContains(response, self.job1.text)
         self.assertContains(response, self.job2.text)
-        self.assertContains(response, Job.objects.last().text)
 
     # job delete
 
@@ -176,10 +169,9 @@ class TodoPagesTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_is_job_deleted_from_db(self):
-        self.temporary_job = Job.objects.create(text='job2', user=self.user1, todo=self.todo_list1)
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('job_delete', args=[self.temporary_job.id]))
-        self.assertFalse(Todo.objects.filter(name='job2'))
+        response = self.client.post(reverse('job_delete', args=[self.job1.id]))
+        self.assertFalse(Job.objects.filter(text=self.job1.text))
 
     # job update
 
@@ -201,8 +193,9 @@ class TodoPagesTests(TestCase):
     def test_job_update_form(self):
         self.client.login(email=self.email, password=self.password)
         data = {'text': 'new_update', 'user_date': '1401-07-14', 'user_time': '12:55:00', }
-        self.client.post(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]), data, follow=True)
+        response = self.client.post(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]), data)
         self.assertTrue(Job.objects.filter(text='new_update').exists())
+        self.assertEqual(response.status_code, 302)
 
     def test_job_update_template_used(self):
         self.client.login(email=self.email, password=self.password)
@@ -237,14 +230,17 @@ class TodoPagesTests(TestCase):
 
     # change todo name
 
-    def test_todo_update_name_url(self):
+    def test_todo_update_list_name(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(reverse('update_todo_name', args=[self.todo_list1.id]), {'name': 'new_todo'},
-                                    follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Todo.objects.last().name, 'new_todo')
+        response = self.client.post(reverse('update_todo_name', args=[self.todo_list1.id]), {'name': 'new_name'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Todo.objects.last().name, 'new_name')
 
-    # attention: this test deletes all jobs of todo_list_1
+    def test_todo_update_list_name_denys_not_owner_permission(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.post(reverse('update_todo_name', args=[self.todo_list1.id]), {'name': 'new_name'})
+        self.assertEqual(response.status_code, 403)
+
     def test_todo_apply_options_functionality(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '1'})
