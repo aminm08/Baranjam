@@ -27,6 +27,10 @@ class ContactUs(SuccessMessageMixin, generic.CreateView):
     success_url = reverse_lazy('homepage')
     success_message = _('successfully sent')
 
+    def form_invalid(self, form):
+        print(form.errors)
+        return super().form_invalid(form)
+
 
 @login_required
 def dashboard_view(request):

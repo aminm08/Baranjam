@@ -7,6 +7,7 @@ from .forms import CustomUserChangeForm, CustomUserCreationForm
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
+
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     fieldsets = UserAdmin.fieldsets + (
@@ -16,4 +17,4 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('profile_picture', 'all_jobs_done'), }),
     )
 
-    list_display = ['username', 'email', ]
+    list_display = ['id','username', 'email', 'date_joined', 'last_login']

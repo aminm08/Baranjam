@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'jalali_date',
     'rosetta',
+    'phonenumber_field',
 
     # my apps
     'accounts',
@@ -215,3 +216,4 @@ JALALI_DATE_DEFAULTS = {
         }
     },
 }
+PHONENUMBER_DEFAULT_FORMAT = "INTERNATIONAL"

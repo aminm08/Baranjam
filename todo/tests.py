@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-
+from jalali_date import date2jalali
 from .models import Todo, Job
-from datetime import date, time
+from datetime import date
 
 
 class TodoPagesTests(TestCase):
@@ -134,21 +134,52 @@ class TodoPagesTests(TestCase):
         response = self.client.get(self.todo_list1.get_absolute_url())
         self.assertContains(response, self.todo_list1.name)
 
-    def test_login_redirect_from_todo_list_url(self):
+    def test_login_redirect_from_todo_list_url_for_anonymous(self):
         response = self.client.get(self.todo_list1.get_absolute_url())
         self.assertEqual(response.status_code, 302)
+
+    def test_todo_list_content_filter_by_done(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(self.todo_list1.get_absolute_url(), {'filter': 'done'})
+        self.assertContains(response, self.job2.text)
+        self.assertNotContains(response, self.job1.text)
+
+    def test_todo_list_content_filter_by_actives(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(self.todo_list1.get_absolute_url(), {'filter': 'actives'})
+        self.assertContains(response, self.job1.text)
+        self.assertNotContains(response, self.job2.text)
+
+    def test_todo_list_content_filter_by_all(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.get(self.todo_list1.get_absolute_url(), {'filter': 'all'})
+        self.assertContains(response, self.job1.text)
+        self.assertContains(response, self.job2.text)
 
     def test_todo_list_template(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.get(self.todo_list1.get_absolute_url())
         self.assertTemplateUsed(response, 'todo/todo_list.html')
 
-    def test_todo_list_add_job_form(self):
+    def test_todo_list_deny_not_owner_user_permission(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.get(self.todo_list1.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+
+    # test create job
+    def test_create_job_view(self):
         self.client.login(email=self.email, password=self.password)
         data = {'text': 'my_test_job', 'user_date': '1401-07-14', 'user_time': '12:55:00', }
-        response = self.client.post(f'/todo/job/create/{self.todo_list1.pk}/', data, )
+        response = self.client.post(f'/todo/job/create/{self.todo_list1.pk}/', data)
         self.assertEqual(Job.objects.last().text, 'my_test_job')
+        self.assertEqual(str(date2jalali(Job.objects.last().user_date)), '1401-07-14')
+        self.assertEqual(str(Job.objects.last().user_time), '12:55:00')
         self.assertEqual(response.status_code, 302)
+
+    def test_create_job_denying_not_owner_users_request(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.post(reverse('job_create', args=[self.todo_list1.id]), {'text': 'my_test_job'})
+        self.assertEqual(response.status_code, 403)
 
     def test_todo_list_show_added_job(self):
         self.client.login(email=self.email, password=self.password)
@@ -241,13 +272,52 @@ class TodoPagesTests(TestCase):
         response = self.client.post(reverse('update_todo_name', args=[self.todo_list1.id]), {'name': 'new_name'})
         self.assertEqual(response.status_code, 403)
 
-    def test_todo_apply_options_functionality(self):
+    # todo apply option
+    def test_todo_apply_options_delete_all_jobs(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '1'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(self.todo_list1.jobs.exists(), False)
+        self.assertFalse(self.todo_list1.jobs.exists())
+
+    def test_todo_apply_options_delete_finished_jobs(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '2'})
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(self.todo_list1.jobs.filter(is_done=True).exists())
+
+    def test_todo_apply_options_active_all_jobs(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '3'})
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(self.todo_list1.jobs.filter(is_done=True).exists())
+
+    def test_todo_apply_options_finish_all_jobs(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '4'})
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(self.todo_list1.jobs.filter(is_done=False).exists())
 
     def test_todo_apply_options_permission_deny_on_not_owners(self):
         self.client.login(email=self.email2, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '1'})
+        self.assertEqual(response.status_code, 403)
+
+    # todo_list_jobs set status
+    def test_set_job_status_to_done(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('job_assign', args=[self.job1.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Job.objects.get(text=self.job1.text).is_done)
+        self.assertTrue(Job.objects.get(text=self.job1.text).user_done_date)
+
+    def test_set_job_status_to_todo(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('job_assign', args=[self.job2.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Job.objects.get(text=self.job2.text).is_done)
+        self.assertFalse(Job.objects.get(text=self.job2.text).user_done_date)
+
+    def test_set_job_denys_not_owner_access(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.post(reverse('job_assign', args=[self.job2.id]))
         self.assertEqual(response.status_code, 403)

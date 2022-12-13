@@ -1,6 +1,13 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% block links %}
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+{% endblock links %}
 {% block meta %}
     <meta name="description" content="share your criticisms and suggestions with me">
 {% endblock meta %}
@@ -10,24 +17,61 @@
 
 
 {% block content %}
+    <style>
+        .r-plc::placeholder {
+            text-align: right;
+        }
+
+
+    </style>
     <h1 class="text-center mt-3">{% trans 'Contact me' %}</h1>
     <div class="container">
-        <div class="row" dir="rtl">
-            <div  dir="ltr">
-                <button class="fab fa-github bg-transparent border-0" style="font-size: 40px;"
+
+
+        <div class="col-6 col-sm-4 offset-md-2 mt-auto">
+
+            <div dir="ltr">
+                <button class="fab fa-github bg-transparent border-0 mb-2" style="font-size: 40px;"
                         onclick="window.open('https://github.com/aminm08/', '_blank')">
 
                 </button>
 
             </div>
+        </div>
+        <div class="col-md-5 m-auto">
             <form method="post" class="mb-lg-5">
                 {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-success">{% trans 'Submit' %}</button>
+                {{ form.non_field_errors }}
+
+
+                <input type="text" class="form-control  form mt-2"
+                       aria-describedby="emailHelp"
+                       placeholder="{% trans 'your full name' %}  " name="full_name" required>
+                {{ form.full_name.errors }}
+                <input type="email" class="form-control mt-2 mb-2"
+                       placeholder="{% trans 'your email' %}  "
+                       name="email" required>
+                {{ form.email.errors }}
+
+                <input id="phone" type="tel" name="phone_number" required class="form-control ">
+                {{ form.phone_number.errors }}
+
+                <textarea class="form-control mt-2 float-start" name="message" id="message"
+                          placeholder="{% trans 'your message' %}" required rows="5"></textarea>
+                {{ form.message.errors }}
+                <button type="submit" class="btn btn-success float-end mt-3">{% trans 'Submit' %}</button>
 
 
             </form>
         </div>
     </div>
+
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+    </script>
 
 {% endblock content %}

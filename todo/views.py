@@ -153,7 +153,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 
         obj.todo = self.get_todo_from_kwargs()
         obj.user = self.request.user
-        obj.user_date = date.today()
+
 
         obj.save()
         return super().form_valid(form)

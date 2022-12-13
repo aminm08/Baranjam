@@ -45,12 +45,27 @@ class GroupListTests(TestCase):
             todo=cls.todo_list1,
             user=cls.user1,
             user_date='1401-08-10',
-            user_time='10:12',
+            user_time='10:12:00',
 
         )
         cls.group_list_1 = GroupList.objects.create(todo=cls.todo_list1)
         cls.group_list_1.users.add(cls.user1)
         cls.group_list_1.users.add(cls.user2)
+
+    def test_todo_list_member_can_view_grop_list(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.get(reverse('todo_list', args=[self.todo_list1.get_signed_pk()]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_todo_list_not_member_user_can_not_view_grop_list(self):
+        self.client.login(email=self.email3, password=self.password)
+        response = self.client.get(self.todo_list1.get_absolute_url())
+        self.assertEqual(response.status_code, 403)
+
+    def test_todo_list_member_can_view_grop_list_content(self):
+        self.client.login(email=self.email2, password=self.password)
+        response = self.client.get(reverse('todo_list', args=[self.todo_list1.get_signed_pk()]))
+        self.assertContains(response, self.job1.text)
 
     def test_user_group_lists_page_url(self):
         self.client.login(email=self.email, password=self.password)
@@ -67,11 +82,11 @@ class GroupListTests(TestCase):
         response = self.client.get(reverse('group_lists'))
         self.assertTemplateUsed(response, 'group_lists/add_group_list.html')
 
-    def test_user_group_lists_show_content_only_to_not_owner_user_in_page(self):
+    def test_user_group_lists_dont_show_content_to_owner_user_in_page(self):
         self.client.login(email=self.email2, password=self.password)
         response = self.client.get(reverse('group_lists'))
         self.assertContains(response, self.group_list_1.todo.name)
-        self.assertContains(response, '2')
+        self.assertContains(response, str(len(self.group_list_1.users.all())))
         self.assertContains(response, self.group_list_1.todo.user.username)
 
     def test_user_group_list_does_not_show_list_to_owner_in_page(self):
@@ -138,7 +153,7 @@ class GroupListTests(TestCase):
                                     {'': '', str(self.user3.id): ['']})
         self.assertEqual(response.status_code, 403)
 
-    def test_remove_user_from_group_list_is_not_happening_by_not_owner_users(self):
+    def test_remove_user_from_group_list_is_not_accepting_not_owner_users_request(self):
         self.client.login(email=self.email2, password=self.password)
         response = self.client.post(reverse('delete_group_user', args=[self.group_list_1.id]),
                                     {'': '', str(self.user2.id): ['']})
