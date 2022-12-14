@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'jalali_date',
     'rosetta',
+    'captcha',
 
     # my apps
     'accounts',
@@ -181,7 +182,9 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 4
 
+ACCOUNT_SIGNUP_FORM_CLASS = "accounts.forms.CustomSignupForm"
 # messages framework
 
 MESSAGE_TAGS = {
@@ -215,3 +218,11 @@ JALALI_DATE_DEFAULTS = {
         }
     },
 }
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# captcha
+RECAPTCHA_PUBLIC_KEY = '6LdAKX4jAAAAAOVRIJ1wRhYJWRQbyUB7OdAt4Dh_'
+RECAPTCHA_PRIVATE_KEY = '6LdAKX4jAAAAAFpun1tt7WSB6hEAjRDooo1nAG8n'
+# RECAPTCHA_USE_SSL = True
