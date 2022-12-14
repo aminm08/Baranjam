@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.signing import Signer
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime, date
+
 
 
 class Todo(models.Model):
@@ -50,8 +50,9 @@ class Job(models.Model):
                             error_messages={'required': _('Please enter job text')})
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
-    is_done = models.BooleanField(default=False)
-    # is_important = models.BooleanField(default=False)
+    is_done = models.BooleanField(default=False, verbose_name=_('job is done'))
+    visible = models.BooleanField(default=True, verbose_name=_('job visibility'))
+
     user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True, )
     user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)
     user_done_date = models.DateField(null=True, blank=True)
@@ -63,11 +64,3 @@ class Job(models.Model):
     def get_absolute_url(self):
         signed_pk = self.todo.signer.sign(self.todo.pk)
         return reverse('todo_list', args=[signed_pk])
-    #
-    # def get_time_left(self):
-    #     if not self.is_done and self.user_time and self.user_date:
-    #         print(datetime.today())
-    #         time_left = datetime.combine(self.user_date, self.user_time) - datetime.today()
-    #         return f'{time_left.days} ,{time_left.seconds // 3600}:{(time_left.seconds // 60) % 60}'
-    #     else:
-    #         return 'w'

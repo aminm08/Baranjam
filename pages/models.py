@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from group_lists.models import GroupList
 from django.utils.translation import gettext_lazy as _
-from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import RegexValidator
 
 
@@ -13,6 +12,8 @@ class Contact(models.Model):
                                  message=_("Invalid phone number"))
     phone_number = models.CharField(validators=[phone_regex], max_length=17, verbose_name=_('your phone number'))
     message = models.TextField(verbose_name=_('your Message'))
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('user'))
+    ip_addr = models.GenericIPAddressField(verbose_name=_('user ip address'), null=True)
 
     def __str__(self):
         return self.full_name

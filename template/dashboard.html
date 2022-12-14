@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col">
-                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.all_jobs_done }}</div>
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_all_jobs_done|length }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 mt-3">
+            <div class="col-lg-6 mt-3 mb-4">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>

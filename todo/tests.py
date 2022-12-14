@@ -199,10 +199,16 @@ class TodoPagesTests(TestCase):
         response = self.client.post(reverse('job_delete', args=[self.todo_list1.id]))
         self.assertEqual(response.status_code, 403)
 
-    def test_is_job_deleted_from_db(self):
+    def test_undone_job_delete_from_db(self):
         self.client.login(email=self.email, password=self.password)
         response = self.client.post(reverse('job_delete', args=[self.job1.id]))
         self.assertFalse(Job.objects.filter(text=self.job1.text))
+
+    def test_done_job_change_visibility(self):
+        self.client.login(email=self.email, password=self.password)
+        response = self.client.post(reverse('job_delete', args=[self.job2.id]))
+        self.assertTrue(Job.objects.get(text=self.job2.text))
+        self.assertFalse(Job.objects.get(text=self.job2.text).visible)
 
     # job update
 

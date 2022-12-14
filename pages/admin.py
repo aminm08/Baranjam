@@ -4,7 +4,7 @@ from .models import Contact, Invitation
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'phone_number', 'email']
+    list_display = ['full_name', 'phone_number', 'email', 'user', 'ip_addr']
 
 
 @admin.register(Invitation)

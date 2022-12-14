@@ -7,10 +7,8 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
 
-
-    <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
-    {{ form.media }}
 
 {% endblock links %}
 
@@ -20,13 +18,16 @@
 
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
-    <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
-    {{ form.media }}
+    <style>
+    body{
+        background-color: #fff;
+    }
+    </style>
 
 
-    <section class="vh-100" style="font-family:'Helvetica Neue';">
-        <div class=" container py-5 h-100">
+
+    <section class="vh-100" style="font-family:'Helvetica Neue'; ">
+        <div class=" container py-3 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100 ">
                 <div class="col">
                     <div class="card rounded-2" id="list1" style="border-radius: .75rem; background-color: #eff1f2;">
@@ -48,7 +49,7 @@
 
 
                                                     {% csrf_token %}
-
+                                                    {{ form.media }}
 
                                                     <div class="col">
 
@@ -244,8 +245,9 @@
     </section>
 
 
-    <link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
+
     <script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
+
 {% endblock content %}
 
 

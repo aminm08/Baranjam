@@ -62,6 +62,7 @@ class PagesTests(TestCase):
         self.assertEqual(Contact.objects.last().email, 'maf081378@gmail.com')
         self.assertEqual(Contact.objects.last().phone_number, '09139321878')
         self.assertEqual(Contact.objects.last().message, 'hi')
+        self.assertTrue(Contact.objects.last().ip_addr)
 
     def test_contact_used_template(self):
         response = self.client.get(reverse('contact_us'))
