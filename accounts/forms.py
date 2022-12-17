@@ -21,6 +21,6 @@ class CustomUserChangeForm(forms.ModelForm):
 class CustomSignupForm(forms.Form):
     captcha = ReCaptchaField()
 
-    def save(self, request, user):
-        user = super(CustomSignupForm, self).save(request)
-        return user
+    def signup(self, request, user):
+        """ This function is required otherwise you will get an ImproperlyConfigured exception """
+        pass

@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
-
 class Todo(models.Model):
     name = models.CharField(max_length=50)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='todos')
@@ -51,7 +50,6 @@ class Job(models.Model):
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
     is_done = models.BooleanField(default=False, verbose_name=_('job is done'))
-    visible = models.BooleanField(default=True, verbose_name=_('job visibility'))
 
     user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True, )
     user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)

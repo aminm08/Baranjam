@@ -15,7 +15,7 @@ urlpatterns = [
     re_path('delete/(?P<signed_pk>[0-9]+/[A-Za-z0-9_=-]+)/$', views.TodoDeleteView.as_view(), name='todo_delete'),
 
     path('job/create/<int:todo_id>/', views.CreateJobView.as_view(), name='job_create'),
-    path('job/delete/<int:pk>/', views.delete_job, name='job_delete'),
+    path('job/delete/<int:pk>/', views.JobDeleteView.as_view(), name='job_delete'),
     path('apply/<int:pk>/', views.todo_apply_options_post_view, name='apply_todo_actions'),
 
 ]
