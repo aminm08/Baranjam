@@ -182,3 +182,4 @@ class GroupListTests(TestCase):
         response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]),
                                     {'': ''})
         self.assertEqual(response.status_code, 403)
+    #

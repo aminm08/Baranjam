@@ -2,14 +2,15 @@
 {% extends '_base.html' %}
 {% load static %}
 {% load i18n %}
-
+{% load persian_trans_tags %}
+{% load jalali_tags %}
 {% block title %}Your baranjam dashboard{% endblock title %}
 
 
 {% block content %}
     <!-- Card Body -->
 
-
+    {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
 
         <div class="d-sm-flex align-items-center justify-content-between mb-4" dir="rtl">
@@ -66,7 +67,41 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 mt-3 mb-4">
+            <div class="col-md-3 mt-2 mb-4">
+                <div class="card border-left-info shadow ">
+                    <div class="card-header">
+                        <h6 class=" font-weight-bold text-primary">{% trans 'most productive day' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col">
+                                <div class="row no-gutters align-items-start">
+                                    <div class="text-center">
+                                        <img src="{% static 'icons/accept.png' %}" alt="check icon" width="110"
+                                             height="110" class="mr-3 mb-2">
+                                    </div>
+                                    <div class="col font-weight-bold text-success ml-4">
+                                        {% if LANGUAGE == 'fa' %}
+                                            {{ pd_date|to_jalali:'%Y %B %d' }}{% else %}
+                                            {{ pd_date }}{% endif %}
+
+                                    </div>
+                                    <div class="col font-weight-bold text-success ml-4">
+                                        {% if LANGUAGE == 'fa' %}
+                                            {{ pd_count }} :{% trans "tasks done" %}
+                                        {% else %}
+                                            {% trans "tasks done" %}: {{ pd_count }}
+                                        {% endif %}
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-2 mb-4">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
@@ -91,6 +126,25 @@
                     </div>
                 </div>
             </div>
+            {#            <div class="col-md-3 mt-3">#}
+            {#                <div class="card border-left-info shadow py-2">#}
+            {#                    <div class="card-body">#}
+            {#                        <div class="row no-gutters align-items-center">#}
+            {#                            <div class="col mr-2">#}
+            {#                                <div class=" text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}#}
+            {#                                </div>#}
+            {#                                <div class="row no-gutters align-items-center">#}
+            {#                                    <div class="col">#}
+            {#                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.all_jobs_done }}</div>#}
+            {#                                    </div>#}
+            {#                                </div>#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </div>#}
+
+
         </div>
 
 
@@ -103,7 +157,7 @@
     </div>
     <!-- End of Content Wrapper -->
 
-
+    <br><br>
     {% include 'footer.html' %}
 
 {% endblock content %}

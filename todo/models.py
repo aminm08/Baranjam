@@ -49,6 +49,7 @@ class Job(models.Model):
                             error_messages={'required': _('Please enter job text')})
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
+    duration = models.TimeField(verbose_name=_('job duration'), blank=True, null=True)
     is_done = models.BooleanField(default=False, verbose_name=_('job is done'))
 
     user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True, )

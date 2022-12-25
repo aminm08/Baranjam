@@ -34,7 +34,7 @@ class AccountsPagesTest(TestCase):
         self.assertEqual(get_user_model().objects.last().email, self.email)
         self.assertEqual(get_user_model().objects.last().check_password(self.password), True)
 
-    def test_signup_form(self):
+    def test_signup_form(self):# recaptcha
         response = self.client.post(reverse('account_signup'),
                                     {'username': 'username2', 'email': 'hello@hello.com', 'password1': 'hellopass123',
                                      'captcha_0': 'dummy-value', 'captcha_1': 'PASSED'},

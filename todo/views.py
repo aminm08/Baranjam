@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Count
 from datetime import date
+from pages.utils import get_done_jobs_by_date
 from .forms import JobForm, TodoForm
 from .models import Todo, Job
 
@@ -91,7 +92,14 @@ def job_is_done_assign(request, job_id):
             job.is_done = True
             job.user_done_date = date.today()  # for statistics
             request.user.update_done_jobs()
-            messages.success(request, _('job completed! congrats'))
+
+            l, data = get_done_jobs_by_date(request)
+            if max(data) == data[-1]:
+                messages.success(request, 'broke the record')
+            else:
+                messages.success(request, _('job completed! congrats'))
+
+
         else:
             job.is_done = False
             job.user_done_date = None
@@ -175,21 +183,6 @@ class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
 
     def test_func(self):
         return self.request.user == self.get_object().todo.user
-
-
-# @login_required()
-# @require_POST
-# def delete_job(request, pk):
-#     job = get_object_or_404(Job, pk=pk)
-#     if job.todo.user == request.user:
-#         if job.is_done:
-#             job.visible = False
-#             job.save()
-#         else:
-#             job.delete()
-#         messages.success(request, _('Task successfully deleted of your list'))
-#         return redirect(job.get_absolute_url())
-#     raise PermissionDenied
 
 
 class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):

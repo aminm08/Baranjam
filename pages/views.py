@@ -4,9 +4,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
-from .utils import get_client_ip_address
+from .utils import get_client_ip_address, get_done_jobs_by_date
 import json
-
+from datetime import date
 from .forms import ContactForm
 from .models import Contact
 from todo.models import Todo, Job
@@ -43,20 +43,22 @@ class ContactUs(SuccessMessageMixin, generic.CreateView):
 @login_required
 def dashboard_view(request):
     user_todos = Todo.objects.filter(user=request.user)
-    labels, data = [], []
-    user_done_dates = [str(job.user_done_date) for job in
-                       request.user.jobs.filter(is_done=True).order_by('user_done_date')]
+    labels, data = get_done_jobs_by_date(request)
+    pd = 0
+    for i in data:
+        if i > pd:
+            pd = data.index(i)
 
-    for date in user_done_dates:
-        if date not in labels:
-            labels.append(date)
-
-    data = [user_done_dates.count(i) for i in labels]
+    productive_day_job_count = data[pd]
+    str_date = labels[pd]
+    productive_day_date = date(year=int(str_date[:4]), month=int(str_date[5:7]),day=int(str_date[8:]))
 
     context = {"filename": 'name',
                "collapse": "",
                "labels": json.dumps(list(labels)),
                "data": json.dumps(data),
-               'todos': user_todos
+               'todos': user_todos,
+               'pd_count': productive_day_job_count,
+               'pd_date': productive_day_date,
                }
     return render(request, 'dashboard.html', context)

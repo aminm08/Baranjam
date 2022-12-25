@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 12:08+0330\n"
-"PO-Revision-Date: 2022-12-14 12:05+0330\n"
+"POT-Creation-Date: 2022-12-25 06:25+0330\n"
+"PO-Revision-Date: 2022-12-25 06:29+0330\n"
 "Last-Translator:   <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,6 +22,11 @@ msgstr ""
 #: .\accounts\models.py:9
 msgid "your profile picture"
 msgstr "تصویر پروفایل شما"
+
+#: .\accounts\models.py:10
+#| msgid "job is done"
+msgid "all jobs done"
+msgstr "تمام کارهایی که تا الان انجام دادی"
 
 #: .\accounts\views.py:16
 msgid "your profile updated successfully"
@@ -68,47 +74,47 @@ msgstr "دعوت پذیرفته شد . در حال حاضر شما عضوی از
 msgid "user successfully deleted from list"
 msgstr "کاربر با موفقیت از لیست شما حذف شد"
 
-#: .\pages\models.py:10
+#: .\pages\models.py:9
 msgid "your Full Name"
 msgstr "نام کامل شما"
 
-#: .\pages\models.py:11
+#: .\pages\models.py:10
 msgid "your Email"
 msgstr "ایمیل شما"
 
-#: .\pages\models.py:13
+#: .\pages\models.py:12
 msgid "Invalid phone number"
 msgstr "شماره تلفن نامعتبر است"
 
-#: .\pages\models.py:14
+#: .\pages\models.py:13
 msgid "your phone number"
 msgstr "شماره موبایل"
 
-#: .\pages\models.py:15
+#: .\pages\models.py:14
 msgid "your Message"
 msgstr "پیام شما"
 
-#: .\pages\models.py:16
+#: .\pages\models.py:15
 msgid "user"
 msgstr "کاربر"
 
-#: .\pages\models.py:17
+#: .\pages\models.py:16
 msgid "user ip address"
 msgstr "آدرس آیپی کاربر"
 
-#: .\pages\models.py:25
+#: .\pages\models.py:24
 msgid "the sender user"
 msgstr "کاربر فرستنده"
 
-#: .\pages\models.py:27
+#: .\pages\models.py:26
 msgid "the receiver user"
 msgstr "کاربر دریافت کننده"
 
-#: .\pages\models.py:29
+#: .\pages\models.py:28
 msgid "group list"
 msgstr "لیست گروهی"
 
-#: .\pages\models.py:30
+#: .\pages\models.py:29
 msgid "date time created"
 msgstr "تاریخ ساخت"
 
@@ -124,7 +130,7 @@ msgstr "بَراَنجام"
 msgid "My todo lists"
 msgstr "لیست-انجام های من"
 
-#: .\template\_base.html:57 .\template\dashboard.html:16
+#: .\template\_base.html:57 .\template\dashboard.html:17
 msgid "Dashboard"
 msgstr "داشبورد"
 
@@ -165,12 +171,12 @@ msgid "Logout"
 msgstr "خروج"
 
 #: .\template\_base.html:156 .\template\account\login.html:33
-#: .\template\account\login.html:71 .\template\account\signup.html:84
+#: .\template\account\login.html:71 .\template\account\signup.html:90
 msgid "Login"
 msgstr "ورود"
 
 #: .\template\_base.html:157 .\template\account\signup.html:34
-#: .\template\account\signup.html:80
+#: .\template\account\signup.html:86
 msgid "Signup"
 msgstr "ثبت نام"
 
@@ -215,19 +221,28 @@ msgstr "ذخیره پروفایل"
 msgid "username"
 msgstr "نام کاربری"
 
-#: .\template\account\signup.html:83
+#: .\template\account\signup.html:89
 msgid "Already Registered?"
 msgstr "قبلا ثبت نام کردی؟"
 
-#: .\template\dashboard.html:37
+#: .\template\dashboard.html:38
 msgid "All tasks you have done"
 msgstr "تمام کارهایی که تا الان انجام دادی"
 
-#: .\template\dashboard.html:54
+#: .\template\dashboard.html:55
 msgid "tasks that you have done today"
 msgstr "کارهایی که امروز انجام دادی"
 
-#: .\template\dashboard.html:72
+#: .\template\dashboard.html:73
+msgid "most productive day"
+msgstr "پرکار ترین روز"
+
+#: .\template\dashboard.html:91 .\template\dashboard.html:93
+#| msgid "All tasks you have done"
+msgid "tasks done"
+msgstr "انجام شده"
+
+#: .\template\dashboard.html:107
 msgid "Your todos"
 msgstr "لیست-انجام های شما "
 
@@ -237,8 +252,8 @@ msgstr "به اپلیکیشن بَراَنجام خوش  آمدید"
 
 #: .\template\homepage.html:36
 msgid ""
-"BarAnjam is a free app that you can use to manage your activities during the "
-"day"
+"BarAnjam is a free app that you can use to manage your activities during the"
+" day"
 msgstr ""
 " بَراَنجام  یک  اپلیکیشن بر پایه وب است که برای برنامه ریزی و مدیریت فعالیت "
 "های روزانه به شما کمک می کند . با ساخت یک حساب شروع کنید."
@@ -301,27 +316,28 @@ msgstr "رایگان است و با عشق ساخته شده "
 msgid "Due date time"
 msgstr "تاریخ پایان "
 
-#: .\todo\models.py:49
+#: .\todo\models.py:48
 msgid "your job text"
 msgstr "متن کار شما "
 
-#: .\todo\models.py:50
+#: .\todo\models.py:49
 msgid "Please enter job text"
 msgstr "لطفا متن فعالیت را وارد کنید"
+
+#: .\todo\models.py:52
+#| msgid "job date"
+msgid "job duration"
+msgstr "مدت فعالیت"
 
 #: .\todo\models.py:53
 msgid "job is done"
 msgstr "فعالیت انجام شده"
 
-#: .\todo\models.py:54
-msgid "job visibility"
-msgstr "نمایش فعالیت"
-
-#: .\todo\models.py:56
+#: .\todo\models.py:55
 msgid "job date"
 msgstr "تاریخ فعالیت"
 
-#: .\todo\models.py:57
+#: .\todo\models.py:56
 msgid "job time"
 msgstr "زمان فعالیت"
 
@@ -413,7 +429,8 @@ msgstr "اعضای گروه"
 
 #: .\todo\templates\todo\todo_settings.html:108
 msgid "share your list with other users and create a group-level list"
-msgstr "لیست های خود را با اعضای دیگر به اشتراک بگذارید و یک لیست گروهی بسازید"
+msgstr ""
+"لیست های خود را با اعضای دیگر به اشتراک بگذارید و یک لیست گروهی بسازید"
 
 #: .\todo\templates\todo\todo_settings.html:115
 msgid "enter users"
@@ -464,62 +481,63 @@ msgstr "اضافه کردن لیست جدید"
 msgid "Close"
 msgstr "بستن"
 
-#: .\todo\views.py:33
+#: .\todo\views.py:35
 msgid "todo list successfully cleared"
 msgstr "لیست-انجام شما با موفقیت خالی شد"
 
-#: .\todo\views.py:38
+#: .\todo\views.py:40
 msgid "finished jobs has deleted successfully"
 msgstr "فعالیت های مختوم با موفقیت حذف شدند"
 
-#: .\todo\views.py:46
+#: .\todo\views.py:48
 msgid "all jobs are now active"
 msgstr "همه ی فعالیت ها فعال شدند"
 
-#: .\todo\views.py:54
+#: .\todo\views.py:56
 msgid "all jobs are now checked"
 msgstr "همه ی فعالیت ها تیک زده شدند"
 
-#: .\todo\views.py:93
+#: .\todo\views.py:100
 msgid "job completed! congrats"
 msgstr "فعالیت انجام شد . آفرین !"
 
-#: .\todo\views.py:118
+#: .\todo\views.py:128
 msgid "your job updated successfully"
 msgstr "فعالیت با موفقیت بروزرسانی شد"
 
-#: .\todo\views.py:130
+#: .\todo\views.py:140
 msgid "Todo list successfully created"
 msgstr "لیست-انجام  شما با موفقیت ساخته شد"
 
-#: .\todo\views.py:142
+#: .\todo\views.py:152
 msgid "Task successfully added to your list"
 msgstr "فعالیت با موفقیت به لیست شما اضافه شد"
 
-#: .\todo\views.py:159
+#: .\todo\views.py:169
 msgid "invalid field value"
 msgstr "مقدار نامعتبر ورودی"
 
-#: .\todo\views.py:176
+#: .\todo\views.py:178
 msgid "Task successfully deleted of your list"
 msgstr "فعالیت با موفقیت از لیست شما حذف شد"
 
-#: .\todo\views.py:188
+#: .\todo\views.py:193
 msgid "todo list successfully deleted"
 msgstr "لیست شما با موفقیت حذف شد"
 
-#: .\todo\views.py:223
+#: .\todo\views.py:228
 msgid "your list name successfully updated"
 msgstr "نام لیست-انجام شما با موفقیت بروزرسانی شد"
+
+#~ msgid "job visibility"
+#~ msgstr "نمایش فعالیت"
 
 #~ msgid "This field is required."
 #~ msgstr "این فیلد اجباری است"
 
-#~| msgid "your Message"
 #~ msgid "Messages"
 #~ msgstr "پیام"
 
-#~| msgid "Statistics"
 #~ msgid "Static Files"
 #~ msgstr "فایل های ثابت"
 
@@ -532,7 +550,6 @@ msgstr "نام لیست-انجام شما با موفقیت بروزرسانی �
 #~ msgid "Enter a valid IPv4 address."
 #~ msgstr "یک ادرس آیپی معتبر وارد کنید"
 
-#~| msgid "enter users"
 #~ msgid "Enter a number."
 #~ msgstr "یک شماره وارد کنید"
 
@@ -554,7 +571,6 @@ msgstr "نام لیست-انجام شما با موفقیت بروزرسانی �
 #~ msgid "URL"
 #~ msgstr "لینک"
 
-#~| msgid "Filter"
 #~ msgid "File"
 #~ msgstr "-"
 
@@ -567,7 +583,6 @@ msgstr "نام لیست-انجام شما با موفقیت بروزرسانی �
 #~ msgid "Enter a valid date/time."
 #~ msgstr "تاریخ و زمان معتبر وارد کنید"
 
-#~| msgid "Yes, Delete"
 #~ msgid "Delete"
 #~ msgstr "حذف"
 
@@ -616,7 +631,6 @@ msgstr "نام لیست-انجام شما با موفقیت بروزرسانی �
 #~ msgid "Forbidden"
 #~ msgstr "ممنوع"
 
-#~| msgid "Yes, Delete"
 #~ msgid "Delete?"
 #~ msgstr "حذف؟"
 
