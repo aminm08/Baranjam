@@ -19,9 +19,9 @@
 
 {% block content %}
     <style>
-    body{
-        background-color: #fff;
-    }
+        body {
+            background-color: #fff;
+        }
     </style>
 
 
@@ -59,7 +59,8 @@
                                                                required>
 
                                                     </div>
-                                                    <div class="datetime col ">
+
+                                                    <div class="col-3">
 
                                                         date:
                                                         <input type="text" name="user_date"
@@ -68,10 +69,13 @@
                                                                id="id_user_datetime_0" placeholder="YYYY-MM-DD">
 
 
-                                                        time:
-                                                        <input type="time" name="user_time"
-                                                               class="vTimeField form-control border-dark"
-                                                               id="id_user_datetime_1" timeformat="24h">
+                                                    </div>
+                                                    <div class="col mr-lg-5">
+                                                        duration:
+                                                        <input type="text" name="duration"
+                                                               class=" form-control border-dark"
+                                                               id="id_user_datetime_1" style="width: 125px;"
+                                                               placeholder="_ _ : _ _">
 
 
                                                     </div>
@@ -180,20 +184,29 @@
                                                        style="color:#000000"><p
                                                             class="lead fw-normal mb-0">{{ user_job.text|truncatechars:30 }}</p>
                                                     </a>
-
-
-
-
                                                 {% endif %}
 
 
-                                                <p class="small mr-lg-3  mb-0 text-muted" title="Created date"><i
-                                                        class="fas fa-info-circle me-2"></i>{% trans 'created' %}:
-                                                    {{ user_job.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
-                                                </p>
+
+
+                                                {% if user_job.is_done %}
+                                                    <p class="small mr-lg-3  mb-0 text-muted" title="Created date"><i
+                                                            class="fas fa-info-circle me-2"></i>done date:
+                                                        {% if LANGUAGE == 'fa' %}
+                                                            {{ user_job.user_done_date|to_jalali:'%Y %B %d'|translate_numbers }}{% else %}
+                                                            {{ user_job.user_done_date }}{% endif %}
+                                                    </p>
+                                                {% else %}
+                                                    <p class="small mr-lg-3  mb-0 text-muted" title="Created date"><i
+                                                            class="fas fa-info-circle me-2"></i>created:
+                                                        {% if LANGUAGE == 'fa' %}
+                                                            {{ user_job.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}{% else %}
+                                                            {{ user_job.datetime_created }}{% endif %}
+                                                    </p>
+                                                {% endif %}
 
                                             </div>
-                                            {% if user_job.user_date or user_job.user_time %}
+                                            {% if user_job.user_date or user_job.user_time or user_job.duration %}
                                                 <div class="py-2 px-3 me-2 border border-warning rounded-3 d-flex  align-items-center bg-light">
                                                     <p class="small mb-0">
                                                         {% if user_job.user_date %}
@@ -207,9 +220,16 @@
                                                             <i class="fas fa-solid fa-clock me-2 text-info ml-1"></i>
                                                             {{ user_job.user_time|translate_numbers }}
                                                         {% endif %}
+
+                                                        {% if user_job.duration %}
+
+                                                            <i class="fas fa-solid fa-clock me-2 text-info ml-1"></i>
+                                                            {{ user_job.get_duration }}
+                                                        {% endif %}
                                                     </p>
                                                 </div>
                                             {% endif %}
+
                                             {% if todo.user == user %}
                                                 <div class="image-parent form-inline">
                                                     <form action="{% url 'job_delete' user_job.id %}" method="post"

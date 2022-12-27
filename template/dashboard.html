@@ -77,8 +77,8 @@
                             <div class="col">
                                 <div class="row no-gutters align-items-start">
                                     <div class="text-center">
-                                        <img src="{% static 'icons/accept.png' %}" alt="check icon" width="110"
-                                             height="110" class="mr-3 mb-2">
+                                        <img src="{% static 'icons/accept.png' %}" alt="check icon" width="100"
+                                             height="100" class="mr-3 mb-2">
                                     </div>
                                     <div class="col font-weight-bold text-success ml-4">
                                         {% if LANGUAGE == 'fa' %}
@@ -101,6 +101,37 @@
                     </div>
                 </div>
             </div>
+            {% if spent_h or spent_m %}
+
+                <div class="col-md-3 mt-2 mb-4">
+                    <div class="card border-left-info shadow ">
+                        <div class="card-header">
+                            <h6 class=" font-weight-bold text-primary"><i class="fas fa-solid fa-clock text-info"></i>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col">
+                                    <div class="row no-gutters align-items-start">
+                                        <div class="col font-weight-bold text-success ml-4">
+                                            <p class="text-info text-center" style="font-size: 18px;">submitted time
+                                                that
+                                                <br> you spent on tasks </p>
+
+                                            <p class="text-center"> {% if spent_h %} {{ spent_h }} hours {% endif %}
+                                                {% if spent_m %} {{ spent_m }} minutes {% endif %}</p>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+
             <div class="col-lg-6 mt-2 mb-4">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
@@ -126,23 +157,6 @@
                     </div>
                 </div>
             </div>
-            {#            <div class="col-md-3 mt-3">#}
-            {#                <div class="card border-left-info shadow py-2">#}
-            {#                    <div class="card-body">#}
-            {#                        <div class="row no-gutters align-items-center">#}
-            {#                            <div class="col mr-2">#}
-            {#                                <div class=" text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}#}
-            {#                                </div>#}
-            {#                                <div class="row no-gutters align-items-center">#}
-            {#                                    <div class="col">#}
-            {#                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.all_jobs_done }}</div>#}
-            {#                                    </div>#}
-            {#                                </div>#}
-            {#                            </div>#}
-            {#                        </div>#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#            </div>#}
 
 
         </div>

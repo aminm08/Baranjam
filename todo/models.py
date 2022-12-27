@@ -63,3 +63,11 @@ class Job(models.Model):
     def get_absolute_url(self):
         signed_pk = self.todo.signer.sign(self.todo.pk)
         return reverse('todo_list', args=[signed_pk])
+
+    def get_duration(self):
+        if self.duration.hour and self.duration.minute:
+            return '%d hours, %d minutes' % (self.duration.hour, self.duration.minute)
+        elif self.duration.hour and not self.duration.minute:
+            return '%d hours ' % self.duration.hour
+        else:
+            return '%d minutes' % self.duration.minute
