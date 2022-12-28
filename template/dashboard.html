@@ -4,7 +4,8 @@
 {% load i18n %}
 {% load persian_trans_tags %}
 {% load jalali_tags %}
-{% block title %}Your baranjam dashboard{% endblock title %}
+
+{% block title %}Your Baranjam dashboard{% endblock title %}
 
 
 {% block content %}
@@ -25,6 +26,17 @@
                     <div class="card-body">
                         <div class="chart-area">
                             <canvas id="myAreaChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-9">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="barChart"></canvas>
                         </div>
                     </div>
 
@@ -131,6 +143,35 @@
                 </div>
             {% endif %}
 
+            <div class="col-md-3 mt-2 mb-4">
+                <div class="card border-left-info shadow ">
+                    <div class="card-header">
+                        <p>
+
+                        <h6 class=" font-weight-bold text-primary">{% trans 'today status' %}</h6>
+
+
+                        <img class="float-end" src="/static/icons/{{ arrow }}.png" alt="arrow icon" width="30"
+                             height="30">
+                        </p>
+
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col">
+                                <div class="row no-gutters align-items-start">
+
+                                    <div class="col font-weight-bold text-success text-center">
+                                        {{ status }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="col-lg-6 mt-2 mb-4">
                 <div class="card shadow mb-4">
@@ -198,6 +239,7 @@
 
         // Area Chart Example
         var ctx = document.getElementById("myAreaChart");
+        var area = document.getElementById("barChart");
         var myLineChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -285,6 +327,35 @@
                 }
             }
         });
+
+        var BarChart = new Chart(area, {
+            type: 'bar',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [
+                    {
+                        label: "tasks done ",
+                        data: {{ data|safe }},
+                        borderColor: "rgb(255,0,0)",
+                        backgroundColor: "rgb(255,0,0)",
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Bar Chart'
+                    }
+                }
+            },
+        });
+
+
     </script>
 
 {% endblock script %}

@@ -1,4 +1,6 @@
 from datetime import timedelta
+import numpy as np
+import math
 
 
 def get_client_ip_address(request):
@@ -37,4 +39,24 @@ def get_total_hours_spent(request):
 
     return h, m
 
-# return '%d hours %02d minutes %02d seconds' % (h, m, s)
+
+def get_status(data):
+    today_status = data[-1] - math.ceil(np.mean(data))
+    if today_status < 0:
+        today_status = f'{abs(today_status)} job away from average'
+        arrow = 'falling_arrow'
+    elif today_status == 0:
+        today_status = 'you are on average'
+        arrow = 'rising_arrow'
+    else:
+        today_status = f'{today_status} job up the average'
+        arrow = 'rising_arrow'
+    return today_status, arrow
+
+
+def get_max(data):
+    productive_day = 0
+    for i in data:
+        if i > productive_day:
+            productive_day = data.index(i)
+    return productive_day
