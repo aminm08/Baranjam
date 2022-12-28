@@ -4,12 +4,63 @@
 {% load i18n %}
 {% load persian_trans_tags %}
 {% load jalali_tags %}
+{% load dashboard_tags %}
 
 {% block title %}Your Baranjam dashboard{% endblock title %}
 
 
 {% block content %}
     <!-- Card Body -->
+    <style>
+
+
+        .order-card {
+            color: #fff;
+        }
+
+        .bg-c-blue {
+            background: linear-gradient(45deg, #4099ff, #73b4ff);
+        }
+
+        .bg-c-green {
+            background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+        }
+
+        .bg-c-yellow {
+            background: linear-gradient(45deg, #FFB64D, #ffcb80);
+        }
+
+        .bg-c-pink {
+            background: linear-gradient(45deg, #FF5370, #ff869a);
+        }
+
+
+        .card {
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+            box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+            border: none;
+            margin-bottom: 30px;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .card .card-block {
+            padding: 25px;
+        }
+
+        .order-card i {
+            font-size: 26px;
+        }
+
+        .f-left {
+            float: left;
+        }
+
+        .f-right {
+            float: right;
+        }
+    </style>
 
     {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
@@ -19,6 +70,53 @@
 
         </div>
         <div class="row justify-content-start">
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-blue order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
+                        <h2 class="text-right"><i
+                                class="fas fa-tasks f-left"></i><span>{{ user.all_jobs_done }}</span></h2>
+                        {#                        <p class="m-b-0">{% trans "Completed jobs" %}<span class="f-right">{{ user.all_jobs_done }}</span></p>#}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-green order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "Today tasks done" %}</h6>
+                        <h2 class="text-right"><i
+                                class="fa fa-rocket f-left"></i><span>{{ user.get_user_today_completed_tasks|length }}</span>
+                        </h2>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-yellow order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "Today status" %}</h6>
+                        <h2 class="text-right"><img src="/static/icons/{{ arrow }}.png"
+                                                    alt="arrow icon" width="30"
+                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                                                     class="">{{ status }}</span>
+                        </h2>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-pink order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "Today hours spent" %}</h6>
+                        <h2 class="text-right"><i class="fas fa-solid fa-clock f-left"></i><span>486</span></h2>
+
+                    </div>
+                </div>
+            </div>
+
 
             <div class="col-md-9">
 
@@ -31,55 +129,7 @@
 
                 </div>
             </div>
-            <div class="col-md-9">
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="barChart"></canvas>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-left-info shadow py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class=" text-right font-weight-bold text-info  mb-2">{% trans 'All tasks you have done' %}
-                                </div>
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col">
-                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.all_jobs_done }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-left-info shadow  py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters">
-                            <div class="col mr-2">
-                                <div class="text-right font-weight-bold text-info  mb-2">{% trans 'tasks that you have done today' %}
-                                </div>
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col">
-                                        <div class="h5 mb-0 mr-3 font-weight-bold text-success text-center ml-3">{{ user.get_user_today_completed_tasks|length }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mt-2 mb-4">
+            <div class="col-md-3">
                 <div class="card border-left-info shadow ">
                     <div class="card-header">
                         <h6 class=" font-weight-bold text-primary">{% trans 'most productive day' %}</h6>
@@ -89,8 +139,8 @@
                             <div class="col">
                                 <div class="row no-gutters align-items-start">
                                     <div class="text-center">
-                                        <img src="{% static 'icons/accept.png' %}" alt="check icon" width="100"
-                                             height="100" class="mr-3 mb-2">
+                                        <img src="{% static 'icons/accept.png' %}" alt="check icon" width="75"
+                                             height="75" class="mr-3 mb-2">
                                     </div>
                                     <div class="col font-weight-bold text-success ml-4">
                                         {% if LANGUAGE == 'fa' %}
@@ -113,68 +163,23 @@
                     </div>
                 </div>
             </div>
-            {% if spent_h or spent_m %}
-
-                <div class="col-md-3 mt-2 mb-4">
-                    <div class="card border-left-info shadow ">
-                        <div class="card-header">
-                            <h6 class=" font-weight-bold text-primary"><i class="fas fa-solid fa-clock text-info"></i>
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col">
-                                    <div class="row no-gutters align-items-start">
-                                        <div class="col font-weight-bold text-success ml-4">
-                                            <p class="text-info text-center" style="font-size: 18px;">submitted time
-                                                that
-                                                <br> you spent on tasks </p>
-
-                                            <p class="text-center"> {% if spent_h %} {{ spent_h }} hours {% endif %}
-                                                {% if spent_m %} {{ spent_m }} minutes {% endif %}</p>
 
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+            <div class="col-md-6">
 
-            <div class="col-md-3 mt-2 mb-4">
-                <div class="card border-left-info shadow ">
-                    <div class="card-header">
-                        <p>
-
-                        <h6 class=" font-weight-bold text-primary">{% trans 'today status' %}</h6>
-
-
-                        <img class="float-end" src="/static/icons/{{ arrow }}.png" alt="arrow icon" width="30"
-                             height="30">
-                        </p>
-
-
-                    </div>
+                <div class="card">
                     <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col">
-                                <div class="row no-gutters align-items-start">
-
-                                    <div class="col font-weight-bold text-success text-center">
-                                        {{ status }}
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="chart-area">
+                            <canvas id="barChart"></canvas>
                         </div>
                     </div>
+
                 </div>
             </div>
 
 
-            <div class="col-lg-6 mt-2 mb-4">
-                <div class="card shadow mb-4">
+            <div class="col-lg-6">
+                <div class="card shadow ">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
                     </div>
@@ -199,21 +204,42 @@
                 </div>
             </div>
 
+            {% if spent_h or spent_m %}
+
+                <div class="col-md-3 mt-2 ">
+                    <div class="card border-left-info shadow ">
+                        <div class="card-header">
+                            <h6 class=" font-weight-bold text-primary"><i
+                                    class="fas fa-solid fa-clock text-info"> {% trans "Spent time" %}</i>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col">
+                                    <div class="row no-gutters align-items-start">
+                                        <div class="col font-weight-bold text-success ml-4">
+
+                                            <p class="text-center"> {% if spent_h %} {{ spent_h }} hours {% endif %}
+                                                {% if spent_m %} {{ spent_m }} minutes {% endif %}</p>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
 
         </div>
 
-
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- End of Main Content -->
 
-
-    </div>
-    <!-- End of Content Wrapper -->
 
     <br><br>
-    {% include 'footer.html' %}
+
 
 {% endblock content %}
 
@@ -333,11 +359,12 @@
             data: {
                 labels: {{ labels|safe }},
                 datasets: [
+
                     {
-                        label: "tasks done ",
-                        data: {{ data|safe }},
-                        borderColor: "rgb(255,0,0)",
-                        backgroundColor: "rgb(255,0,0)",
+                        label: "hours spent ",
+                        data: {{ spent_time|safe }},
+                        borderColor: "rgb(0,255,255)",
+                        backgroundColor: "rgb(0,255,255)",
                     },
                 ],
             },

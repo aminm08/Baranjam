@@ -12,10 +12,6 @@ class CustomUser(AbstractUser):
     def get_absolute_url(self):
         return reverse('profile')
 
-    # def get_user_all_jobs_done(self):
-    #     all_jobs_done = self.jobs.filter(is_done=True)
-    #     return all_jobs_done
-
     def update_done_jobs(self, add=True):
         if add:
             self.all_jobs_done += 1

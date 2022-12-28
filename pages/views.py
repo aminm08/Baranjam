@@ -50,7 +50,7 @@ def dashboard_view(request):
     productive_day_job_count = data[pd]
     str_date = labels[pd]
     productive_day_date = date(year=int(str_date[:4]), month=int(str_date[5:7]), day=int(str_date[8:]))
-
+    spent_time = get_daily_hour_spent(request, labels)
     h, m = get_total_hours_spent(request)
 
     context = {"filename": 'name',
@@ -64,5 +64,6 @@ def dashboard_view(request):
                'spent_m': m,
                'status': status,
                'arrow': arrow,
+               'spent_time': json.dumps(spent_time)
                }
     return render(request, 'dashboard.html', context)

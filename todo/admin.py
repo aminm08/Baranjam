@@ -11,6 +11,6 @@ class TodoAdmin(admin.ModelAdmin):
 
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
-    list_display = ['text', 'todo', 'user', 'is_done', 'datetime_created']
+    list_display = ['text', 'todo', 'user', 'is_done', 'datetime_created', 'user_done_date', 'duration']
 
-    search_fields = ('text', 'user__username',)
+    search_fields = ('text', 'user__username','duration', 'user_done_date')

@@ -25,6 +25,23 @@ def get_done_jobs_by_date(request):
     return labels, data
 
 
+def get_daily_hour_spent(request, labels):
+    spent_time = []
+    i = 0
+    for date in labels:
+        time = 0
+        user_jobs = request.user.jobs.filter(is_done=True, user_done_date=date)
+        for job in user_jobs:
+            if job.duration:
+                time += job.duration.hour + job.duration.minute / 60
+        spent_time.append(time)
+
+    return spent_time
+
+
+# user_jobs = request.user.jobs.filter(is_done=True).order_by('user_done_date')
+
+
 def get_total_hours_spent(request):
     jobs = request.user.jobs.filter(is_done=True)
     durations = [str(i.duration) for i in jobs if i.duration]
