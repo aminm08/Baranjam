@@ -4,14 +4,13 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Count
 from datetime import date
-from pages.utils import get_done_jobs_by_date
 from .forms import JobForm, TodoForm
 from .models import Todo, Job
 
@@ -92,12 +91,7 @@ def job_is_done_assign(request, job_id):
             job.is_done = True
             job.user_done_date = date.today()  # for statistics
             request.user.update_done_jobs()
-
-            l, data = get_done_jobs_by_date(request)
-            if max(data) == data[-1]:
-                messages.success(request, 'broke the record')
-            else:
-                messages.success(request, _('job completed! congrats'))
+            messages.success(request, _('job completed! congrats'))
 
 
         else:

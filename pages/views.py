@@ -10,7 +10,6 @@ from datetime import date
 from .forms import ContactForm
 from .models import Contact
 from todo.models import Todo, Job
-import math, numpy
 
 
 def homepage(request):
@@ -44,26 +43,33 @@ class ContactUs(SuccessMessageMixin, generic.CreateView):
 @login_required
 def dashboard_view(request):
     user_todos = Todo.objects.filter(user=request.user)
-    labels, data = get_done_jobs_by_date(request)
-    status, arrow = get_status(data)
-    pd = get_max(data)
-    productive_day_job_count = data[pd]
-    str_date = labels[pd]
-    productive_day_date = date(year=int(str_date[:4]), month=int(str_date[5:7]), day=int(str_date[8:]))
-    spent_time = get_daily_hour_spent(request, labels)
-    h, m = get_total_hours_spent(request)
+
+    graph_dates, graph_jobs = get_done_jobs_and_their_dates(request)
+
+    user_today_status, status_arrow = get_user_today_status(graph_jobs)
+    all_spent_time = get_daily_hour_spent(request, graph_dates)
+
+    productive_day_date, productive_day_job_count, productive_day_hours_spent = get_most_productive_day_info(graph_jobs,
+                                                                                                             all_spent_time,
+                                                                                                             graph_dates)
+
+    productive_day_date = date(year=int(productive_day_date[:4]), month=int(productive_day_date[5:7]),
+                               day=int(productive_day_date[8:]))
+    hours, minutes = get_total_hours_spent(request)
 
     context = {"filename": 'name',
                "collapse": "",
-               "labels": json.dumps(list(labels)),
-               "data": json.dumps(data),
+               "labels": json.dumps(list(graph_dates)),
+               "data": json.dumps(graph_jobs),
                'todos': user_todos,
                'pd_count': productive_day_job_count,
+               'pd_time': productive_day_hours_spent,
                'pd_date': productive_day_date,
-               'spent_h': h,
-               'spent_m': m,
-               'status': status,
-               'arrow': arrow,
-               'spent_time': json.dumps(spent_time)
+               'spent_h': hours,
+               'spent_m': minutes,
+               'status': user_today_status,
+               'arrow': status_arrow,
+               'spent_time': json.dumps(all_spent_time),
+               'spent_today': all_spent_time[-1]
                }
     return render(request, 'dashboard.html', context)

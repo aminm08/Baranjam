@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from jalali_date import date2jalali
 from .models import Todo, Job
-from datetime import date
 
 
 class TodoPagesTests(TestCase):
@@ -36,14 +35,16 @@ class TodoPagesTests(TestCase):
             todo=cls.todo_list1,
             user=cls.user1,
             user_date='1401-08-10',
-            user_time='10:12',
+            duration='1:00',
 
         )
         cls.job2 = Job.objects.create(
             text='job2',
             todo=cls.todo_list1,
             user=cls.user1,
-            is_done=True
+            is_done=True,
+            duration='0:30',
+            user_done_date='1401-10-8'
         )
 
     # user_todos
@@ -169,11 +170,11 @@ class TodoPagesTests(TestCase):
     # test create job
     def test_create_job_view(self):
         self.client.login(email=self.email, password=self.password)
-        data = {'text': 'my_test_job', 'user_date': '1401-07-14', 'user_time': '12:55:00', }
+        data = {'text': 'my_test_job', 'user_date': '1401-07-14', 'duration': '1:0', }
         response = self.client.post(f'/todo/job/create/{self.todo_list1.pk}/', data)
         self.assertEqual(Job.objects.last().text, 'my_test_job')
         self.assertEqual(str(date2jalali(Job.objects.last().user_date)), '1401-07-14')
-        self.assertEqual(str(Job.objects.last().user_time), '12:55:00')
+        self.assertEqual(str(Job.objects.last().duration), '01:00:00')
         self.assertEqual(response.status_code, 302)
 
     def test_create_job_denying_not_owner_users_request(self):
@@ -186,6 +187,12 @@ class TodoPagesTests(TestCase):
         response = self.client.get(self.todo_list1.get_absolute_url())
         self.assertContains(response, self.job1.text)
         self.assertContains(response, self.job2.text)
+        self.assertContains(response, Job.objects.get(text=self.job1.text).get_duration())
+        self.assertContains(response, Job.objects.get(text=self.job2.text).get_duration())
+
+    def test_get_duration_method(self):
+        self.assertEqual(Job.objects.get(text=self.job1.text).get_duration(), '1 hours ')
+        self.assertEqual(Job.objects.get(text=self.job2.text).get_duration(), '30 minutes')
 
     # job delete
 
@@ -216,16 +223,17 @@ class TodoPagesTests(TestCase):
         response = self.client.get(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]))
         self.assertEqual(response.status_code, 200)
 
-    def test_job_update_permission_deny_on_now_owner(self):
+    def test_job_update_permission_deny_on_not_owner(self):
         self.client.login(email=self.email2, password=self.password)
         response = self.client.get(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]))
         self.assertEqual(response.status_code, 403)
 
     def test_job_update_form(self):
         self.client.login(email=self.email, password=self.password)
-        data = {'text': 'new_update', 'user_date': '1401-07-14', 'user_time': '12:55:00', }
+        data = {'text': 'new_update', 'user_date': '1401-07-14', 'duration': '3:0', }
         response = self.client.post(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]), data)
         self.assertTrue(Job.objects.filter(text='new_update').exists())
+        self.assertTrue(Job.objects.filter(duration='03:00:00').exists())
         self.assertEqual(response.status_code, 302)
 
     def test_job_update_template_used(self):

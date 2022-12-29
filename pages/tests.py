@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from todo.models import Todo, Job
 from .models import Contact
 
 
@@ -15,6 +16,20 @@ class PagesTests(TestCase):
             username=cls.email,
             email=cls.email,
             password=cls.password,
+        )
+
+        cls.todo_list1 = Todo.objects.create(
+            name='todo_test',
+            user=cls.user1
+        )
+
+        cls.job2 = Job.objects.create(
+            text='job2',
+            todo=cls.todo_list1,
+            user=cls.user1,
+            is_done=True,
+            duration='0:30',
+            user_done_date='1401-10-8'
         )
 
     def test_homepage_url(self):

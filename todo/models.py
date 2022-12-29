@@ -65,6 +65,7 @@ class Job(models.Model):
         return reverse('todo_list', args=[signed_pk])
 
     def get_duration(self):
+
         if self.duration.hour and self.duration.minute:
             return '%d hours, %d minutes' % (self.duration.hour, self.duration.minute)
         elif self.duration.hour and not self.duration.minute:

@@ -1,4 +1,3 @@
-from datetime import timedelta
 import numpy as np
 import math
 
@@ -12,11 +11,10 @@ def get_client_ip_address(request):
     return ip
 
 
-def get_done_jobs_by_date(request):
+def get_done_jobs_and_their_dates(request):
     labels, data = [], []
     user_done_dates = [str(job.user_done_date) for job in
                        request.user.jobs.filter(is_done=True).order_by('user_done_date')]
-
     for date in user_done_dates:
         if date not in labels:
             labels.append(date)
@@ -27,7 +25,6 @@ def get_done_jobs_by_date(request):
 
 def get_daily_hour_spent(request, labels):
     spent_time = []
-    i = 0
     for date in labels:
         time = 0
         user_jobs = request.user.jobs.filter(is_done=True, user_done_date=date)
@@ -37,9 +34,6 @@ def get_daily_hour_spent(request, labels):
         spent_time.append(time)
 
     return spent_time
-
-
-# user_jobs = request.user.jobs.filter(is_done=True).order_by('user_done_date')
 
 
 def get_total_hours_spent(request):
@@ -57,7 +51,7 @@ def get_total_hours_spent(request):
     return h, m
 
 
-def get_status(data):
+def get_user_today_status(data):
     today_status = data[-1] - math.ceil(np.mean(data))
     if today_status < 0:
         today_status = f'{abs(today_status)} job away from average'
@@ -71,9 +65,9 @@ def get_status(data):
     return today_status, arrow
 
 
-def get_max(data):
-    productive_day = 0
-    for i in data:
-        if i > productive_day:
-            productive_day = data.index(i)
-    return productive_day
+def get_most_productive_day_info(data, spent_time, labels):
+    max_spent_time_index = spent_time.index(max(spent_time))
+    productive_day_job_count = data[max_spent_time_index]
+    productive_day_hours_spent = spent_time[max_spent_time_index]
+    productive_day_date = labels[max_spent_time_index]
+    return productive_day_date, productive_day_job_count, productive_day_hours_spent
