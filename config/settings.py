@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'pages',
     'todo',
     'group_lists',
+    'statistics_app',
 
 ]
 

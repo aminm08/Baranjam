@@ -5,5 +5,8 @@
       "name": "baranjam-disk",
       "mountTo": "media"
     }
-  ]
+  ],
+  "django": {
+    "pythonVersion": "3.10"
+  }
 }

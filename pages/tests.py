@@ -82,18 +82,3 @@ class PagesTests(TestCase):
     def test_contact_used_template(self):
         response = self.client.get(reverse('contact_us'))
         self.assertTemplateUsed(response, 'contact_us.html')
-
-    def test_dashboard_url(self):
-        self.client.login(email=self.email, password=self.password)
-        response = self.client.get('/dashboard/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_dashboard_url_by_name(self):
-        self.client.login(email=self.email, password=self.password)
-        response = self.client.get(reverse('dashboard'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_dashboard_used_template(self):
-        self.client.login(email=self.email, password=self.password)
-        response = self.client.get(reverse('dashboard'))
-        self.assertTemplateUsed(response, 'dashboard.html')
