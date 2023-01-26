@@ -51,6 +51,7 @@ class Job(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
     duration = models.TimeField(verbose_name=_('job duration'), blank=True, null=True)
     is_done = models.BooleanField(default=False, verbose_name=_('job is done'))
+    notes = models.TextField(null=True, blank=True, verbose_name=_('job notes'))
 
     user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True, )
     user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)

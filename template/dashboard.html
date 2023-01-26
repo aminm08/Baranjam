@@ -8,68 +8,16 @@
 
 {% block title %}Your Baranjam dashboard{% endblock title %}
 
-
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock links %}
 {% block content %}
-    <!-- Card Body -->
-    <style>
 
-
-        .order-card {
-            color: #fff;
-        }
-
-        .bg-c-blue {
-            background: linear-gradient(45deg, #4099ff, #73b4ff);
-        }
-
-        .bg-c-gr {
-            background: linear-gradient(45deg, rgba(26, 243, 87, 0.81), #67ed7b);
-        }
-
-        .bg-c-green {
-            background: linear-gradient(45deg, #2ed8b6, #59e0c5);
-        }
-
-        .bg-c-yellow {
-            background: linear-gradient(45deg, #FFB64D, #ffcb80);
-        }
-
-        .bg-c-pink {
-            background: linear-gradient(45deg, #FF5370, #ff869a);
-        }
-
-
-        .card {
-            border-radius: 5px;
-            -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
-            box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
-            border: none;
-            margin-bottom: 30px;
-            -webkit-transition: all 0.3s ease-in-out;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .card .card-block {
-            padding: 25px;
-        }
-
-        .order-card i {
-            font-size: 26px;
-        }
-
-        .f-left {
-            float: left;
-        }
-
-        .f-right {
-            float: right;
-        }
-    </style>
 
     {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
 
-        <div class="d-sm-flex align-items-center justify-content-between mb-4" >
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}</h1>
 
         </div>
@@ -163,6 +111,18 @@
                 </div>
             </div>
 
+            <div class="col-md-6">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
 
             <div class="col-lg-6">
                 <div class="card shadow ">
@@ -237,142 +197,18 @@
     <!-- Core plugin JavaScript-->
     <script src="{% static  'vendor/jquery-easing/jquery.easing.js' %}"></script>
 
-    <!-- Custom scripts for all pages-->
-    <!-- Page level plugins -->
     <script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
+{#    <script src="{% static 'vendor/chart.js/Chart.bundle.js' %}"></script>#}
 
     <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="{% static 'js/chart-area-demo.js' %}"></script>
-    {#    <script src="/static/js/demo/chart-pie-demo.js"></script>#}
+    <script src="{% static 'assets/chart-area-demo.js' %}"></script>
 
+    <script src="{% static 'js/dashboard_charts.js' %}"></script>
     <script language="JavaScript">
-
-        // Area Chart Example
-        var ctx = document.getElementById("myAreaChart");
-        var area = document.getElementById("barChart");
-        var myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ labels|safe }},
-                datasets: [{
-                    label: "tasks done ",
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgb(244,98,58)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgb(16,16,19)",
-                    pointBorderColor: "rgb(16,16,19)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgb(16,16,19)",
-                    pointHoverBorderColor: "rgb(16,16,19)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: {{ data|safe }},
-                }],
-            },
-
-            options: {
-
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        time: {
-                            unit: 'date'
-                        },
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 7
-                        }
-
-                    }],
-                    yAxes: [{
-                        ticks: {
-
-                            maxTicksLimit: 5,
-                            padding: 10,
-                            beginAtZero: true,
-
-                        },
-                        gridLines: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    }],
-                },
-
-
-                legend: {
-                    position: 'top',
-                },
-                tooltips: {
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    titleMarginBottom: 10,
-                    titleFontColor: '#6e707e',
-                    titleFontSize: 14,
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    intersect: false,
-                    mode: 'index',
-                    caretPadding: 10,
-                    callbacks: {
-                        label: function (tooltipItem, chart) {
-                            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                            return datasetLabel + '' + number_format(tooltipItem.yLabel);
-                        }
-                    }
-                }
-            }
-        });
-
-        var BarChart = new Chart(area, {
-            type: 'bar',
-            data: {
-                labels: {{ labels|safe }},
-                datasets: [
-
-                    {
-                        label: "hours spent ",
-                        data: {{ spent_time|safe }},
-                        borderColor: "rgb(0,255,255)",
-                        backgroundColor: "rgb(0,255,255)",
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Chart.js Bar Chart'
-                    }
-                }
-            },
-        });
-
-
+        setupBarChart({{ labels|safe }}, {{ spent_time|safe }})
+        setupLinearChart({{ labels|safe }}, {{ data|safe }})
+        setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }})
     </script>
 
 {% endblock script %}

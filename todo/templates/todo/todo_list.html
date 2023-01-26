@@ -67,6 +67,7 @@
                                                                class="jalali_date-date form-control border-dark mr-3"
                                                                size="10"
                                                                id="id_user_datetime_0" placeholder="YYYY-MM-DD">
+                                                        {#                                                        <label >Today <input type="checkbox" name="is_today" class="" value="1"></label>#}
 
 
                                                     </div>
@@ -79,6 +80,7 @@
 
 
                                                     </div>
+
 
                                                     <div>
                                                         <button type="submit"
@@ -226,14 +228,28 @@
                                                             <i class="fas fa-solid fa-clock me-2 text-info ml-1"></i>
                                                             {{ user_job.get_duration }}
                                                         {% endif %}
+
+
                                                     </p>
                                                 </div>
                                             {% endif %}
 
+
+
+
+                                            {% if user_job.notes %}
+
+
+                                                <button class="fas fa-sticky-note bg-transparent border-0 text-info ml-auto"
+                                                        id="note-btn"></button>
+
+
+                                            {% endif %}
                                             {% if todo.user == user %}
                                                 <div class="image-parent form-inline">
                                                     <form action="{% url 'job_delete' user_job.id %}" method="post"
                                                           class="ml-auto">
+
                                                         {% csrf_token %}
                                                         <button type="submit"
                                                                 class="text-danger bg-transparent border-0"

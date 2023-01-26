@@ -12,7 +12,7 @@
         <h2 class="text-center">{% trans 'Update job' %}</h2>
 
 
-        <form method="post">
+        <form method="post" class="mb-lg-5">
             {% csrf_token %}
             <div class="text-right" dir="rtl">
 
@@ -25,6 +25,7 @@
 
         </form>
     </div>
+    <br><br>
 
     {% include 'footer.html' %}
 

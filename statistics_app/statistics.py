@@ -31,6 +31,11 @@ class Analytics:
             hours += (job.duration.hour + job.duration.minute / 60)
         return round(hours, 2)
 
+    def get_today_chart(self):
+        today_done_jobs_titles = [i.text for i in self.today_jobs_done]
+        hours_spent = [float(str(i.duration.hour+i.duration.minute/60)) for i in self.today_jobs_done]
+        return today_done_jobs_titles, hours_spent
+
     def get_daily_hour_spent(self):
         spent_time = []
         for date in self.get_done_dates():

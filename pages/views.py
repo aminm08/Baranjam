@@ -35,3 +35,5 @@ class ContactUs(SuccessMessageMixin, generic.CreateView):
         obj_form.ip_addr = get_client_ip_address(self.request)
         obj_form.save()
         return super().form_valid(form)
+
+

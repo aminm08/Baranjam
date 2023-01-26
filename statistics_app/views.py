@@ -11,6 +11,8 @@ def dashboard_view(request):
     analytics = Analytics(request)
     pd_count, pd_time, pd_date = analytics.get_most_productive_day_info()
     status, arrow = analytics.get_user_today_status()
+    today_done_jobs_titles, hours_spent = analytics.get_today_chart()
+    print(today_done_jobs_titles, hours_spent)
     context = {"filename": 'name',
                "collapse": "",
                "labels": json.dumps(list(analytics.get_done_dates())),
@@ -24,5 +26,7 @@ def dashboard_view(request):
                'arrow': arrow,
                'spent_time': json.dumps(analytics.get_daily_hour_spent()),
                'spent_today': analytics.get_today_hours_spent(),
+               'chart_title': json.dumps(today_done_jobs_titles),
+               'chart_hours': json.dumps(hours_spent),
                }
     return render(request, 'dashboard.html', context)
