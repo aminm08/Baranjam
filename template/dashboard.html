@@ -198,18 +198,25 @@
     <script src="{% static  'vendor/jquery-easing/jquery.easing.js' %}"></script>
 
     <script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
-{#    <script src="{% static 'vendor/chart.js/Chart.bundle.js' %}"></script>#}
+    {#    <script src="{% static 'vendor/chart.js/Chart.bundle.js' %}"></script>#}
 
     <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
     <script src="{% static 'assets/chart-area-demo.js' %}"></script>
+    {# d3 scale chromatic #}
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+    <script src="{% static 'js/color_generator.js' %}"></script>
 
     <script src="{% static 'js/dashboard_charts.js' %}"></script>
+
     <script language="JavaScript">
         setupBarChart({{ labels|safe }}, {{ spent_time|safe }})
         setupLinearChart({{ labels|safe }}, {{ data|safe }})
         setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }})
     </script>
 
-{% endblock script %}
+{% endblock script %}w
 

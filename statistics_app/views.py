@@ -12,7 +12,7 @@ def dashboard_view(request):
     pd_count, pd_time, pd_date = analytics.get_most_productive_day_info()
     status, arrow = analytics.get_user_today_status()
     today_done_jobs_titles, hours_spent = analytics.get_today_chart()
-    print(today_done_jobs_titles, hours_spent)
+
     context = {"filename": 'name',
                "collapse": "",
                "labels": json.dumps(list(analytics.get_done_dates())),

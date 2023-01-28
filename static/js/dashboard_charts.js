@@ -1,4 +1,3 @@
-
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
 var area = document.getElementById("barChart");
@@ -137,6 +136,11 @@ let setupBarChart = async (labels, spent_time) => {
 
 
 let setupDoughnutChart = async (titles, hours) => {
+    var dataLength = titles.length;
+    var colorRangeInfo = {colorStart: 0, colorEnd: 1, userEndAsStart: false};
+    var COLORS = interpolateColors(dataLength, d3.interpolateInferno, colorRangeInfo);
+
+
     var DoughnutChart = new Chart(doughnut, {
         type: 'doughnut',
         data: {
@@ -144,9 +148,10 @@ let setupDoughnutChart = async (titles, hours) => {
             datasets: [
 
                 {
-                    label: "dataset 1",
+                    label: "today spent hours",
                     data: hours,
-                    backgroundColor: Object.values(Utils.CHART_COLORS),
+                    backgroundColor: COLORS,
+                    hoverBackgroundColor: COLORS,
                 },
             ],
         },

@@ -13,12 +13,20 @@ from django.http import JsonResponse
 from todo.models import Todo
 from pages.models import Invitation
 from .models import GroupList
+# from .forms import GroupListForm
 
 
 @login_required()
 def user_group_lists(request):
     groups = [i for i in GroupList.objects.filter(users__in=[request.user]) if request.user != i.todo.user]
     return render(request, 'group_lists/add_group_list.html', {'groups': groups})
+
+#
+# @require_POST
+# class GroupCreateView(generic.CreateView):
+#     http_method_names = ['post']
+#     model = GroupList
+#     form_class = GroupListForm
 
 
 @login_required()
