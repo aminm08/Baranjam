@@ -18,7 +18,7 @@ class Todo(models.Model):
         return self.name
 
     def delete(self, *args, **kwargs):
-        self.group_todo.all().delete()
+        self.group_todos.all().delete()
         super(Todo, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -41,7 +41,7 @@ class Todo(models.Model):
         return self.jobs.all().filter(is_done=finished)
 
     def is_group_list(self):
-        return self.group_todo.exists()
+        return self.group_todos.exists()
 
 
 class Job(models.Model):

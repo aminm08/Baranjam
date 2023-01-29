@@ -4,5 +4,5 @@ from .models import GroupList
 
 @admin.register(GroupList)
 class GroupListAdmin(admin.ModelAdmin):
-    list_display = ['todo']
+    list_display = ['title']
     search_fields = ['todo', 'users']

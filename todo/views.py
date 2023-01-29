@@ -61,7 +61,7 @@ def todo_apply_options_post_view(request, pk):
 @login_required()
 def todo_list_main_page(request, signed_pk):
     todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
-    group_list_users = todo.group_todo.last().users.all() if todo.is_group_list() else []
+    group_list_users = todo.group_todos.last().users.all() if todo.is_group_list() else []
 
     if request.user == todo.user or request.user in group_list_users:
 

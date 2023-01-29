@@ -5,7 +5,7 @@ from .models import Todo, Job
 
 @admin.register(Todo)
 class TodoAdmin(admin.ModelAdmin):
-    list_display = ['name', 'datetime_created', 'user', 'is_group_list']
+    list_display = ['id', 'name', 'datetime_created', 'user', 'is_group_list']
     Todo.is_group_list.boolean = True
 
 

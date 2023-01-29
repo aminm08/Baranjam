@@ -13,20 +13,22 @@ from django.http import JsonResponse
 from todo.models import Todo
 from pages.models import Invitation
 from .models import GroupList
-# from .forms import GroupListForm
+from .forms import GroupListForm
 
 
 @login_required()
 def user_group_lists(request):
     groups = [i for i in GroupList.objects.filter(users__in=[request.user]) if request.user != i.todo.user]
-    return render(request, 'group_lists/add_group_list.html', {'groups': groups})
+    return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
-#
-# @require_POST
-# class GroupCreateView(generic.CreateView):
-#     http_method_names = ['post']
-#     model = GroupList
-#     form_class = GroupListForm
+
+class GroupCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
+    model = GroupList
+    form_class = GroupListForm
+    template_name = 'group_lists/group_create.html'
+    success_url = reverse_lazy('group_lists')
+    success_message = _("Group created successfully")
+
 
 
 @login_required()

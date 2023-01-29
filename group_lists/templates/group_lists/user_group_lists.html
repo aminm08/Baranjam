@@ -16,10 +16,16 @@
 
     <div class="container-fluid">
         <div class="card shadow bg-dark mt-5">
-            <div class="card-header " style="background-color: #f4623a;">
+            <div class="card-header flex-row" style="background-color: #f4623a;">
 
+                <div class="col">
 
-                <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group lists' %}</h2>
+                    <div class="{% if  LANGUAGE == 'en' %} justify-content-end {% else %} justify-content-start{% endif %} ">
+                        <a href="{% url 'group_create' %}" class="btn btn-dark float-end text-white">Add Group</a>
+
+                    </div>
+                    <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group lists' %}</h2>
+                </div>
 
             </div>
             <div class="card-body bg-dark">
@@ -49,7 +55,8 @@
                                 <p>
                                 <form method="post" class="me-2" action="{% url 'leave_group' group.id %}">
                                     {% csrf_token %}
-                                    <button class="btn-sm btn-danger" type="submit"><i class="fa fa-sign-out-alt"></i></button>
+                                    <button class="btn-sm btn-danger" type="submit"><i class="fa fa-sign-out-alt"></i>
+                                    </button>
                                     <span class="text-success fw-bolder">{% trans 'owner' %}</span>:
                                     {% if group.todo.user.profile_picture %}
                                         <img src="{{ group.todo.user.profile_picture.url }}" alt="user_profile"
