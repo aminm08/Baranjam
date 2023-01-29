@@ -65,7 +65,7 @@ def todo_list_main_page(request, signed_pk):
 
     if request.user == todo.user or request.user in group_list_users:
 
-        user_jobs = Job.objects.filter(todo=todo).order_by('is_done', '-user_date')
+        user_jobs = Job.objects.filter(todo=todo).order_by('is_done', '-datetime_created')
         user_filter = str(request.GET.get('filter'))
 
         match user_filter:
