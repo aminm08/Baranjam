@@ -1,0 +1,46 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %}
+
+{% endblock title %}
+
+
+{% block content %}
+    <style>
+        .card-top{
+            position: absolute;
+            top:60%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="col-md-9 card-top" >
+            <div class="card shadow">
+                <div class="card-header">
+                    <h1>{% trans 'Update group' %}  ( {{ group.title }} )</h1>
+
+                </div>
+                <div class="card-body">
+                    <form method="post" class="">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-success">Submit</button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+{% endblock content %}

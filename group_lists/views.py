@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.views import generic
 from django.contrib import messages
@@ -18,17 +19,51 @@ from .forms import GroupListForm
 
 @login_required()
 def user_group_lists(request):
-    groups = [i for i in GroupList.objects.filter(users__in=[request.user]) if request.user != i.todo.user]
+    groups = [i for i in GroupList.objects.filter(users__in=[request.user])]
     return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
 
-class GroupCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
-    model = GroupList
-    form_class = GroupListForm
-    template_name = 'group_lists/group_create.html'
-    success_url = reverse_lazy('group_lists')
-    success_message = _("Group created successfully")
+def user_group_details(request, pk):
+    group = get_object_or_404(GroupList, pk=pk)
 
+    return render(request, 'group_lists/group_detail.html', {'todos': group.todo.all()})
+
+
+def create_group(request):
+    form = GroupListForm(request.user)
+    if request.method == 'POST':
+        form = GroupListForm(request.user, request.POST)
+        if form.is_valid():
+            obj = form.save()
+            messages.success(request, _("Group created successfully"))
+            # send_group_list_invitation(request, obj.users.all(), )
+            return redirect('group_lists')
+    return render(request, 'group_lists/group_create.html', {'form': form})
+
+
+class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
+    model = GroupList
+    template_name = 'group_lists/group_delete.html'
+    context_object_name = 'group'
+    success_url = reverse_lazy('group_lists')
+    success_message = _('group successfully removed')
+
+    def test_func(self):
+        return self.request.user == self.get_object().users.first()
+
+
+def group_update_view(request, pk):
+    group = get_object_or_404(GroupList, pk=pk)
+    if request.user == group.users.first():
+        form = GroupListForm(request.user, instance=group)
+        if request.method == 'POST':
+            form = GroupListForm(request.user, request.POST, instance=group)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _("Group successfully updated"))
+                return redirect('group_lists')
+        return render(request, 'group_lists/group_update.html', {'form': form, 'group':group})
+    raise PermissionDenied
 
 
 @login_required()

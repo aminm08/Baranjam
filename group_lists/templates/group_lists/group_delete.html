@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+    <div class="container-fluid">
+
+        <div class="col-md-6 mt-lg-5" style="margin: 0 auto;">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h1>Delete group ( {{ group.title }} )</h1>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-center " style="margin-bottom: 1rem;">{% trans 'All the data within this group will be deleted forever' %}</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <a class="btn btn-success w-100 text-white" style="margin-bottom: 1rem;">{% trans "Back to groups list" %}</a>
+                        <button class="btn btn-danger w-100" type="submit">{% trans 'Delete' %}</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+{% endblock content %}
