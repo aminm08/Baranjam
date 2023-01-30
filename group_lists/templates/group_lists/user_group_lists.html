@@ -37,8 +37,9 @@
                             <li class="list-group-item d-flex justify-content-between align-items-start">
 
                                 <div class="ms-2 me-auto">
-                                    <div class="fw-bold"><a
-                                            href="{{ group.get_absolute_url }}">{{ group.title }}</a>
+                                    <div class="fw-bold">{% if group.picture %}
+                                    <img src="{{ group.picture.url }}" alt="group pic">
+                                    {% endif %} <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
 
                                     </div>
                                 </div>
@@ -46,7 +47,7 @@
                                 <div class="mr-auto text-center my-auto">
                                     <p><span class="fw-bolder"
                                              style="color:#f4623a; ">{% trans 'Members' %}:</span><span
-                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.users.all|length }}</span>
+                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.get_all_members_length}}</span>
                                     </p>
                                 </div>
 
@@ -56,46 +57,22 @@
                                         {% trans 'Options' %}
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        {% if user == group.users.first %}
+                                        {% if user == group.admins.first %}
                                             <li>
                                                 <a class="dropdown-item" href="{% url 'group_delete' group.id %}">
-                                                <i class="fas fa-trash text-danger mr-1"></i> {% trans 'Delete Group'%}</a>
+                                                    <i class="fas fa-trash text-danger mr-1"></i> {% trans 'Delete Group' %}
+                                                </a>
 
                                                 <a class="dropdown-item" href="{% url 'group_update' group.id %}">
-                                                <i class="fas fa-edit text-info mr-1"></i> {% trans 'Update Group'%}</a>
+                                                    <i class="fas fa-edit text-info mr-1"></i> {% trans 'Update Group' %}
+                                                </a>
                                             </li>
                                         {% else %}
                                             <li><a class="dropdown-item" href="#">{% trans 'Leave group' %}</a></li>
                                         {% endif %}
-
-{#                                        <li><a class="dropdown-item" href="#">Menu item</a></li>#}
                                     </ul>
                                 </div>
-{#                                <p>#}
-{#                                <form method="post" class="me-2" action="{% url 'leave_group' group.id %}">#}
-{#                                    {% csrf_token %}#}
-{#                                    <button class="btn-sm btn-danger" type="submit"><i class="fa fa-sign-out-alt"></i>#}
-{#                                    </button>#}
-{#                                    <span class="text-success fw-bolder">{% trans 'owner' %}</span>:#}
-{#                                    {% if group.todo.user.profile_picture %}#}
-{#                                        <img src="{{ group.todo.user.profile_picture.url }}" alt="user_profile"#}
-{#                                             width="30px"#}
-{#                                             height="30px" class="ml-1">#}
-{##}
-{#                                    {% else %}#}
-{#                                        <img src="{% static 'img/blank_user.png' %}" alt="blank_profile"#}
-{#                                             width="30px"#}
-{#                                             height="30px" class="ml-1">#}
-{#                                    {% endif %} {{ group.todo.user.username }}#}
-{#                                </form>#}
-{#                                </p>#}
-
-
                             </li>
-
-
-
-
                         {% endfor %}
                     </ol>
                 {% else %}

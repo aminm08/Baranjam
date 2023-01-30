@@ -10,47 +10,83 @@
     {% get_current_language as LANGUAGE %}
 
     <div class="container-fluid">
-        <div class="col-md-6">
+        <div class="col-md-12" style="margin-top: 4rem;">
+            <div class="card shadow">
+                <div class="card-header">
+                    {#                <h5 class="card-title"></h5>#}
+                    <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                         <li class="nav-item">
+                            <a class="nav-link" aria-current="true" data-bs-toggle="tab"
+                               href="/">{% trans 'group' %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="true" data-bs-toggle="tab"
+                               href="#todos">{% trans 'Todo-Lists' %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#members">{% trans 'Members' %}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body tab-content">
+                    <!-- group data -->
+                    <div class="tab-pane" id="">
+                        <h1>group data</h1>
 
-            <div class="card shadow bg-dark mt-5">
-                <div class="card-header flex-row" style="background-color: #f4623a;">
-
-                    <div class="col">
-
-                        <div class="{% if  LANGUAGE == 'en' %} justify-content-end {% else %} justify-content-start{% endif %} ">
-                            <a href="{% url 'group_create' %}" class="btn btn-dark float-end text-white">Add TODO</a>
-
-                        </div>
-                        <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group todos' %}</h2>
                     </div>
 
-                </div>
-                <div class="card-body bg-dark">
+                    <!-- todos section -->
+                    <div class="tab-pane" id="todos">
 
-                    {% if todos %}
-                        <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
-                            {% for todo in todos %}
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="card shadow bg-dark">
 
-                                    <div class="ms-2 me-auto">
-                                        <div class="fw-bold"><a
-                                                href="{{ todo.get_absolute_url }}">{{ todo.name }}</a>
+                            <div class="card-header flex-row" style="background-color: #f4623a;">
 
-                                        </div>
+                                <div class="col">
+
+                                    <div class="{% if  LANGUAGE == 'en' %} justify-content-end {% else %} justify-content-start{% endif %} ">
+                                        <a href="{% url 'group_create' %}" class="btn btn-dark float-end text-white">Add
+                                            TODO</a>
+
                                     </div>
-                                    <div class="mr-auto text-center my-auto">
-                                        <p><span class="fw-bolder"
-                                                 style="color:#f4623a; ">{% trans 'undone Jobs' %}:</span><span
-                                                class="ml-2 badge bg-success rounded-pill  mt-0"> {{ todo.get_jobs| length }}</span>
-                                        </p>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ol>
-                    {% else %}
-                        <p class="text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'there is no saved todo list for this group ' %}</p>
+                                    <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group todos' %}</h2>
+                                </div>
 
-                    {% endif %}
+                            </div>
+                            <div class="card-body bg-dark">
+
+                                {% if todos %}
+                                    <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
+                                        {% for todo in todos %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-start">
+
+                                                <div class="ms-2 me-auto">
+                                                    <div class="fw-bold"><a
+                                                            href="{{ todo.get_absolute_url }}">{{ todo.name }}</a>
+
+                                                    </div>
+                                                </div>
+                                                <div class="mr-auto text-center my-auto">
+                                                    <p><span class="fw-bolder"
+                                                             style="color:#f4623a; ">{% trans 'undone Jobs' %}:</span><span
+                                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ todo.get_jobs| length }}</span>
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ol>
+                                {% else %}
+                                    <p class="text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'there is no saved todo list for this group ' %}</p>
+
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- members section -->
+                    <div class="tab-pane" id="members">
+                        <h1>hi</h1>
+                    </div>
                 </div>
             </div>
         </div>

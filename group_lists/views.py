@@ -13,20 +13,21 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from todo.models import Todo
 from pages.models import Invitation
+from django.db.models import Q
 from .models import GroupList
 from .forms import GroupListForm
 
 
 @login_required()
 def user_group_lists(request):
-    groups = [i for i in GroupList.objects.filter(users__in=[request.user])]
+    groups = [i for i in GroupList.objects.filter(admins__in=[request.user]).filter(members__in=[request.user])]
+    print(groups)
     return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
 
 def user_group_details(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
-
-    return render(request, 'group_lists/group_detail.html', {'todos': group.todo.all()})
+    return render(request, 'group_lists/group_detail.html', {'todos': group.todo.all(), 'group': group})
 
 
 def create_group(request):
@@ -34,7 +35,8 @@ def create_group(request):
     if request.method == 'POST':
         form = GroupListForm(request.user, request.POST)
         if form.is_valid():
-            obj = form.save()
+            form.save()
+            form.instance.admins.add(request.user)
             messages.success(request, _("Group created successfully"))
             # send_group_list_invitation(request, obj.users.all(), )
             return redirect('group_lists')
@@ -49,12 +51,12 @@ class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
     success_message = _('group successfully removed')
 
     def test_func(self):
-        return self.request.user == self.get_object().users.first()
+        return self.request.user == self.get_object().admins.first()
 
 
 def group_update_view(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
-    if request.user == group.users.first():
+    if request.user in group.admins.all():
         form = GroupListForm(request.user, instance=group)
         if request.method == 'POST':
             form = GroupListForm(request.user, request.POST, instance=group)
@@ -62,7 +64,7 @@ def group_update_view(request, pk):
                 form.save()
                 messages.success(request, _("Group successfully updated"))
                 return redirect('group_lists')
-        return render(request, 'group_lists/group_update.html', {'form': form, 'group':group})
+        return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
     raise PermissionDenied
 
 
