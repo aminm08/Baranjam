@@ -20,8 +20,7 @@ from .forms import GroupListForm
 
 @login_required()
 def user_group_lists(request):
-    groups = [i for i in GroupList.objects.filter(admins__in=[request.user]).filter(members__in=[request.user])]
-    print(groups)
+    groups = GroupList.objects.filter(Q(admins__in=[request.user]) or Q(members__in=[request.user]))
     return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
 
@@ -33,7 +32,7 @@ def user_group_details(request, pk):
 def create_group(request):
     form = GroupListForm(request.user)
     if request.method == 'POST':
-        form = GroupListForm(request.user, request.POST)
+        form = GroupListForm(request.user, request.POST, request.FILES)
         if form.is_valid():
             form.save()
             form.instance.admins.add(request.user)
@@ -66,6 +65,10 @@ def group_update_view(request, pk):
                 return redirect('group_lists')
         return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
     raise PermissionDenied
+
+
+
+
 
 
 @login_required()

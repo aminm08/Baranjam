@@ -11,6 +11,8 @@ class GroupList(models.Model):
     admins = models.ManyToManyField(get_user_model(), related_name='group_admins', verbose_name=_('Group admins'))
     description = models.TextField(verbose_name=_('group description'), null=True, blank=True)
     picture = models.ImageField(verbose_name=_('group Picture'), upload_to='group_pics/', null=True, blank=True)
+    enable_chat = models.BooleanField(default=True, verbose_name=_('Group members chat'))
+    enable_job_divider = models.BooleanField(default=False, verbose_name=_('Group job divider'))
 
     def __str__(self):
         return self.title

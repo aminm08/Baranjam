@@ -16,4 +16,4 @@ class GroupListForm(forms.ModelForm):
 
     class Meta:
         model = GroupList
-        fields = ('title', 'todo', 'members', 'description', 'picture')
+        fields = ('title', 'todo', 'members', 'description', 'enable_chat', 'enable_job_divider', 'picture')

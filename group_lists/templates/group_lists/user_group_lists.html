@@ -38,7 +38,8 @@
 
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold">{% if group.picture %}
-                                    <img src="{{ group.picture.url }}" alt="group pic">
+                                        <img src="{{ group.picture.url }}" alt="group pic" width="45" height="45"
+                                             style="margin-right:3px;">
                                     {% endif %} <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
 
                                     </div>
@@ -47,7 +48,7 @@
                                 <div class="mr-auto text-center my-auto">
                                     <p><span class="fw-bolder"
                                              style="color:#f4623a; ">{% trans 'Members' %}:</span><span
-                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.get_all_members_length}}</span>
+                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.get_all_members_length }}</span>
                                     </p>
                                 </div>
 
@@ -59,6 +60,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         {% if user == group.admins.first %}
                                             <li>
+
                                                 <a class="dropdown-item" href="{% url 'group_delete' group.id %}">
                                                     <i class="fas fa-trash text-danger mr-1"></i> {% trans 'Delete Group' %}
                                                 </a>
