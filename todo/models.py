@@ -40,6 +40,13 @@ class Todo(models.Model):
     def get_jobs(self, finished=True):
         return self.jobs.all().filter(is_done=finished)
 
+    def user_from_group_has_permission(self, user):
+
+        for group in self.group_todos.all():
+            if user in group.members.all() or user in group.admins.all():
+                return True
+        return False
+
     def is_group_list(self):
         return self.group_todos.exists()
 

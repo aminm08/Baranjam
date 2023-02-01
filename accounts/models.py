@@ -23,3 +23,6 @@ class CustomUser(AbstractUser):
     def get_user_today_completed_tasks(self):
         completed = self.jobs.filter(user_done_date=date.today(), is_done=True)
         return completed
+
+    # def get_joined_groups(self):
+    #     print(self.group)

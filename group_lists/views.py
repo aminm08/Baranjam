@@ -20,7 +20,7 @@ from .forms import GroupListForm
 
 @login_required()
 def user_group_lists(request):
-    groups = GroupList.objects.filter(Q(admins__in=[request.user]) or Q(members__in=[request.user]))
+    groups = [*request.user.as_member.all(), *request.user.as_admin.all()]
     return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
 
@@ -34,10 +34,15 @@ def create_group(request):
     if request.method == 'POST':
         form = GroupListForm(request.user, request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            form.instance.save()
+
+            data = form.cleaned_data
+            for todo in data['todo']:
+                form.instance.todo.add(todo)
             form.instance.admins.add(request.user)
-            messages.success(request, _("Group created successfully"))
-            # send_group_list_invitation(request, obj.users.all(), )
+
+            send_group_list_invitation(request, data['members'], form.instance)
+            messages.success(request, _("Group created successfully and invitations are sent"))
             return redirect('group_lists')
     return render(request, 'group_lists/group_create.html', {'form': form})
 
@@ -61,14 +66,16 @@ def group_update_view(request, pk):
             form = GroupListForm(request.user, request.POST, instance=group)
             if form.is_valid():
                 form.save()
+                # form.instance.save()
+                #
+                # data = form.cleaned_data
+                # for todo in data['todo']:
+                #     form.instance.todo.add(todo)
+                # send_group_list_invitation(request, data['members'], form.instance)
                 messages.success(request, _("Group successfully updated"))
                 return redirect('group_lists')
         return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
     raise PermissionDenied
-
-
-
-
 
 
 @login_required()
@@ -77,45 +84,24 @@ def leave_group_view(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
 
     if request.user != group.todo.user and request.user in group.users.all():
-        group.users.remove(request.user)
+        group.members.remove(request.user)
         messages.success(request, _('you successfully left the group'))
         return redirect('group_lists')
     raise PermissionDenied
 
 
-@login_required()
-@require_POST
-def add_group_list_and_send_invitation(request):
-    users = request.POST['users'].split(',')
-    todo_id = request.POST['todo']
-    todo = get_object_or_404(Todo, pk=todo_id)
-    if request.user == todo.user:
-        if not todo.is_group_list():
-            new_list = GroupList.objects.create(todo=todo)
-            new_list.users.add(request.user)
-            send_group_list_invitation(request, users, new_list)
-            messages.success(request, _('group-list successfully created & invitation sent for users'))
-        else:
-            group_list = todo.group_todo.last()
-            send_group_list_invitation(request, users, group_list)
-            messages.success(request, _('invitations sent successfully'))
-
-        return redirect('todo_settings', todo.id)
-
-    raise PermissionDenied
-
-
 def send_group_list_invitation(request, users, group_list):
+    errors = {}
     for user in users:
-        try:
 
-            user = get_object_or_404(get_user_model(), username=user)
+        if user not in group_list.members.all():
             if not group_list.invitations.filter(user_receiver=user, user_sender=request.user).exists():
-
-                if user not in group_list.users.all() and user != group_list.todo.user:
-                    Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
-        except Exception as e:
-            pass
+                Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
+            else:
+                errors[user] = 'is already invited'
+        else:
+            errors[user] = 'is already in the group'
+    print(errors)
 
 
 @login_required()
@@ -124,7 +110,7 @@ def accept_invite(request, group_id, inv_id):
     group = get_object_or_404(GroupList, pk=group_id)
     inv = get_object_or_404(Invitation, pk=inv_id)
     if request.user == inv.user_receiver:
-        group.users.add(inv.user_receiver)
+        group.members.add(inv.user_receiver)
         inv.delete()
         messages.success(request, _('invite accepted you are now a member of the group-list'))
         return redirect('group_lists')
