@@ -30,34 +30,7 @@
                                 <p>{{ group.description|linebreaks }}</p>
 
                             </div>
-                            <hr class="mx-auto w-75" >
-                            <div class="row ml-3">
 
-                                {% for admin in group.admins.all %}
-                                    <div class="col mb-1">
-
-                                        {% if admin.profile_picture %}
-                                            <img src="{{ admin.profile.picture.url }}" alt="" width="50" height="50">
-                                        {% else %}
-                                            <img src="{% static 'img/blank_user.png' %}" alt="" width="50" height="50">
-                                        {% endif %} <span class="ml-2 mr-2">{{ admin.username }}</span>
-                                        <span class="badge bg-info rounded-pill mb-3">{% trans 'admin' %}</span>
-
-                                    </div>
-                                {% endfor %}
-                                {% for member in group.members.all %}
-                                    <div class="col ">
-
-                                        {% if member.profile_picture %}
-                                            <img class="rounded" src="{{ member.profile_picture.url }}" alt=""
-                                                 width="50" height="50">
-                                        {% else %}
-                                            <img src="{% static 'img/blank_user.png' %}" alt="" width="50" height="50">
-                                        {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
-                                    </div>
-
-                                {% endfor %}
-                            </div>
 
                         </div>
                     </div>
@@ -128,15 +101,62 @@
                             </div>
                         </div>
 
-                        {#                        <!-- members section -->#}
-                        {#                        <div class="tab-pane" id="members">#}
-                        {#                            <div class="col-md-5 align-self-center">#}
-                        {##}
-                        {##}
-                        {#                            </div>#}
-                        {##}
-                        {##}
-                        {#                        </div>#}
+                        <!-- members section -->
+                        <div class="tab-pane" id="members">
+                            <div class="col align-self-center">
+                                <div class="row">
+                                    <div class="col">
+
+                                        <h4 class="">{% trans 'Group members' %}</h4>
+                                    </div>
+                                    {% if user in group.admins.all %}
+
+                                        <div class="col float-right">
+                                            <a href="" class="btn btn-info">{% trans 'invite users' %}</a>
+
+                                            <a href="" class="btn btn-warning">{% trans 'Add admin' %}</a>
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+                                <hr class="mx-auto w-100">
+
+                                {% for admin in group.admins.all %}
+                                    <div class="col mb-4">
+
+                                        {% if admin.profile_picture %}
+                                            <img src="{{ admin.profile.picture.url }}" alt="" width="55"
+                                                 height="55">
+                                        {% else %}
+                                            <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
+                                                 height="55">
+                                        {% endif %} <span class="ml-2 mr-2">{{ admin.username }}</span>
+                                        <span class="badge bg-info rounded-pill mb-3">{% trans 'admin' %}</span>
+
+                                    </div>
+                                {% endfor %}
+                                {% for member in group.members.all %}
+                                    <div class="col mb-4">
+
+                                        {% if member.profile_picture %}
+                                            <img class="rounded" src="{{ member.profile_picture.url }}" alt=""
+                                                 width="55" height="55">
+                                        {% else %}
+                                            <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
+                                                 height="55">
+                                        {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
+
+                                        {% if user in group.admins.all %}
+
+                                            <i class="fas fa-trash float-right  text-danger"
+                                               style="margin-top: 1rem;"></i>
+                                        {% endif %}
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

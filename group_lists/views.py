@@ -70,6 +70,11 @@ def group_update_view(request, pk):
     raise PermissionDenied
 
 
+# member 2 admin
+# invite new users
+# invite link
+
+
 @login_required()
 @require_POST
 def leave_group_view(request, group_id):
@@ -80,6 +85,34 @@ def leave_group_view(request, group_id):
         messages.success(request, _('you successfully left the group'))
         return redirect('group_lists')
     raise PermissionDenied
+
+
+class AddGroupAdmin(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.FormView):
+    model = GroupList
+    success_message = _("users added to admins successfully")
+    http_method_names = ['post']
+
+    def __init__(self, *args, **kwargs):
+        self.group = get_object_or_404(GroupList, pk=int(kwargs.get('group_id')))
+        super(AddGroupAdmin, self).__init__(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        users = self.request.POST.get('users').split(',')
+
+        for username in users:
+            user = get_object_or_404(get_user_model(), username=username)
+            if user not in self.group.members.all():
+                continue
+
+            if user not in self.group.admins.all():
+                self.group.members.remove(user)
+                self.group.admins.add(user)
+
+    def get_success_url(self):
+        return reverse_lazy('group_detail', self.group.id)
+
+    def test_func(self):
+        return self.request.user in self.group.admins.all()
 
 
 def send_group_list_invitation(request, users, group_list):
