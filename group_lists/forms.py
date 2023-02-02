@@ -12,18 +12,30 @@ class GroupListForm(forms.ModelForm):
                                              widget=forms.CheckboxSelectMultiple)
 
     def __init__(self, user, *args, **kwargs):
+        exclude_members = kwargs.pop('exclude_members', False)
+
         super(GroupListForm, self).__init__(*args, **kwargs)
         self.user = user
         self.fields['todo'].queryset = user.todos.all()
         self.fields['members'].queryset = get_user_model().objects.exclude(username=user.username)
 
+        if exclude_members:
+            del self.fields['members']
+
     class Meta:
         model = GroupList
         fields = ('title', 'todo', 'members', 'description', 'enable_chat', 'enable_job_divider', 'picture')
 
-    # def save(self, commit=True):
-    #     self.instance.save()
-    #     data = self.cleaned_data
-    #
-    #     for todo in data['todo']:
-    #         self.instance.todo.add(todo)
+    def save(self, create=True):
+
+        if create:
+            self.instance.save()
+
+            data = self.cleaned_data
+            for todo in data['todo']:
+                self.instance.todo.add(todo)
+            self.instance.admins.add(self.user)
+        else:
+            return super(GroupListForm, self).save()
+
+        return self.instance

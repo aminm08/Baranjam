@@ -13,7 +13,6 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from todo.models import Todo
 from pages.models import Invitation
-from django.db.models import Q
 from .models import GroupList
 from .forms import GroupListForm
 
@@ -34,12 +33,8 @@ def create_group(request):
     if request.method == 'POST':
         form = GroupListForm(request.user, request.POST, request.FILES)
         if form.is_valid():
-            form.instance.save()
-
+            form.save()
             data = form.cleaned_data
-            for todo in data['todo']:
-                form.instance.todo.add(todo)
-            form.instance.admins.add(request.user)
 
             send_group_list_invitation(request, data['members'], form.instance)
             messages.success(request, _("Group created successfully and invitations are sent"))
@@ -61,17 +56,14 @@ class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 def group_update_view(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
     if request.user in group.admins.all():
-        form = GroupListForm(request.user, instance=group)
+        form = GroupListForm(request.user, instance=group, exclude_members=True)
+
         if request.method == 'POST':
-            form = GroupListForm(request.user, request.POST, instance=group)
+            form = GroupListForm(request.user, request.POST, instance=group, exclude_members=True)
+
             if form.is_valid():
-                form.save()
-                # form.instance.save()
-                #
-                # data = form.cleaned_data
-                # for todo in data['todo']:
-                #     form.instance.todo.add(todo)
-                # send_group_list_invitation(request, data['members'], form.instance)
+                form.save(create=False)
+
                 messages.success(request, _("Group successfully updated"))
                 return redirect('group_lists')
         return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
