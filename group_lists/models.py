@@ -24,4 +24,4 @@ class GroupList(models.Model):
         return len(self.members.all()) + len(self.admins.all())
 
     def get_all_members_obj(self):
-        return (self.admins.all()).append(self.members.all())
+        return [*self.admins.all(), *self.members.all()]

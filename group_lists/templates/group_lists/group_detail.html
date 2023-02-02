@@ -112,9 +112,11 @@
                                     {% if user in group.admins.all %}
 
                                         <div class="col float-right">
-                                            <a href="" class="btn btn-info">{% trans 'invite users' %}</a>
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#InvUsers"
+                                                    class="btn btn-info">{% trans 'invite users' %}</button>
 
-                                            <a href="" class="btn btn-warning">{% trans 'Add admin' %}</a>
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#AddAdmin"
+                                                    class="btn btn-warning">{% trans 'Add admin' %}</button>
                                         </div>
 
                                     {% endif %}
@@ -126,7 +128,7 @@
                                     <div class="col mb-4">
 
                                         {% if admin.profile_picture %}
-                                            <img src="{{ admin.profile.picture.url }}" alt="" width="55"
+                                            <img src="{{ admin.profile_picture.url }}" alt="" width="55"
                                                  height="55">
                                         {% else %}
                                             <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
@@ -158,6 +160,95 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="AddAdmin">
+
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Add admin' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'add_admin' group.id %}" method="post">
+                            {% csrf_token %}
+                            {% for member in group.members.all %}
+                                <div class="col mb-4">
+
+                                    {% if member.profile_picture %}
+                                        <img class="rounded" src="{{ member.profile_picture.url }}" alt=""
+                                             width="55" height="55">
+                                    {% else %}
+                                        <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
+                                             height="55">
+                                    {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
+                                    <input type="checkbox" class="form-check float-right"
+                                           style="margin-top: 1rem; width: 16px;" name="{{ member.id }}">
+
+
+                                </div>
+                            {% endfor %}
+                            <hr>
+                            <div class="float-right">
+
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+
+
+                        </form>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- invite members -->
+        <div class="modal fade" id="InvUsers">
+
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Invite users' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'invite_members' group.id %}" method="post">
+                            {% csrf_token %}
+                            {% for user in all_users %}
+                                <div class="col mb-4">
+
+                                    {% if user.profile_picture %}
+                                        <img class="rounded" src="{{ user.profile_picture.url }}" alt=""
+                                             width="55" height="55">
+                                    {% else %}
+                                        <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
+                                             height="55">
+                                    {% endif %} <span class="ml-2 mr-2">{{ user.username }}</span>
+                                    <input type="checkbox" class="form-check float-right"
+                                           style="margin-top: 1rem; width: 16px;" name="{{ user.id }}">
+
+
+                                </div>
+
+                            {% endfor %}
+                            <hr>
+                            <div class="float-right">
+
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -23,11 +23,17 @@ def user_group_lists(request):
     return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
 
+@login_required()
 def user_group_details(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
-    return render(request, 'group_lists/group_detail.html', {'todos': group.todo.all(), 'group': group})
+    print(group.get_all_members_obj())
+    return render(request, 'group_lists/group_detail.html',
+                  {'todos': group.todo.all(), 'group': group,
+                   'all_users': [user for user in get_user_model().objects.all() if
+                                 user not in group.get_all_members_obj()]})
 
 
+@login_required()
 def create_group(request):
     form = GroupListForm(request.user)
     if request.method == 'POST':
@@ -53,8 +59,10 @@ class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
         return self.request.user == self.get_object().admins.first()
 
 
+@login_required()
 def group_update_view(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
+
     if request.user in group.admins.all():
         form = GroupListForm(request.user, instance=group, exclude_members=True)
 
@@ -87,32 +95,37 @@ def leave_group_view(request, group_id):
     raise PermissionDenied
 
 
-class AddGroupAdmin(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.FormView):
-    model = GroupList
-    success_message = _("users added to admins successfully")
-    http_method_names = ['post']
+@login_required()
+@require_POST
+def add_admin(request, group_id):
+    group = get_object_or_404(GroupList, pk=group_id)
 
-    def __init__(self, *args, **kwargs):
-        self.group = get_object_or_404(GroupList, pk=int(kwargs.get('group_id')))
-        super(AddGroupAdmin, self).__init__(*args, **kwargs)
+    if request.user in group.admins.all():
+        user_ids = list(request.POST.keys())[1:]
 
-    def post(self, *args, **kwargs):
-        users = self.request.POST.get('users').split(',')
-
-        for username in users:
-            user = get_object_or_404(get_user_model(), username=username)
-            if user not in self.group.members.all():
+        for id in user_ids:
+            user = get_object_or_404(get_user_model(), pk=id)
+            if user not in group.members.all():
                 continue
 
-            if user not in self.group.admins.all():
-                self.group.members.remove(user)
-                self.group.admins.add(user)
+            if user not in group.admins.all():
+                group.members.remove(user)
+                group.admins.add(user)
+        return redirect('group_detail', group_id)
+    raise PermissionDenied
 
-    def get_success_url(self):
-        return reverse_lazy('group_detail', self.group.id)
 
-    def test_func(self):
-        return self.request.user in self.group.admins.all()
+@login_required()
+@require_POST
+def invite_new_members(request, group_id):
+    group = get_object_or_404(GroupList, pk=group_id)
+
+    if request.user in group.admins.all():
+        user_ids = list(request.POST.keys())[1:]
+        users = [get_object_or_404(get_user_model(), pk=pk) for pk in user_ids]
+        send_group_list_invitation(request, users, group)
+        return redirect('group_detail', group_id)
+    raise PermissionDenied
 
 
 def send_group_list_invitation(request, users, group_list):
