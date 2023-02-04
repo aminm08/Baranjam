@@ -51,6 +51,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#members">{% trans 'Members' %}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#chat">{% trans 'Chat' %}</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-body tab-content">
@@ -221,6 +224,52 @@
                                 {% endfor %}
                             </div>
                         </div>
+
+                        <!-- chat section   -->
+                        <div class="tab-pane" id="chat">
+                            <div class="row">
+
+                                <div class="col-md-9">
+                                    <diV class="card shadow">
+                                        <h6 class="card-header text-center">{% trans 'Chat with group members' %}</h6>
+                                        <div class="card-body">
+                                            <div>
+{#                                                <p>hello</p>#}
+{#                                                <p>aposdakd</p>#}
+                                            </div>
+
+                                        </div>
+
+                                    </diV>
+
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="card shadow">
+                                        <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-9 ">
+                                    <div class="card shadow">
+                                        <form class="row">
+
+                                            <div class="col-md-10">
+
+                                                <input type="text" class="form-control" name="messaage">
+                                            </div>
+                                            <div class="col float-right w-100">
+                                                <button type="submit"><i class="fas fa-paper-plane border-0 text-info" style="border:none;"></i></button>
+
+                                            </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -259,7 +308,8 @@
                             <hr>
                             <div class="float-right">
 
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">{% trans 'Close' %}</button>
                                 <button type="submit" class="btn btn-primary">{% trans 'Send Invitations' %}</button>
                             </div>
                         </form>
