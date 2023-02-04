@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 class GroupList(models.Model):
@@ -13,9 +14,15 @@ class GroupList(models.Model):
     picture = models.ImageField(verbose_name=_('group Picture'), upload_to='group_pics/', null=True, blank=True)
     enable_chat = models.BooleanField(default=True, verbose_name=_('Group members chat'))
     enable_job_divider = models.BooleanField(default=False, verbose_name=_('Group job divider'))
+    slug = models.SlugField()
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super(GroupList, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('group_detail', args=[self.pk])

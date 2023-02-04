@@ -229,13 +229,25 @@
                         <div class="tab-pane" id="chat">
                             <div class="row">
 
-                                <div class="col-md-9">
-                                    <diV class="card shadow">
+                                <div class="col-md-9" >
+                                    <diV class="card shadow ">
                                         <h6 class="card-header text-center">{% trans 'Chat with group members' %}</h6>
                                         <div class="card-body">
-                                            <div>
-{#                                                <p>hello</p>#}
-{#                                                <p>aposdakd</p>#}
+                                            <div id="id_chat_item_container" style="max-height: 220px; overflow-y:auto;">
+                                                {% for message in group_chats %}
+                                                    <div class="mb-2">
+                                                        {% if message.user.profile_picture %}
+                                                            <img src="{{ message.user.profile_picture.url }}" alt=""
+                                                                 width="50"
+                                                                 height="50">
+                                                        {% else %}
+                                                            <img src="{% static 'img/blank_user.png' %}" alt=""
+                                                                 width="50" height="50">
+
+                                                        {% endif %} {{ message.user.username }}: {{ message.text }}
+                                                    </div>
+                                                {% endfor %}
+
                                             </div>
 
                                         </div>
@@ -252,17 +264,21 @@
                                 </div>
                                 <div class="col-md-9 ">
                                     <div class="card shadow">
-                                        <form class="row">
+                                        <div class="row">
+
 
                                             <div class="col-md-10">
 
-                                                <input type="text" class="form-control" name="messaage">
+                                                <input type="text" class="form-control" name="messaage"
+                                                       id="id_message_send_input">
                                             </div>
                                             <div class="col float-right w-100">
-                                                <button type="submit"><i class="fas fa-paper-plane border-0 text-info" style="border:none;"></i></button>
+                                                <button><i class="fas fa-paper-plane border-0 text-info"
+                                                           style="border:none;"
+                                                           id="id_message_send_button"></i></button>
 
                                             </div>
-                                        </form>
+                                        </div>
 
                                     </div>
 
@@ -327,3 +343,10 @@
 
 
 {% endblock content %}
+
+{% block script %}
+    <script src="{% static 'js/chat.js' %}"></script>
+    <script>
+        setupChats("{{ group.title }}", "{{ group.slug }}", "{{ user.username }}");
+    </script>
+{% endblock script %}

@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from chats.models import Message
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -27,11 +28,16 @@ def user_group_lists(request):
 @login_required()
 def user_group_details(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
+    previous_messages = None
+    if group.enable_chat:
+        previous_messages = Message.objects.filter(group=group)
 
-    return render(request, 'group_lists/group_detail.html',
-                  {'todos': group.todo.all(), 'group': group,
-                   'all_users': [user for user in get_user_model().objects.all() if
-                                 user not in group.get_all_members_obj()]})
+    context = {'todos': group.todo.all(), 'group': group,
+               'all_users': [user for user in get_user_model().objects.all() if
+                             user not in group.get_all_members_obj()],
+               'group_chats': previous_messages,
+               }
+    return render(request, 'group_lists/group_detail.html', context=context)
 
 
 @login_required()
