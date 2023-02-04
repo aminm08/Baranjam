@@ -15,6 +15,7 @@ from todo.models import Todo
 from pages.models import Invitation
 from .models import GroupList
 from .forms import GroupListForm
+from .decorators import admin_required
 
 
 @login_required()
@@ -26,7 +27,7 @@ def user_group_lists(request):
 @login_required()
 def user_group_details(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
-    print(group.get_all_members_obj())
+
     return render(request, 'group_lists/group_detail.html',
                   {'todos': group.todo.all(), 'group': group,
                    'all_users': [user for user in get_user_model().objects.all() if
@@ -60,27 +61,21 @@ class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 
 
 @login_required()
-def group_update_view(request, pk):
-    group = get_object_or_404(GroupList, pk=pk)
+@admin_required
+def group_update_view(request, group_id):
+    group = get_object_or_404(GroupList, pk=group_id)
 
-    if request.user in group.admins.all():
-        form = GroupListForm(request.user, instance=group, exclude_members=True)
+    form = GroupListForm(request.user, instance=group, exclude_members=True)
 
-        if request.method == 'POST':
-            form = GroupListForm(request.user, request.POST, instance=group, exclude_members=True)
+    if request.method == 'POST':
+        form = GroupListForm(request.user, request.POST, instance=group, exclude_members=True)
 
-            if form.is_valid():
-                form.save(create=False)
+        if form.is_valid():
+            form.save(create=False)
 
-                messages.success(request, _("Group successfully updated"))
-                return redirect('group_lists')
-        return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
-    raise PermissionDenied
-
-
-# member 2 admin
-# invite new users
-# invite link
+            messages.success(request, _("Group successfully updated"))
+            return redirect('group_lists')
+    return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
 
 
 @login_required()
@@ -97,35 +92,36 @@ def leave_group_view(request, group_id):
 
 @login_required()
 @require_POST
-def add_admin(request, group_id):
+def manage_admins(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
 
-    if request.user in group.admins.all():
-        user_ids = list(request.POST.keys())[1:]
+    if request.user == group.admins.first():
+        user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
 
-        for id in user_ids:
-            user = get_object_or_404(get_user_model(), pk=id)
-            if user not in group.members.all():
-                continue
-
-            if user not in group.admins.all():
-                group.members.remove(user)
-                group.admins.add(user)
+        if user in group.members.all():
+            group.members.remove(user)
+            group.admins.add(user)
+            messages.success(request, _('User promoted to admin'))
+        elif user in group.admins.all():
+            group.admins.remove(user)
+            group.members.add(user)
+            messages.success(request, _('User degraded to regular member'))
+        else:
+            messages.error(request, _('user is not a member of %s ' % group.title))
         return redirect('group_detail', group_id)
     raise PermissionDenied
 
 
 @login_required()
 @require_POST
+@admin_required
 def invite_new_members(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
 
-    if request.user in group.admins.all():
-        user_ids = list(request.POST.keys())[1:]
-        users = [get_object_or_404(get_user_model(), pk=pk) for pk in user_ids]
-        send_group_list_invitation(request, users, group)
-        return redirect('group_detail', group_id)
-    raise PermissionDenied
+    user_ids = list(request.POST.keys())[1:]
+    users = [get_object_or_404(get_user_model(), pk=pk) for pk in user_ids]
+    send_group_list_invitation(request, users, group)
+    return redirect('group_detail', group_id)
 
 
 def send_group_list_invitation(request, users, group_list):
@@ -157,16 +153,23 @@ def accept_invite(request, group_id, inv_id):
 
 @login_required()
 @require_POST
+@admin_required
 def remove_user_from_list(request, group_id):
-    group_list = get_object_or_404(GroupList, pk=group_id)
+    group = get_object_or_404(GroupList, pk=group_id)
     user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
-    if request.user == group_list.todo.user:
-        if user in group_list.users.all() and user != group_list.todo.user:
-            group_list.users.remove(user)
-            messages.success(request, _('user successfully deleted from list'))
-            return redirect('todo_settings', group_list.todo.id)
+    if user != group.admins.first():
+        if user in group.admins.all():
+            if request.user == group.admins.first():
+                group.admins.remove(user)
 
-    raise PermissionDenied
+        elif user in group.members.all():
+            group.members.remove(user)
+
+        messages.success(request, _('user successfully removed from list'))
+    else:
+        messages.warning(request, _('unable to remove group owner'))
+
+    return redirect('group_detail', group.id)
 
 
 def search_view(request):

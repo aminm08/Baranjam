@@ -105,18 +105,15 @@
                         <div class="tab-pane" id="members">
                             <div class="col align-self-center">
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-md-9">
 
                                         <h4 class="">{% trans 'Group members' %}</h4>
                                     </div>
                                     {% if user in group.admins.all %}
 
-                                        <div class="col float-right">
+                                        <div class="col">
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#InvUsers"
                                                     class="btn btn-info">{% trans 'invite users' %}</button>
-
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#AddAdmin"
-                                                    class="btn btn-warning">{% trans 'Add admin' %}</button>
                                         </div>
 
                                     {% endif %}
@@ -135,6 +132,41 @@
                                                  height="55">
                                         {% endif %} <span class="ml-2 mr-2">{{ admin.username }}</span>
                                         <span class="badge bg-info rounded-pill mb-3">{% trans 'admin' %}</span>
+                                        {% if user == group.admins.first %}
+
+                                            <div class="dropdown-center float-right">
+                                                <button class="btn btn-secondary dropdown-toggle border-0" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    :
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <form action="{% url 'manage_admins' group.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <button class="dropdown-item" name="{{ admin.id }}"
+                                                                    type="submit"><i
+                                                                    class="fas fa-user text-info mr-2"></i>{% trans 'degrade to member' %}
+                                                            </button>
+
+                                                        </form>
+                                                    </li>
+                                                    {% if admin != group.admins.first %}
+                                                        <li>
+                                                            <form action="{% url 'remove_group_member' group.id %}"
+                                                                  method="post">
+                                                                {% csrf_token %}
+                                                                <button class="dropdown-item" name="{{ admin.id }}"><i
+                                                                        class="fas fa-trash text-danger mr-2"></i>
+                                                                    {% trans 'Remove member' %}
+                                                                </button>
+                                                            </form>
+
+                                                        </li>
+                                                    {% endif %}
+
+                                                </ul>
+                                            </div>
+                                        {% endif %}
 
                                     </div>
                                 {% endfor %}
@@ -150,9 +182,39 @@
                                         {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
 
                                         {% if user in group.admins.all %}
+                                            <div class="dropdown-center float-right">
+                                                <button class="btn btn-secondary dropdown-toggle border-0" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    :
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <form action="{% url 'manage_admins' group.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <button class="dropdown-item" type="submit"
+                                                                    name="{{ member.id }}"><i
+                                                                    class="fas fa-user-plus text-success mr-2"></i>{% trans 'promote to admin' %}
+                                                            </button>
 
-                                            <i class="fas fa-trash float-right  text-danger"
-                                               style="margin-top: 1rem;"></i>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{% url 'remove_group_member' group.id %}"
+                                                              method="post">
+                                                            {% csrf_token %}
+                                                            <button class="dropdown-item" name="{{ member.id }}"><i
+                                                                    class="fas fa-trash text-danger mr-2"></i>
+                                                                {% trans 'Remove member' %}
+                                                            </button>
+                                                        </form>
+
+                                                    </li>
+
+
+                                                </ul>
+                                            </div>
+
+
                                         {% endif %}
                                     </div>
 
@@ -160,50 +222,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="AddAdmin">
-
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Add admin' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{% url 'add_admin' group.id %}" method="post">
-                            {% csrf_token %}
-                            {% for member in group.members.all %}
-                                <div class="col mb-4">
-
-                                    {% if member.profile_picture %}
-                                        <img class="rounded" src="{{ member.profile_picture.url }}" alt=""
-                                             width="55" height="55">
-                                    {% else %}
-                                        <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
-                                             height="55">
-                                    {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
-                                    <input type="checkbox" class="form-check float-right"
-                                           style="margin-top: 1rem; width: 16px;" name="{{ member.id }}">
-
-
-                                </div>
-                            {% endfor %}
-                            <hr>
-                            <div class="float-right">
-
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-
-
-                        </form>
-
-                    </div>
-
-
                 </div>
             </div>
         </div>
@@ -241,8 +259,8 @@
                             <hr>
                             <div class="float-right">
 
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                                <button type="submit" class="btn btn-primary">{% trans 'Send Invitations' %}</button>
                             </div>
                         </form>
 
