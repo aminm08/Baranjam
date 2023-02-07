@@ -17,7 +17,7 @@ from pages.models import Invitation
 from .models import GroupList
 from .forms import GroupListForm
 from .decorators import admin_required
-
+from chats.models import OnlineUsers
 
 @login_required()
 def user_group_lists(request):
@@ -46,8 +46,10 @@ def create_group(request):
     if request.method == 'POST':
         form = GroupListForm(request.user, request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            obj = form.save()
             data = form.cleaned_data
+            if obj.enable_chat:
+                OnlineUsers.objects.create(group=obj)
 
             send_group_list_invitation(request, data['members'], form.instance)
             messages.success(request, _("Group created successfully and invitations are sent"))
@@ -176,6 +178,16 @@ def remove_user_from_list(request, group_id):
         messages.warning(request, _('unable to remove group owner'))
 
     return redirect('group_detail', group.id)
+
+# @login_required()
+# def foreign_invitation_accept(request):
+#
+#
+#
+#
+#
+
+
 
 
 def search_view(request):

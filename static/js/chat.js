@@ -1,3 +1,6 @@
+let online_user_container = document.getElementById('online-users-container')
+
+
 let setupChats = async (groupName, groupSlug, username) => {
 
     const chatSocket = new WebSocket(
@@ -30,13 +33,63 @@ let setupChats = async (groupName, groupSlug, username) => {
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         var div = document.createElement("div");
+        var innerdiv = document.createElement("div");
+        var span = document.createElement("span");
+        var para = document.createElement("p");
+        div.innerHTML = `<img src="${data.img}" width="50" height="50"> `
+        para.style.fontSize = '12px';
 
-        div.innerHTML = `<img src="${data.img}" width="50" height="50">  ` + data.username + " : " + data.message;
+        para.innerHTML = `
+            <span class="float-left">${data.username}</span>
+            <span class="float-right" dir="ltr">${data.datetime}</span>
+            `
+        span.innerHTML = `${data.message}`
+
+
+        innerdiv.classList.add('col-md-4', 'card', 'shadow')
+
+        if (username == data.username) {
+            div.dir = 'rtl'
+            span.dir = "ltr"
+            innerdiv.style.backgroundColor = "rgba(130, 243, 183, 0.72)"
+        } else {
+            innerdiv.style.backgroundColor = "rgba(47, 193, 239, 0.68)"
+
+        }
+
+        innerdiv.appendChild(para)
+        innerdiv.appendChild(span)
+
+
+        div.appendChild(innerdiv)
+
+
         div.classList.add('mb-2')
+        console.log(div)
 
         document.querySelector("#id_message_send_input").value = "";
         document.querySelector("#id_chat_item_container").appendChild(div);
     };
 
 
+}
+
+let getOnlineUsersList = async (group_id) => {
+    // while (1) {/
+    data = await fetch(`/chats/group_online_users/${group_id}`)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (json) {
+
+            json.forEach(function (obj) {
+                // if (!(obj[0] in String(online_user_container.innerText))) {
+                online_user_container.innerHTML += `<img src="${obj[1]}" class="mr-2 " width="50" height="50">` + obj[0] + '<br>'
+                // }
+            })
+
+
+        });
+
+    // }
 }

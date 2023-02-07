@@ -24,5 +24,5 @@ class CustomUser(AbstractUser):
         completed = self.jobs.filter(user_done_date=date.today(), is_done=True)
         return completed
 
-    # def get_joined_groups(self):
-    #     print(self.group)
+    def get_profile_pic_or_blank(self):
+        return self.profile_picture.url if self.profile_picture else '/static/img/blank_user.png'

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # 3rd party apps
     'crispy_forms',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'jalali_date',
     'rosetta',
     'captcha',
+    'channels',
 
     # my apps
     'accounts',
@@ -102,7 +104,6 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -187,6 +188,7 @@ LOGOUT_REDIRECT_URL = 'homepage'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #
 # # allauth
+SITE_ID = 1
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_REQUIRED = True
@@ -209,8 +211,8 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 JALALI_DATE_DEFAULTS = {
     'Strftime': {
-        'date': '%y/%m/%d',
-        'datetime': '%H:%M:%S _ %y/%m/%d',
+        'date': '%Y %B %d',
+        'datetime': '%H:%M:%S _ %Y %B %d',
     },
     'Static': {
         'js': [

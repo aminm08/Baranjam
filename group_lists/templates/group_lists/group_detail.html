@@ -1,6 +1,7 @@
 {% extends '_base.html' %}
 {% load i18n %}
 {% load static %}
+{% load jalali_tags %}
 {% block title %}
 
 {% endblock title %}
@@ -19,11 +20,21 @@
                         style="background-color: #f4623a;">{{ group.title|capfirst }}</h1>
                     <div class="card-body border-3 border-dark">
 
-                        <div class="row align-items-center">
+                        <div class="row ">
 
                             <div class="col ">
                                 <img src="{{ group.picture.url }}" alt="" width="120" height="120"
                                      style="display: block; margin: 0 auto;">
+                            </div>
+                            <div class=" card shadow  mt-3 p-2 ">
+                                <div class="row">
+
+                                    <p class="col">{% trans 'Invitation Link' %}</p>
+                                    <button class="btn-sm btn-outline-success col-md-2 mr-3"
+                                            onclick="navigator.clipboard.writeText('{{ group.get_invitation_link }}')">{% trans 'Copy link' %}</button>
+                                </div>
+                                <p style="font-size: 13px; border:1px solid #f4623a; padding:2px;"
+                                   class="mt-1">{{ group.get_invitation_link }}</p>
                             </div>
 
                             <div class="">
@@ -42,7 +53,7 @@
 
                 <div class="card shadow ">
                     <div class="card-header">
-                        {#                <h5 class="card-title"></h5>#}
+
                         <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="true" data-bs-toggle="tab"
@@ -135,7 +146,7 @@
                                                  height="55">
                                         {% endif %} <span class="ml-2 mr-2">{{ admin.username }}</span>
                                         <span class="badge bg-info rounded-pill mb-3">{% trans 'admin' %}</span>
-                                        {% if user == group.admins.first %}
+                                        {% if user == group.admins.first  and admin != group.admins.first %}
 
                                             <div class="dropdown-center float-right">
                                                 <button class="btn btn-secondary dropdown-toggle border-0" type="button"
@@ -153,19 +164,19 @@
 
                                                         </form>
                                                     </li>
-                                                    {% if admin != group.admins.first %}
-                                                        <li>
-                                                            <form action="{% url 'remove_group_member' group.id %}"
-                                                                  method="post">
-                                                                {% csrf_token %}
-                                                                <button class="dropdown-item" name="{{ admin.id }}"><i
-                                                                        class="fas fa-trash text-danger mr-2"></i>
-                                                                    {% trans 'Remove member' %}
-                                                                </button>
-                                                            </form>
 
-                                                        </li>
-                                                    {% endif %}
+                                                    <li>
+                                                        <form action="{% url 'remove_group_member' group.id %}"
+                                                              method="post">
+                                                            {% csrf_token %}
+                                                            <button class="dropdown-item" name="{{ admin.id }}"><i
+                                                                    class="fas fa-trash text-danger mr-2"></i>
+                                                                {% trans 'Remove member' %}
+                                                            </button>
+                                                        </form>
+
+                                                    </li>
+
 
                                                 </ul>
                                             </div>
@@ -185,14 +196,18 @@
                                         {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
 
                                         {% if user in group.admins.all %}
+
+
                                             <div class="dropdown-center float-right">
-                                                <button class="btn btn-secondary dropdown-toggle border-0" type="button"
+                                                <button class="btn btn-secondary dropdown-toggle border-0"
+                                                        type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
                                                     :
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <form action="{% url 'manage_admins' group.id %}" method="post">
+                                                        <form action="{% url 'manage_admins' group.id %}"
+                                                              method="post">
                                                             {% csrf_token %}
                                                             <button class="dropdown-item" type="submit"
                                                                     name="{{ member.id }}"><i
@@ -218,6 +233,7 @@
                                             </div>
 
 
+
                                         {% endif %}
                                     </div>
 
@@ -229,13 +245,16 @@
                         <div class="tab-pane" id="chat">
                             <div class="row">
 
-                                <div class="col-md-9" >
+                                <div class="col-md-9">
                                     <diV class="card shadow ">
                                         <h6 class="card-header text-center">{% trans 'Chat with group members' %}</h6>
                                         <div class="card-body">
-                                            <div id="id_chat_item_container" style="max-height: 220px; overflow-y:auto;">
+                                            <div id="id_chat_item_container"
+                                                 style="max-height: 220px; overflow-y:auto;">
                                                 {% for message in group_chats %}
-                                                    <div class="mb-2">
+
+
+                                                    <div class="mb-2" {% if user == message.user %}dir="rtl"{% endif %}>
                                                         {% if message.user.profile_picture %}
                                                             <img src="{{ message.user.profile_picture.url }}" alt=""
                                                                  width="50"
@@ -244,8 +263,20 @@
                                                             <img src="{% static 'img/blank_user.png' %}" alt=""
                                                                  width="50" height="50">
 
-                                                        {% endif %} {{ message.user.username }}: {{ message.text }}
+                                                        {% endif %}
+                                                        <div class="col-md-4 card shadow"
+                                                             style="background-color:{% if user == message.user %} rgba(130,243,183,0.72)  {% else %}    rgba(47,193,239,0.68){% endif %}">
+                                                            <p class="" style="font-size: 12px;"><span
+                                                                    class="float-left">{{ message.user.username }} </span>
+                                                                <span class="float-right"
+                                                                      dir="ltr">{{ message.datetime_created|to_jalali:'%Y %B %d' }}</span>
+                                                            </p>
+
+                                                            <span {% if user == message.user %}
+                                                                dir="ltr" {% endif %}>{{ message.text }}</span>
+                                                        </div>
                                                     </div>
+
                                                 {% endfor %}
 
                                             </div>
@@ -255,29 +286,33 @@
                                     </diV>
 
                                 </div>
-                                <div class="col-md-3 ">
-                                    <div class="card shadow">
-                                        <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
 
-                                    </div>
-
-                                </div>
                                 <div class="col-md-9 ">
                                     <div class="card shadow">
-                                        <div class="row">
+                                        <div class="row align-items-center">
 
 
                                             <div class="col-md-10">
 
-                                                <input type="text" class="form-control" name="messaage"
+                                                <input type="text" class="form-control " name="messaage"
                                                        id="id_message_send_input">
                                             </div>
-                                            <div class="col float-right w-100">
-                                                <button><i class="fas fa-paper-plane border-0 text-info"
-                                                           style="border:none;"
-                                                           id="id_message_send_button"></i></button>
+                                            <div class="col float-right w-100 ">
+                                                <button class="text-info bg-transparent border-0 " width="90"><i
+                                                        class="fas fa-paper-plane " id="id_message_send_button"></i>
+                                                </button>
 
                                             </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="card shadow">
+                                        <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
+                                        <div class="card-body" id="online-users-container">
+
                                         </div>
 
                                     </div>
@@ -347,6 +382,12 @@
 {% block script %}
     <script src="{% static 'js/chat.js' %}"></script>
     <script>
-        setupChats("{{ group.title }}", "{{ group.slug }}", "{{ user.username }}");
+
+        {#function copyInvLine(){#}
+        {#    var link = #}
+        {#}#}
+
+            setupChats("{{ group.title }}", "{{ group.slug }}", "{{ user.username }}");
+            getOnlineUsersList('{{ group.id }}');
     </script>
 {% endblock script %}
