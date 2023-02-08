@@ -19,6 +19,7 @@ from .forms import GroupListForm
 from .decorators import admin_required
 from chats.models import OnlineUsers
 
+
 @login_required()
 def user_group_lists(request):
     groups = [*request.user.as_member.all(), *request.user.as_admin.all()]
@@ -179,15 +180,10 @@ def remove_user_from_list(request, group_id):
 
     return redirect('group_detail', group.id)
 
-# @login_required()
-# def foreign_invitation_accept(request):
-#
-#
-#
-#
-#
 
-
+def foreign_invitation_accept_view(request, signed_pk):
+    group = get_object_or_404(GroupList, pk=GroupList.InvLink.unsign(signed_pk))
+    return render(request, 'group_lists/foreign_invite_page.html', {'group': group})
 
 
 def search_view(request):

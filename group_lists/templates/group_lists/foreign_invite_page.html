@@ -1,0 +1,79 @@
+<!doctype html>
+{% load i18n %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Join Group</title>
+</head>
+<body>
+<style>
+
+    :root {
+        --shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+
+    body {
+        background: rgb(85, 6, 182);
+        background: linear-gradient(90deg, rgba(85, 6, 182, 1) 0%, rgba(244, 98, 58, 1) 67%, rgba(255, 0, 215, 1) 100%);
+    }
+
+    #group_info {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        padding: 10px;
+        width: 50%;
+
+    }
+
+    #img_div {
+        align-self: center;
+        width: 325px;
+        height: 325px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    #group_info img {
+        width: 100%;
+
+
+    }
+
+
+    #submit_btn {
+        width: 10rem;
+        height: 1.5rem;
+        font-size: 16px;
+        background-color: ;
+    }
+</style>
+
+
+<section id="group_info">
+    <div id="img_div">
+
+        <img src="{{ group.get_group_picture_or_blank }}" alt="group picture" id="group_img">
+    </div>
+    <h1>{{ group.title }}</h1>
+    <p>{{ group.description }}</p>
+    <form action="">
+        {% csrf_token %}
+        <button type="submit" id="submit_btn">{% trans 'Join Group' %}</button>
+    </form>
+</section>
+
+
+</body>
+</html>
+
+
+
+

@@ -33,8 +33,12 @@ class GroupList(models.Model):
     def get_all_members_length(self):
         return len(self.members.all()) + len(self.admins.all())
 
+    def get_group_picture_or_blank(self):
+        return self.picture.url if self.picture else '/static/img/blank_user.png'
+
     def get_all_members_obj(self):
         return [*self.admins.all(), *self.members.all()]
 
     def get_invitation_link(self):
-        return 'https://%s/%s' % ('127.0.0.1:8000', self.InvLink.sign(self.pk))
+        url = reverse('foreign_inv_accept_page', args=[self.InvLink.sign(self.pk)])
+        return 'http://%s%s' % ('127.0.0.1:8000', url)
