@@ -23,7 +23,7 @@
                         <div class="row ">
 
                             <div class="col ">
-                                <img src="{{ group.picture.url }}" alt="" width="120" height="120"
+                                <img src="{{ group.get_group_picture_or_blank }}" alt="" width="120" height="120"
                                      style="display: block; margin: 0 auto;">
                             </div>
                             <div class=" card shadow  mt-3 p-2 ">
@@ -383,11 +383,9 @@
     <script src="{% static 'js/chat.js' %}"></script>
     <script>
 
-        {#function copyInvLine(){#}
-        {#    var link = #}
-        {#}#}
 
-            setupChats("{{ group.title }}", "{{ group.slug }}", "{{ user.username }}");
+
+            setupChats("{{ group.slug }}", "{{ user.username }}");
             getOnlineUsersList('{{ group.id }}');
     </script>
 {% endblock script %}

@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from chats.models import Message
+from django.shortcuts import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import redirect_to_login
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.views import generic
@@ -29,16 +31,18 @@ def user_group_lists(request):
 @login_required()
 def user_group_details(request, pk):
     group = get_object_or_404(GroupList, pk=pk)
-    previous_messages = None
-    if group.enable_chat:
-        previous_messages = Message.objects.filter(group=group)
+    if request.user in group.get_all_members_obj():
+        previous_messages = None
+        if group.enable_chat:
+            previous_messages = Message.objects.filter(group=group)
 
-    context = {'todos': group.todo.all(), 'group': group,
-               'all_users': [user for user in get_user_model().objects.all() if
-                             user not in group.get_all_members_obj()],
-               'group_chats': previous_messages,
-               }
-    return render(request, 'group_lists/group_detail.html', context=context)
+        context = {'todos': group.todo.all(), 'group': group,
+                   'all_users': [user for user in get_user_model().objects.all() if
+                                 user not in group.get_all_members_obj()],
+                   'group_chats': previous_messages,
+                   }
+        return render(request, 'group_lists/group_detail.html', context=context)
+    raise PermissionDenied
 
 
 @login_required()
@@ -181,11 +185,25 @@ def remove_user_from_list(request, group_id):
     return redirect('group_detail', group.id)
 
 
-def foreign_invitation_accept_view(request, signed_pk):
+def foreign_invitation_show_info(request, signed_pk):
     group = get_object_or_404(GroupList, pk=GroupList.InvLink.unsign(signed_pk))
     return render(request, 'group_lists/foreign_invite_page.html', {'group': group})
 
 
+
+@require_POST
+def accept_foreign_invite_view(request, group_id):
+    group = get_object_or_404(GroupList, pk=group_id)
+    if request.user.is_authenticated:
+
+        if request.user not in group.get_all_members_obj():
+            group.members.add(request.user)
+            messages.success(request, _('Welcome! you are now a member of this group'))
+            return redirect('group_detail', group.id)
+        messages.warning(request, _('you are already in this group'))
+        return redirect(group.get_invitation_link())
+
+    return redirect_to_login(reverse('foreign_inv_show_info', args=[group.get_signed_pk()]))
 
 
 def search_view(request):

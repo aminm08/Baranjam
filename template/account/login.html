@@ -71,8 +71,8 @@
                                     style="background-color: #f4623a;">{% trans 'Login' %}</button>
                         </div>
                         <div id="emailHelp" class="form-text text-black text-right mb-3 ">{% trans 'NotRegistered?' %}
-                            <a href="{% url 'account_signup' %}"
-                               class="text-dark fw-bold">{% trans 'Create an Account' %}</a>
+                            <a href=""
+                               class="text-dark fw-bold" id="signup_link">{% trans 'Create an Account' %}</a>
                         </div>
                     </form>
                 </div>
@@ -93,15 +93,16 @@
                 password_field.type = 'password';
             }
         }
+        signup_link = document.getElementById('signup_link');
+        if (window.location.search){
+            link = `{% url 'account_signup' %}${window.location.search}`
+            signup_link.href = link;
+        }
 
-        $('#email').on('keyup', function () {
-            var input = $(this);
-            if (input.val().length === 0) {
-                input.addClass('empty');
-            } else {
-                input.removeClass('empty');
-            }
-        });
+
+
+
+
 
 
     </script>

@@ -20,7 +20,7 @@
     </div>
     <h1>{{ group.title }}</h1>
     <p>{{ group.description }}</p>
-    <form action="">
+    <form action="{% url 'accept_inv_foreign' group.id %}" method="post">
         {% csrf_token %}
         <button type="submit">{% trans 'Join Group' %}</button>
     </form>

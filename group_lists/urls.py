@@ -16,8 +16,9 @@ urlpatterns = [
     # invitation
     path('invite/users/<int:group_id>/', views.invite_new_members, name='invite_members'),
     path('invite/accept/<int:group_id>/<int:inv_id>/', views.accept_invite, name='accept_inv'),
-    re_path('invite/accept_foreign/(?P<signed_pk>[0-9]+/[A-Za-z0-9_=-]+)/$', views.foreign_invitation_accept_view,
-            name='foreign_inv_accept_page'),
+    re_path('invite/accept_foreign/(?P<signed_pk>[0-9]+/[A-Za-z0-9_=-]+)/$', views.foreign_invitation_show_info,
+            name='foreign_inv_show_info'),
+    path('invite/accept_foreign/<int:group_id>/', views.accept_foreign_invite_view, name='accept_inv_foreign'),
 
     path('search_view/', views.search_view, name='search_users_view'),
 

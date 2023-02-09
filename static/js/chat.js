@@ -1,8 +1,8 @@
 let online_user_container = document.getElementById('online-users-container')
 
 
-let setupChats = async (groupName, groupSlug, username) => {
-
+let setupChats = async (groupSlug, username) => {
+    console.log(groupSlug)
     const chatSocket = new WebSocket(
         'ws://'
         + window.location.host
