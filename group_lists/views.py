@@ -186,6 +186,8 @@ def foreign_invitation_accept_view(request, signed_pk):
     return render(request, 'group_lists/foreign_invite_page.html', {'group': group})
 
 
+
+
 def search_view(request):
     if request.method == 'POST':
         series = str(request.POST['series'])

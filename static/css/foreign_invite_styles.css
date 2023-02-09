@@ -1,0 +1,62 @@
+
+:root {
+    --shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+body {
+    background: rgb(20, 20, 20);
+    background: -moz-linear-gradient(90deg, rgba(20, 20, 20, 1) 6%, rgba(244, 98, 58, 1) 50%, rgba(20, 20, 20, 1) 94%);
+    background: -webkit-linear-gradient(90deg, rgba(20, 20, 20, 1) 6%, rgba(244, 98, 58, 1) 50%, rgba(20, 20, 20, 1) 94%);
+    background: linear-gradient(90deg, rgba(20, 20, 20, 1) 6%, rgba(244, 98, 58, 1) 50%, rgba(20, 20, 20, 1) 94%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#141414", endColorstr="#141414", GradientType=1);
+    font-family: 'Roboto', sans-serif;
+}
+
+
+#group_info {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 10px;
+    width: 50%;
+
+}
+
+#img_div {
+    align-self: center;
+    width: 325px;
+    height: 325px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#group_info img {
+    width: 100%;
+
+
+}
+
+
+#group_info button {
+    margin-top: 5px;
+    font-size: 16px;
+    width: 45%;
+    height: 1.7rem;
+    background-color: rgb(24, 22, 25);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 2px;
+
+
+}
+
+#group_info button:hover {
+    background-color: rgba(255, 57, 0, 0.7);
+
+
+}
