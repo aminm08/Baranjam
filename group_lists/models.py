@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.core.signing import Signer
-from django.utils.text import slugify
 from django.contrib.sites.models import Site
+from django.utils.safestring import mark_safe
 import uuid
 
 
@@ -21,17 +21,9 @@ class GroupList(models.Model):
     enable_chat = models.BooleanField(default=True, verbose_name=_('Group members chat'))
     enable_job_divider = models.BooleanField(default=False, verbose_name=_('Group job divider'))
     InvLink = Signer(sep='/', salt='group_lists.GroupList')
-    slug = models.SlugField()
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        print(args, kwargs)
-        if not self.slug:
-            self.slug = f'group-{self.uuid}'
-
-        return super(GroupList, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('group_detail', args=[self.pk])
@@ -51,3 +43,6 @@ class GroupList(models.Model):
     def get_invitation_link(self):
         url = reverse('foreign_inv_show_info', args=[self.get_signed_pk()])
         return 'http://%s%s' % ('127.0.0.1:8000', url)
+
+    def picture_preview(self):
+        return mark_safe(f'<img src={self.get_group_picture_or_blank()} width=60 height=60> </img>')

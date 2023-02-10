@@ -1,65 +1,68 @@
-import json
-from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import sync_to_async, async_to_sync
-from .models import Message, OnlineUsers
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from group_lists.models import GroupList
+
+from channels.generic.websocket import WebsocketConsumer
+from channels.consumer import AsyncConsumer
+from asgiref.sync import async_to_sync
 from jalali_date import date2jalali
-from channels.db import database_sync_to_async
+
+from group_lists.models import GroupList
+from .models import Message, OnlineUsers
+
+import json
 
 
 class ChatConsumer(WebsocketConsumer):
 
     def connect(self):
-        self.room = get_object_or_404(GroupList, slug=self.scope['url_route']['kwargs']['room_slug'])
-        self.room_name = self.room.slug
-        self.room_group_name = 'chat_%s' % self.room_name
-        user = self.scope['user']
-        self.update_online_users(user)
-        print('updated add')
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name, self.channel_name
-        )
-        self.accept()
+        self.group = get_object_or_404(GroupList, uuid=self.scope['url_route']['kwargs']['group_id'])
+        self.group_room_name = 'chat_%s' % self.group.uuid
+        self.user = self.scope['user']
 
-    def disconnect(self, close_code):
+        self.update_online_users(self.user)
+
+        if self.user in self.group.get_all_members_obj():
+            async_to_sync(self.channel_layer.group_add)(
+                self.group_room_name, self.channel_name
+            )
+            self.accept()
+
+    def disconnect(self):
         async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name, self.channel_name
+            self.group_room_name, self.channel_name
         )
-        user = self.scope['user']
-        self.update_online_users(user, add=False)
-        print('updated remove')
+        self.update_online_users(self.user, add=False)
 
-    def receive(self, text_data):
+    def receive(self, text_data=None, bytes_data=None):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-        username = text_data_json["username"]
-        user = get_object_or_404(get_user_model(), username=username)
-        message_obj = self.save_message(user, message, self.room)
-        img = user.profile_picture.url if user.profile_picture else '/static/img/blank_user.png'
-        datetime = date2jalali(message_obj.datetime_created.date())
+
+        user = get_object_or_404(get_user_model(), username=text_data_json["username"])
+        message_obj = self.save_message(user, text_data_json["message"], self.group)
+
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {'type': 'chat_message', 'message': message, 'username': username, 'img': img, 'datetime': str(datetime)}
+            self.group_room_name,
+            {'type': 'chat_message', 'message': text_data_json["message"], 'username': user.username,
+             'img': user.get_profile_picture_or_blank(),
+             'datetime': str(date2jalali(message_obj.datetime_created.date()))
+             }
         )
 
     def chat_message(self, event):
-        message = event['message']
-        username = event['username']
-        img = event['img']
-        datetime = event['datetime']
-
-        self.send(text_data=json.dumps({'message': message, 'username': username, 'img': img, 'datetime': datetime}))
+        self.send(text_data=json.dumps({
+            'message': event['message'],
+            'username': event['username'],
+            'img': event['img'],
+            'datetime': event['datetime']
+        }))
 
     def save_message(self, user, text, group):
         message = Message.objects.create(user=user, text=text, group=group)
         return message
 
     def update_online_users(self, user, add=True):
-        onlineUserObj = OnlineUsers.objects.get(group=self.room)
-        print(onlineUserObj)
+        online_user_obj = OnlineUsers.objects.get(group=self.group)
+
         if add:
-            onlineUserObj.online_users.add(user)
+            online_user_obj.online_users.add(user)
         else:
-            onlineUserObj.online_users.remove(user)
+            online_user_obj.online_users.remove(user)

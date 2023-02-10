@@ -1,13 +1,13 @@
 let online_user_container = document.getElementById('online-users-container')
 
 
-let setupChats = async (groupSlug, username) => {
-    console.log(groupSlug)
+let setupChats = async (groupUUID, username) => {
+    console.log(groupUUID)
     const chatSocket = new WebSocket(
         'ws://'
         + window.location.host
         + "/"
-        + groupSlug
+        + groupUUID
         + "/"
     );
 
