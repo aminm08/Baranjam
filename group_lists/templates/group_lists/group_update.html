@@ -17,19 +17,17 @@
 
                 </div>
                 <div class="card-body">
+                    <img src="{{ group.get_group_picture_or_blank }}" alt="group_picture"
+                         style="display: block; margin:0 auto;" width="150" height="150">
                     <form method="post" class="" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <button type="submit" class="btn btn-success">Submit</button>
 
                     </form>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
 

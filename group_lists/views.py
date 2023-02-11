@@ -81,7 +81,7 @@ def group_update_view(request, group_id):
     form = GroupListForm(request.user, instance=group, exclude_members=True)
 
     if request.method == 'POST':
-        form = GroupListForm(request.user, request.POST, instance=group, exclude_members=True)
+        form = GroupListForm(request.user, request.POST, request.FILES, instance=group, exclude_members=True)
 
         if form.is_valid():
             form.save(create=False)
@@ -96,8 +96,11 @@ def group_update_view(request, group_id):
 def leave_group_view(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
 
-    if request.user != group.todo.user and request.user in group.users.all():
-        group.members.remove(request.user)
+    if request.user != group.admins.first() and request.user in group.get_all_members_obj():
+        if request.user in group.members.all():
+            group.members.remove(request.user)
+        else:
+            group.admins.remove(request.user)
         messages.success(request, _('you successfully left the group'))
         return redirect('group_lists')
     raise PermissionDenied
@@ -105,7 +108,7 @@ def leave_group_view(request, group_id):
 
 @login_required()
 @require_POST
-def manage_admins(request, group_id):
+def manage_group_users(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
 
     if request.user == group.admins.first():
@@ -148,7 +151,7 @@ def send_group_list_invitation(request, users, group_list):
                 errors[user] = 'is already invited'
         else:
             errors[user] = 'is already in the group'
-    print(errors)
+    return errors
 
 
 @login_required()

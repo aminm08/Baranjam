@@ -92,7 +92,6 @@ def job_is_done_assign(request, job_id):
             request.user.update_done_jobs()
             messages.success(request, _('job completed! congrats'))
 
-
         else:
             job.is_done = False
             job.user_done_date = None
@@ -221,5 +220,3 @@ def todo_update_list_name(request, pk):
         messages.success(request, _('your list name successfully updated'))
         return redirect('todo_settings', todo.id)
     raise PermissionDenied
-
-

@@ -37,10 +37,11 @@
                             <li class="list-group-item d-flex justify-content-between align-items-start">
 
                                 <div class="ms-2 me-auto">
-                                    <div class="fw-bold">{% if group.picture %}
-                                        <img src="{{ group.picture.url }}" alt="group pic" width="45" height="45"
+                                    <div class="fw-bold">
+                                        <img src="{{ group.get_group_picture_or_blank }}" alt="group pic" width="45"
+                                             height="45"
                                              style="margin-right:3px;">
-                                    {% endif %} <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
+                                        <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
 
                                     </div>
                                 </div>
@@ -58,20 +59,27 @@
                                         {% trans 'Options' %}
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        {% if user == group.admins.first %}
-                                            <li>
+                                        <li>
+                                            {% if user == group.admins.first %}
 
                                                 <a class="dropdown-item" href="{% url 'group_delete' group.id %}">
                                                     <i class="fas fa-trash text-danger mr-1"></i> {% trans 'Delete Group' %}
                                                 </a>
-
+                                            {% endif %}
+                                            {% if user in group.admins.all %}
                                                 <a class="dropdown-item" href="{% url 'group_update' group.id %}">
-                                                    <i class="fas fa-edit text-info mr-1"></i> {% trans 'Update Group' %}
+                                                    <i class="fas fa-edit text-info mr-1"></i> {% trans 'Manage Group' %}
                                                 </a>
-                                            </li>
-                                        {% else %}
-                                            <li><a class="dropdown-item" href="#">{% trans 'Leave group' %}</a></li>
-                                        {% endif %}
+                                            {% else %}
+                                                <form action="{% url 'leave_group' group.id %}" method="post">
+
+                                                    {% csrf_token %}
+                                                    <button class="dropdown-item" type="submit"><i
+                                                            class="fas fa-sign-out-alt text-danger mr-1"></i>{% trans 'Leave group' %}
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </li>
                                     </ul>
                                 </div>
                             </li>

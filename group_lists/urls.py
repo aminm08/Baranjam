@@ -10,7 +10,7 @@ urlpatterns = [
     path('delete/<int:pk>/', views.GroupDeleteView.as_view(), name='group_delete'),
     path('update/<int:group_id>/', views.group_update_view, name='group_update'),
 
-    path('manage_admins/<int:group_id>/', views.manage_admins, name='manage_admins'),
+    path('manage_admins/<int:group_id>/', views.manage_group_users, name='manage_admins'),
     path('leave_group/<int:group_id>/', views.leave_group_view, name='leave_group'),
     path('remove_member/<int:group_id>/', views.remove_user_from_list, name='remove_group_member'),
     # invitation

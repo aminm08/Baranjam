@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
 from channels.generic.websocket import WebsocketConsumer
-from channels.consumer import AsyncConsumer
 from asgiref.sync import async_to_sync
 from jalali_date import date2jalali
 
@@ -26,7 +25,6 @@ class ChatConsumer(WebsocketConsumer):
                 self.group_room_name, self.channel_name
             )
             self.accept()
-
 
     def disconnect(self, message_code):
         async_to_sync(self.channel_layer.group_discard)(

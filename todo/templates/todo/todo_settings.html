@@ -105,27 +105,28 @@
 
 
 
-                        <h5 class="mt-lg-5">{% trans 'share your list with other users and create a group-level list' %}: </h5>
-                        <div class="mt-3">
-                            <form action="{% url 'add_group_list' %}" dir="ltr"
-                                  class="{% if LANGUAGE == 'fa' %}float-end {% endif %}" method="post" id="search_form">
-                                {% csrf_token %}
-                                <input type="hidden" name="todo" value="{{ todo.id }}">
-                                <input type="text" name="users" class="form-control-sm me-2"
-                                       placeholder="{% trans 'enter users' %}" id="search_input">
-                                <button type="submit" class="btn btn-success">{% trans 'Invite users' %}</button>
-                                <div class="col-md-15 mr-3">
-
-                                    <div class="card" id="result_box">
-
-                                    </div>
-                                </div>
-
-                            </form>
-
-                        </div>
+                        <h5 class="mt-lg-5">in order to share this list you can: <br>
+                        1- create a group list <br>
+                        2- take a pdf output <br>
+                        3-
+                        </h5>
+{#                        <div class="mt-3">#}
+{##}
+{#                            {% csrf_token %}#}
+{#                            <input type="hidden" name="todo" value="{{ todo.id }}">#}
+{#                            <input type="text" name="users" class="form-control-sm me-2"#}
+{#                                   placeholder="{% trans 'enter users' %}" id="search_input">#}
+{#                            <button type="submit" class="btn btn-success">{% trans 'Invite users' %}</button>#}
+{#                            <div class="col-md-15 mr-3">#}
+{##}
+{#                                <div class="card" id="result_box">#}
+{##}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                          #}
+{#                        </div>#}
                         <br>
-
 
 
                     </div>

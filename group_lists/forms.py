@@ -1,9 +1,7 @@
 from django import forms
-from django.forms import ValidationError
 from .models import GroupList
 from todo.models import Todo
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
 
 
 class GroupListForm(forms.ModelForm):
