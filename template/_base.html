@@ -94,7 +94,8 @@
                                             <li>
                                                 {% trans 'from' %}: {{ inv.user_sender }}<br>
                                                 {% trans 'group-list' %}: {{ inv.group_list.title }}
-                                                <button type="submit" class="float-end btn btn-sm btn-success">{% trans 'join' %}
+                                                <button type="submit"
+                                                        class="float-end btn btn-sm btn-success">{% trans 'join' %}
                                                 </button>
                                             </li>
 
@@ -166,9 +167,15 @@
     </div>
 </nav>
 {% if messages %}
-    <div class="container mt-3 bg-transparent text-dark fw-bold">
+    <div class="container-fluid mt-3 bg-transparent text-dark fw-bold">
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} text-center">{{ message|safe }}</div>
+
+            <div class="alert alert-{{ message.tags }} text-center">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message|safe }}
+            </div>
         {% endfor %}
     </div>
 {% endif %}

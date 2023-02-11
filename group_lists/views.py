@@ -1,30 +1,30 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from chats.models import Message
 from django.shortcuts import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.views import redirect_to_login
-from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.views import generic
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-from todo.models import Todo
-from pages.models import Invitation
+
 from .models import GroupList
 from .forms import GroupListForm
 from .decorators import admin_required
+
+from pages.models import Invitation
+from chats.models import Message
 from chats.models import OnlineUsers
 
 
 @login_required()
 def user_group_lists(request):
-    groups = [*request.user.as_member.all(), *request.user.as_admin.all()]
+    groups = [*request.user.group_lists_as_admin.all(), *request.user.group_lists_as_member.all()]
     return render(request, 'group_lists/user_group_lists.html', {'groups': groups})
 
 
@@ -56,7 +56,7 @@ def create_group(request):
             if obj.enable_chat:
                 OnlineUsers.objects.create(group=obj)
 
-            send_group_list_invitation(request, data['members'], form.instance)
+            send_group_list_invitation(request, data['members'], obj)
             messages.success(request, _("Group created successfully and invitations are sent"))
             return redirect('group_lists')
     return render(request, 'group_lists/group_create.html', {'form': form})
@@ -188,7 +188,6 @@ def remove_user_from_list(request, group_id):
 def foreign_invitation_show_info(request, signed_pk):
     group = get_object_or_404(GroupList, pk=GroupList.InvLink.unsign(signed_pk))
     return render(request, 'group_lists/foreign_invite_page.html', {'group': group})
-
 
 
 @require_POST

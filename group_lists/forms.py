@@ -7,9 +7,10 @@ from django.utils.translation import gettext_lazy as _
 
 
 class GroupListForm(forms.ModelForm):
-    todo = forms.ModelMultipleChoiceField(queryset=Todo.objects.all(), widget=forms.CheckboxSelectMultiple)
+    todo = forms.ModelMultipleChoiceField(queryset=Todo.objects.all(), widget=forms.CheckboxSelectMultiple,
+                                          required=False)
     members = forms.ModelMultipleChoiceField(queryset=get_user_model().objects.all(),
-                                             widget=forms.CheckboxSelectMultiple)
+                                             widget=forms.CheckboxSelectMultiple, required=False)
 
     def __init__(self, user, *args, **kwargs):
         exclude_members = kwargs.pop('exclude_members', False)

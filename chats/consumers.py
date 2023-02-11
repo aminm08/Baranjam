@@ -27,10 +27,12 @@ class ChatConsumer(WebsocketConsumer):
             )
             self.accept()
 
-    def disconnect(self):
+
+    def disconnect(self, message_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_room_name, self.channel_name
         )
+
         self.update_online_users(self.user, add=False)
 
     def receive(self, text_data=None, bytes_data=None):

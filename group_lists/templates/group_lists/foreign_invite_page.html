@@ -11,7 +11,18 @@
     <link rel="stylesheet" href="{% static 'css/foreign_invite_styles.css' %}">
 </head>
 <body>
+<style>
 
+</style>
+
+
+{% if messages %}
+    <div id="msg_container">
+        {% for message in messages %}
+            {{ message|safe }}
+        {% endfor %}
+    </div>
+{% endif %}
 
 <section id="group_info">
     <div id="img_div">

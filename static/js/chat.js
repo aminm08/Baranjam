@@ -75,21 +75,13 @@ let setupChats = async (groupUUID, username) => {
 }
 
 let getOnlineUsersList = async (group_id) => {
-    // while (1) {/
     data = await fetch(`/chats/group_online_users/${group_id}`)
         .then(function (response) {
             return response.json();
         })
         .then(function (json) {
-
             json.forEach(function (obj) {
-                // if (!(obj[0] in String(online_user_container.innerText))) {
                 online_user_container.innerHTML += `<img src="${obj[1]}" class="mr-2 " width="50" height="50">` + obj[0] + '<br>'
-                // }
             })
-
-
         });
-
-    // }
 }

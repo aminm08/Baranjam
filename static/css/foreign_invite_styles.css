@@ -26,8 +26,8 @@ body {
 
 #img_div {
     align-self: center;
-    width: 325px;
-    height: 325px;
+    width: 280px;
+    height: 280px;
     border-radius: 50%;
     overflow: hidden;
     display: inline-block;
@@ -59,4 +59,17 @@ body {
     background-color: rgba(255, 57, 0, 0.7);
 
 
+}
+
+#msg_container {
+    position: absolute;
+    margin: .8rem auto;
+    color: #9F6000;
+    background-color: #FEEFB3;
+
+    width: 20%;
+    text-align: center;
+    height: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
 }

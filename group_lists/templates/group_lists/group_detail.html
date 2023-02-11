@@ -34,7 +34,7 @@
                                             onclick="navigator.clipboard.writeText('{{ group.get_invitation_link }}')">{% trans 'Copy link' %}</button>
                                 </div>
                                 <p style="font-size: 13px; border:1px solid #f4623a; padding:2px;"
-                                   class="mt-1">{{ group.get_invitation_link }}</p>
+                                   class="mt-3">{{ group.get_invitation_link }}</p>
                             </div>
 
                             <div class="">
@@ -286,6 +286,17 @@
                                     </diV>
 
                                 </div>
+                                <div class="col-md-3 ">
+                                    <div class="card shadow">
+                                        <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
+                                        <div class="card-body" id="online-users-container"
+                                             style="max-height: 205px; overflow-y: auto;overflow-x:auto;">
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
 
                                 <div class="col-md-9 ">
                                     <div class="card shadow">
@@ -308,16 +319,7 @@
                                     </div>
 
                                 </div>
-                                <div class="col-md-3 ">
-                                    <div class="card shadow">
-                                        <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
-                                        <div class="card-body" id="online-users-container">
 
-                                        </div>
-
-                                    </div>
-
-                                </div>
                             </div>
 
                         </div>
@@ -384,8 +386,7 @@
     <script>
 
 
-
-            setupChats("{{ group.uuid }}", "{{ user.username }}");
-            getOnlineUsersList('{{ group.id }}');
+        setupChats("{{ group.uuid }}", "{{ user.username }}");
+        getOnlineUsersList('{{ group.id }}');
     </script>
 {% endblock script %}

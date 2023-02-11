@@ -16,7 +16,7 @@ class Message(models.Model):
 
 class OnlineUsers(models.Model):
     group = models.ForeignKey(GroupList, on_delete=models.CASCADE, related_name='online_users', verbose_name=_('group'))
-    online_users = models.ManyToManyField(get_user_model(), verbose_name=_('Group online users'))
+    online_users = models.ManyToManyField(get_user_model(), verbose_name=_('Group online users'), blank=True)
 
     def get_online_users_length(self):
         return self.online_users.count()
