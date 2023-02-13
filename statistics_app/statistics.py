@@ -29,11 +29,12 @@ class Analytics:
         hours = 0
         for job in self.today_jobs_done:
             hours += (job.duration.hour + job.duration.minute / 60)
+
         return round(hours, 2)
 
     def get_today_chart(self):
         today_done_jobs_titles = [i.text for i in self.today_jobs_done]
-        hours_spent = [float(str(i.duration.hour+i.duration.minute/60)) for i in self.today_jobs_done]
+        hours_spent = [float(str(i.duration.hour + i.duration.minute / 60)) for i in self.today_jobs_done]
         return today_done_jobs_titles, hours_spent
 
     def get_daily_hour_spent(self):
@@ -73,5 +74,11 @@ class Analytics:
     def get_most_productive_day_info(self):
         spent_hours = list(self.get_daily_hour_spent())
         data, labels = list(self.get_job_done_each_day()), list(self.get_done_dates())
-        max_spent_time_index = spent_hours.index(max(spent_hours))
-        return data[max_spent_time_index], spent_hours[max_spent_time_index], labels[max_spent_time_index]
+        if spent_hours:
+            max_spent_time_index = spent_hours.index(max(spent_hours))
+        elif data:
+            max_spent_time_index = data.index(max(data))
+        else:
+            return None, None, None
+
+        return data[max_spent_time_index], round(spent_hours[max_spent_time_index], 2), labels[max_spent_time_index]

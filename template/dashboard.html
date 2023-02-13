@@ -45,6 +45,7 @@
                 </div>
             </div>
 
+
             <div class="col-md-4 col-xl-3">
                 <div class="card bg-c-yellow order-card">
                     <div class="card-block">
@@ -59,9 +60,11 @@
                 </div>
             </div>
 
+
             <div class="col-md-4 col-xl-3">
                 <div class="card bg-c-pink order-card">
                     <div class="card-block">
+
                         <h6 class="m-b-20">{% trans "Today hours spent" %}</h6>
                         <h2 class="text-right"><i
                                 class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
@@ -82,48 +85,56 @@
 
                 </div>
             </div>
-            <div class="col-md-3 col-xl-3">
-                <div class="card bg-c-gr order-card">
-                    <div class="card-block">
-                        <h6>{% trans "Most productive day" %}</h6>
-                        <h2 class="text-right"><i
-                                class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
-                        </h2>
-                        <p>{% trans "Spent hours" %}<span
-                                class="f-right">{{ pd_time }}h</span></p>
-                        <p>{% trans "Tasks done" %}<span
-                                class="f-right">{{ pd_count }}</span></p>
+
+            {% if pd_date and pd_count and pd_time %}
+
+                <div class="col-md-3 col-xl-3">
+                    <div class="card bg-c-gr order-card">
+                        <div class="card-block">
+                            <h6>{% trans "Most productive day" %}</h6>
+                            <h2 class="text-right"><i
+                                    class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
+                            </h2>
+                            <p>{% trans "Spent hours" %}<span
+                                    class="f-right">{{ pd_time }}h</span></p>
+                            <p>{% trans "Tasks done" %}<span
+                                    class="f-right">{{ pd_count }}</span></p>
 
 
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="barChart"></canvas>
                         </div>
                     </div>
-
                 </div>
-            </div>
+            {% endif %}
+            {% if spent_time %}
 
-            <div class="col-md-6">
+                <div class="col-md-6">
 
-                <div class="card">
-
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="doughnutChart"></canvas>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="barChart"></canvas>
+                            </div>
                         </div>
+
                     </div>
-
                 </div>
-            </div>
+            {% endif %}
+            {% if  chart_title %}
 
+                <div class="col-md-6">
+
+                    <div class="card">
+
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="doughnutChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            {% endif %}
 
             <div class="col-lg-6">
                 <div class="card shadow ">
@@ -131,21 +142,28 @@
                         <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
                     </div>
                     <div class="card-body">
-                        {% for todo in todos %}
-                            {% if todo.complete_rate != None %}
-                                <h4 class="small font-weight-bold text-muted float-start"><a
-                                        href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
-                                <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
-                                <div class="progress mb-4 mt-1">
-                                    <div class="progress-bar bg-info " role="progressbar"
-                                         style="width:{{ todo.complete_rate }}%"
-                                         aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
-                                </div>
+                        {% if todos %}
 
-                            {% endif %}
-                        {% endfor %}
+                            {% for todo in todos %}
+                                {% if todo.complete_rate %}
+                                    <h4 class="small font-weight-bold text-muted float-start"><a
+                                            href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
+                                    <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
+                                    <div class="progress mb-4 mt-1">
+                                        <div class="progress-bar bg-info " role="progressbar"
+                                             style="width:{{ todo.complete_rate }}%"
+                                             aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
 
+
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <h5>{% trans 'No todo created' %}</h5>
+
+
+                        {% endif %}
 
                     </div>
                 </div>
