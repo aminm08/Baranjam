@@ -59,11 +59,13 @@
                                 <a class="nav-link" aria-current="true" data-bs-toggle="tab"
                                    href="#todos">{% trans 'Todo-Lists' %}</a>
                             </li>
+                            {% if group.enable_chat %}
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#chat">{% trans 'Chat' %}</a>
+                                </li>
+                            {% endif %}
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#members">{% trans 'Members' %}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#chat">{% trans 'Chat' %}</a>
                             </li>
                         </ul>
                     </div>
@@ -240,80 +242,84 @@
                                 {% endfor %}
                             </div>
                         </div>
+                        {% if group.enable_chat %}
 
-                        <!-- chat section   -->
-                        <div class="tab-pane" id="chat">
-                            <div class="row">
+                            <!-- chat section   -->
+                            <div class="tab-pane" id="chat">
+                                <div class="row">
 
-                                <div class="col-md-9">
-                                    <diV class="card shadow ">
-                                        <h6 class="card-header text-center">{% trans 'Chat with group members' %}</h6>
-                                        <div class="card-body">
-                                            <div id="id_chat_item_container"
-                                                 style="max-height: 220px; overflow-y:auto;">
-                                                {% for message in group_chats %}
+                                    <div class="col-md-9">
+                                        <diV class="card shadow ">
+                                            <h6 class="card-header text-center">{% trans 'Chat with group members' %}</h6>
+                                            <div class="card-body">
+                                                <div id="id_chat_item_container"
+                                                     style="max-height: 220px; overflow-y:auto;">
+                                                    {% for message in group_chats %}
 
 
-                                                    <div class="mb-2" {% if user == message.user %}dir="rtl"{% endif %}>
-                                                        {% if message.user.profile_picture %}
-                                                            <img src="{{ message.user.profile_picture.url }}" alt=""
-                                                                 width="50"
-                                                                 height="50">
-                                                        {% else %}
-                                                            <img src="{% static 'img/blank_user.png' %}" alt=""
-                                                                 width="50" height="50">
+                                                        <div class="mb-2"
+                                                             {% if user == message.user %}dir="rtl"{% endif %}>
+                                                            {% if message.user.profile_picture %}
+                                                                <img src="{{ message.user.profile_picture.url }}" alt=""
+                                                                     width="50"
+                                                                     height="50">
+                                                            {% else %}
+                                                                <img src="{% static 'img/blank_user.png' %}" alt=""
+                                                                     width="50" height="50">
 
-                                                        {% endif %}
-                                                        <div class="col-md-4 card shadow"
-                                                             style="background-color:{% if user == message.user %} rgba(130,243,183,0.72)  {% else %}    rgba(47,193,239,0.68){% endif %}">
-                                                            <p class="" style="font-size: 12px;"><span
-                                                                    class="float-left">{{ message.user.username }} </span>
-                                                                <span class="float-right"
-                                                                      dir="ltr">{{ message.datetime_created|to_jalali:'%Y %B %d' }}</span>
-                                                            </p>
+                                                            {% endif %}
+                                                            <div class="col-md-4 card shadow"
+                                                                 style="background-color:{% if user == message.user %} rgba(130,243,183,0.72)  {% else %}    rgba(47,193,239,0.68){% endif %}">
+                                                                <p class="" style="font-size: 12px;"><span
+                                                                        class="float-left">{{ message.user.username }} </span>
+                                                                    <span class="float-right"
+                                                                          dir="ltr">{{ message.datetime_created|to_jalali:'%Y %B %d' }}</span>
+                                                                </p>
 
-                                                            <span {% if user == message.user %}
-                                                                dir="ltr" {% endif %}>{{ message.text }}</span>
+                                                                <span {% if user == message.user %}
+                                                                    dir="ltr" {% endif %}>{{ message.text }}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                {% endfor %}
+                                                    {% endfor %}
+
+                                                </div>
 
                                             </div>
 
-                                        </div>
+                                        </diV>
 
-                                    </diV>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <div class="card shadow">
+                                            <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
+                                            <div class="card-body" id="online-users-container"
+                                                 style="max-height: 205px; overflow-y: auto;overflow-x:auto;">
 
-                                </div>
-                                <div class="col-md-3 ">
-                                    <div class="card shadow">
-                                        <h6 class="card-header text-center">{% trans 'onile memebrs' %}</h6>
-                                        <div class="card-body" id="online-users-container"
-                                             style="max-height: 205px; overflow-y: auto;overflow-x:auto;">
+                                            </div>
 
                                         </div>
 
                                     </div>
 
-                                </div>
-
-                                <div class="col-md-9 ">
-                                    <div class="card shadow">
-                                        <div class="row align-items-center">
+                                    <div class="col-md-9 ">
+                                        <div class="card shadow">
+                                            <div class="row align-items-center">
 
 
-                                            <div class="col-md-10">
+                                                <div class="col-md-10">
 
-                                                <input type="text" class="form-control " name="messaage"
-                                                       id="id_message_send_input">
+                                                    <input type="text" class="form-control " name="messaage"
+                                                           id="id_message_send_input">
+                                                </div>
+                                                <div class="col float-right w-100 ">
+                                                    <button class="text-info bg-transparent border-0 " width="90"><i
+                                                            class="fas fa-paper-plane " id="id_message_send_button"></i>
+                                                    </button>
+
+                                                </div>
                                             </div>
-                                            <div class="col float-right w-100 ">
-                                                <button class="text-info bg-transparent border-0 " width="90"><i
-                                                        class="fas fa-paper-plane " id="id_message_send_button"></i>
-                                                </button>
 
-                                            </div>
                                         </div>
 
                                     </div>
@@ -321,8 +327,7 @@
                                 </div>
 
                             </div>
-
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -382,11 +387,14 @@
 {% endblock content %}
 
 {% block script %}
-    <script src="{% static 'js/chat.js' %}"></script>
-    <script>
+    {% if group.enable_chat %}
+
+        <script src="{% static 'js/chat.js' %}"></script>
+        <script>
 
 
-        setupChats("{{ group.uuid }}", "{{ user.username }}");
-        getOnlineUsersList('{{ group.id }}');
-    </script>
+            setupChats("{{ group.uuid }}", "{{ user.username }}");
+            getOnlineUsersList('{{ group.id }}');
+        </script>
+    {% endif %}
 {% endblock script %}
