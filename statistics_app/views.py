@@ -1,34 +1,35 @@
 from django.shortcuts import render
 from todo.models import Todo, Job
 from django.contrib.auth.decorators import login_required
-from .statistics import Analytics
+from .statistics import DashBoard
 import json
 
 
 @login_required
 def dashboard_view(request):
     user_todos = Todo.objects.filter(user=request.user)
-    analytics = Analytics(request)
+    dashboard = DashBoard(request)
     context = None
-    print(analytics.get_today_hours_spent())
-    if analytics.all_done_jobs:
-        pd_count, pd_time, pd_date = analytics.get_most_productive_day_info()
-        status, arrow = analytics.get_user_today_status()
-        today_done_jobs_titles, hours_spent = analytics.get_today_chart()
+    if dashboard.all_done_jobs:
+        pd_count, pd_time, pd_date = dashboard.get_most_productive_day_info()
+        status, arrow = dashboard.get_user_today_status()
+        today_done_jobs_titles = dashboard.get_today_done_jobs_title()
+        hours_spent = dashboard.hours_per_job()
         context = {"filename": 'name',
                    "collapse": "",
-                   "labels": json.dumps(list(analytics.get_done_dates())),
-                   "data": json.dumps(analytics.get_job_done_each_day()),
+                   "labels": json.dumps(list(dashboard.get_done_dates())),
+                   "data": json.dumps(dashboard.done_job_per_day()),
                    'todos': user_todos,
                    'pd_count': pd_count,
                    'pd_time': pd_time,
                    'pd_date': pd_date,
-                   'spent_h': analytics.get_total_hours_spent(),
+                   'spent_h': dashboard.hours_all(),
                    'status': status,
                    'arrow': arrow,
-                   'spent_time': json.dumps(analytics.get_daily_hour_spent()),
-                   'spent_today': analytics.get_today_hours_spent(),
+                   'spent_time': json.dumps(dashboard.hours_per_day()),
+                   'spent_today': dashboard.hours_today(),
                    'chart_title': json.dumps(today_done_jobs_titles),
                    'chart_hours': json.dumps(hours_spent),
                    }
+    print(context)
     return render(request, 'dashboard.html', context)
