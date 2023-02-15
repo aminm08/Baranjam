@@ -4,6 +4,7 @@
 {% load i18n %}
 {% load persian_trans_tags %}
 {% load jalali_tags %}
+{% load crispy_forms_tags %}
 
 
 {% block title %}Your Baranjam dashboard{% endblock title %}
@@ -19,6 +20,17 @@
 
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}</h1>
+            <div class="mr-auto ml-auto">
+
+                <form method="GET">
+
+                    {{ form.media }}
+                    {{ form|crispy }}
+
+
+                    <button type="submit" class="btn btn-success">{% trans "Apply range" %}</button>
+                </form>
+            </div>
 
         </div>
         <div class="row justify-content-start">
@@ -118,7 +130,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if  chart_title  and chart_hours%}
+            {% if  chart_title  and chart_hours %}
 
                 <div class="col-md-6">
 

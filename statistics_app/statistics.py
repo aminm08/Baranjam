@@ -21,32 +21,14 @@ class Analytics:
     def extract_done_dates(job_list):
         return [str(job.user_done_date) for job in job_list]
 
-    @staticmethod
-    def validate_range(range_date):
-        """
-        makes sure that range is whether ['date', 'date'] or ['all']
-        """
-        if len(range_date) == 1 and range_date[0] == 'all':
-            return True
-        elif len(range_date) == 2:
-            try:
-
-                datetime.strptime(range_date[0], "%Y-%m-%d")
-                datetime.strptime(range_date[1], "%Y-%m-%d")
-                return True
-
-            except ValueError:
-                return False
-        return False
-
     def get_jobs_in_range(self):
         if self._range_date[0] == "all":
             return self.all_done_jobs
         return self.all_done_jobs.filter(user_done_date__range=self._range_date)
 
     def get_done_dates(self):
-
         data = self.extract_done_dates(self.get_jobs_in_range())
+        # labels -> a list of unique user done dates
         labels = sorted(set(data), key=self.all_done_dates.index)
         return list(labels)
 

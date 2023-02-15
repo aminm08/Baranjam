@@ -8,18 +8,22 @@ from django.utils.translation import gettext as _
 from .statistics import DashBoard
 from datetime import datetime
 import json
+from .forms import DateRangeForm
 
 
 @login_required
 def dashboard_view(request):
     user_todos = Todo.objects.filter(user=request.user)
-    date_range = request.GET.get('range').split() if request.GET.get('range') else ["all"]
+    data_date_range = None
 
-    dashboard = DashBoard(request, date_range)
+    form = DateRangeForm(request.GET)
 
-    if not dashboard.validate_range(date_range):
-        messages.warning(request, _('Invalid date range'))
-        return redirect('dashboard')
+    if form.is_valid():
+        data_date_range = form.cleaned_data
+    else:
+        data_date_range = ['all']
+
+    dashboard = DashBoard(request, data_date_range)
 
     context = None
     if dashboard.all_done_jobs:
@@ -28,6 +32,7 @@ def dashboard_view(request):
         today_done_jobs_titles = dashboard.get_today_done_jobs_title()
         hours_spent = dashboard.hours_per_job()
         context = {
+            "form": form,
             "labels": json.dumps(dashboard.get_done_dates()),
             "data": json.dumps(dashboard.done_job_per_day()),
             'todos': user_todos,
@@ -42,5 +47,5 @@ def dashboard_view(request):
             'chart_title': json.dumps(today_done_jobs_titles),
             'chart_hours': json.dumps(hours_spent),
         }
-    print(context)
+
     return render(request, 'dashboard.html', context)
