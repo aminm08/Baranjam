@@ -6,7 +6,8 @@
 {% load persian_trans_tags %}
 
 {% block content %}
-    <div class="container mt-5">
+    {% get_current_language as LANGUAGE %}
+    <div class="container mt-5" >
         <p>
 
         <h2 class="text-center">{% trans 'Update job' %}</h2>
@@ -14,14 +15,14 @@
 
         <form method="post" class="mb-lg-5">
             {% csrf_token %}
-            <div class="text-right" dir="rtl">
+            <div >
 
                 {{ form|crispy }}
             </div>
             {{ form.media }}
 
             <button type="submit" class="btn btn-success float-end">{% trans 'Submit' %}</button>
-            <a href="{{ todo.get_absolute_url }}" class="btn btn-info">{% trans 'Back to list' %}</a>
+            <a href="{{ todo.get_absolute_url }}" class="btn btn-info float-start">{% trans 'Back to list' %}</a>
 
         </form>
     </div>

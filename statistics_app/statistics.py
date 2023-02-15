@@ -1,23 +1,53 @@
 import numpy as np
 import math
-from datetime import date
+from datetime import date, datetime
 
 
-# per job all
 class Analytics:
-    '''
-    this class gets basic data
-    ready to process in higher levels
-    '''
+    """
+    gets basic data ready to
+    process in higher levels
+    """
 
-    def __init__(self, request):
+    def __init__(self, request, range_date: list):
         self.request = request
         self.today_jobs_done = request.user.jobs.filter(is_done=True, user_done_date=date.today())
         self.all_done_jobs = self.request.user.jobs.filter(is_done=True).order_by('user_done_date')
-        self.all_done_dates = [str(job.user_done_date) for job in self.all_done_jobs]
+        self._range_date = range_date
+
+        self.all_done_dates = self.extract_done_dates(self.all_done_jobs)
+
+    @staticmethod
+    def extract_done_dates(job_list):
+        return [str(job.user_done_date) for job in job_list]
+
+    @staticmethod
+    def validate_range(range_date):
+        """
+        makes sure that range is whether ['date', 'date'] or ['all']
+        """
+        if len(range_date) == 1 and range_date[0] == 'all':
+            return True
+        elif len(range_date) == 2:
+            try:
+
+                datetime.strptime(range_date[0], "%Y-%m-%d")
+                datetime.strptime(range_date[1], "%Y-%m-%d")
+                return True
+
+            except ValueError:
+                return False
+        return False
+
+    def get_jobs_in_range(self):
+        if self._range_date[0] == "all":
+            return self.all_done_jobs
+        return self.all_done_jobs.filter(user_done_date__range=self._range_date)
 
     def get_done_dates(self):
-        labels = set(self.all_done_dates)
+
+        data = self.extract_done_dates(self.get_jobs_in_range())
+        labels = sorted(set(data), key=self.all_done_dates.index)
         return list(labels)
 
     def get_today_done_jobs_title(self):
