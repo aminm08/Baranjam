@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from datetime import date, datetime
+from jalali_date import date2jalali
 
 
 class Analytics:
@@ -9,12 +10,12 @@ class Analytics:
     process in higher levels
     """
 
-    def __init__(self, request, range_date: list):
+    def __init__(self, request, range_date: list, general_date):
         self.request = request
         self.today_jobs_done = request.user.jobs.filter(is_done=True, user_done_date=date.today())
         self.all_done_jobs = self.request.user.jobs.filter(is_done=True).order_by('user_done_date')
         self._range_date = range_date
-
+        self.general_date = general_date
         self.all_done_dates = self.extract_done_dates(self.all_done_jobs)
 
     @staticmethod
@@ -26,10 +27,10 @@ class Analytics:
             return self.all_done_jobs
         return self.all_done_jobs.filter(user_done_date__range=self._range_date)
 
-    def get_done_dates(self):
+    def get_done_dates_in_range(self):
         data = self.extract_done_dates(self.get_jobs_in_range())
         # labels -> a list of unique user done dates
-        labels = sorted(set(data), key=self.all_done_dates.index)
+        labels = sorted(set(data), key=self.all_done_dates.index)  # replace it
         return list(labels)
 
     def get_today_done_jobs_title(self):
@@ -58,7 +59,7 @@ class Hours(Analytics):
 
     def hours_per_day(self):
         spent_time = []
-        for done_date in self.get_done_dates():
+        for done_date in self.get_done_dates_in_range():
             time = 0
             for job in self.request.user.jobs.filter(is_done=True, user_done_date=done_date):
                 if job.duration:
@@ -69,9 +70,12 @@ class Hours(Analytics):
 
 
 class DoneJobs(Analytics):
-    def done_job_per_day(self):
+    def done_job_per_day(self, all_dates=False):
         daily_job_done = []
-        for done_date in self.get_done_dates():
+
+        done_dates = self.all_done_dates if all_dates else self.get_done_dates_in_range()
+
+        for done_date in done_dates:
             daily_job_done.append(self.all_done_dates.count(done_date))
 
         return daily_job_done
@@ -79,9 +83,14 @@ class DoneJobs(Analytics):
 
 class DashBoard(DoneJobs, Hours):
 
+    def get_tasks_done(self):
+        return self.request.user.jobs.filter(is_done=True, user_done_date=self.general_date)
+
     def get_user_today_status(self):
-        done_jobs = self.done_job_per_day()
-        today_status = self.today_jobs_done.count() - math.ceil(np.mean(done_jobs))
+        # gets the mean of all done jobs to compare done jobs of given date
+
+        done_jobs = self.done_job_per_day(all_dates=True)
+        today_status = self.get_tasks_done().count() - math.ceil(np.mean(done_jobs))
         if today_status < 0:
             today_status = f'{abs(today_status)} job away from average'
             arrow = 'falling_arrow'
@@ -95,7 +104,7 @@ class DashBoard(DoneJobs, Hours):
 
     def get_most_productive_day_info(self):
         spent_hours = list(self.hours_per_day())
-        data, labels = list(self.done_job_per_day()), list(self.get_done_dates())
+        data, labels = list(self.done_job_per_day()), list(self.get_done_dates_in_range())
         if spent_hours:
             max_spent_time_index = spent_hours.index(max(spent_hours))
         elif data:

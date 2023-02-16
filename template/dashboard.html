@@ -5,6 +5,7 @@
 {% load persian_trans_tags %}
 {% load jalali_tags %}
 {% load crispy_forms_tags %}
+{% load crispy_forms_field %}
 
 
 {% block title %}Your Baranjam dashboard{% endblock title %}
@@ -19,199 +20,224 @@
     <div class="container-fluid">
 
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
+
             <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}</h1>
-            <div class="mr-auto ml-auto">
+            <p class="badge badge-info" style="width: 200px;height: 30px; font-size: 15px;"><span class="fw-bolder">{% trans 'Date' %}:</span>{{ date }}</p>
 
-                <form method="GET">
-
-                    {{ form.media }}
-                    {{ form|crispy }}
-
-
-                    <button type="submit" class="btn btn-success">{% trans "Apply range" %}</button>
-                </form>
-            </div>
-
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">{% trans 'Select Range' %}</button>
         </div>
-        <div class="row justify-content-start">
-            <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-blue order-card">
-                    <div class="card-block">
-                        <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
-                        <h2 class="text-right"><i
-                                class="fas fa-tasks f-left"></i><span>{{ user.all_jobs_done }}</span></h2>
-                        {#                        <p class="m-b-0">{% trans "Completed jobs" %}<span class="f-right">{{ user.all_jobs_done }}</span></p>#}
-                    </div>
+
+
+    </div>
+    <div class="row justify-content-start">
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-blue order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
+                    <h2 class="text-right"><i
+                            class="fas fa-tasks f-left"></i><span>{{ user.all_jobs_done }}</span></h2>
+                    {#                        <p class="m-b-0">{% trans "Completed jobs" %}<span class="f-right">{{ user.all_jobs_done }}</span></p>#}
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-green order-card">
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-green order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">{% trans "Today tasks done" %}</h6>
+                    <h2 class="text-right"><i
+                            class="fa fa-rocket f-left"></i><span>{{ tasks_done_on_date }}</span>
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-yellow order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">{% trans "Today status" %}</h6>
+                    <h2 class="text-right"><img src="/static/icons/{{ arrow }}.png"
+                                                alt="arrow icon" width="30"
+                                                height="30" class="f-left"><span style="font-size: 18px;"
+                                                                                 class="">{{ status }}</span>
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-pink order-card">
+                <div class="card-block">
+
+                    <h6 class="m-b-20">{% trans "Today hours spent" %}</h6>
+                    <h2 class="text-right"><i
+                            class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9 ">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {% if pd_date and pd_count and pd_time %}
+
+            <div class="col-md-3 col-xl-3">
+                <div class="card bg-c-gr order-card">
                     <div class="card-block">
-                        <h6 class="m-b-20">{% trans "Today tasks done" %}</h6>
+                        <h6>{% trans "Most productive day" %}</h6>
                         <h2 class="text-right"><i
-                                class="fa fa-rocket f-left"></i><span>{{ user.get_user_today_completed_tasks|length }}</span>
+                                class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
                         </h2>
+                        <p>{% trans "Spent hours" %}<span
+                                class="f-right">{{ pd_time }}h</span></p>
+                        <p>{% trans "Tasks done" %}<span
+                                class="f-right">{{ pd_count }}</span></p>
+
 
                     </div>
                 </div>
             </div>
+        {% endif %}
+        {% if spent_time %}
 
-
-            <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-yellow order-card">
-                    <div class="card-block">
-                        <h6 class="m-b-20">{% trans "Today status" %}</h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ arrow }}.png"
-                                                    alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 18px;"
-                                                                                     class="">{{ status }}</span>
-                        </h2>
-
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-pink order-card">
-                    <div class="card-block">
-
-                        <h6 class="m-b-20">{% trans "Today hours spent" %}</h6>
-                        <h2 class="text-right"><i
-                                class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-9 ">
+            <div class="col-md-6">
 
                 <div class="card">
                     <div class="card-body">
                         <div class="chart-area">
-                            <canvas id="myAreaChart"></canvas>
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
+        {% if  chart_title  and chart_hours %}
+
+            <div class="col-md-6">
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="doughnutChart"></canvas>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            {% if pd_date and pd_count and pd_time %}
+        {% endif %}
 
-                <div class="col-md-3 col-xl-3">
-                    <div class="card bg-c-gr order-card">
-                        <div class="card-block">
-                            <h6>{% trans "Most productive day" %}</h6>
-                            <h2 class="text-right"><i
-                                    class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
-                            </h2>
-                            <p>{% trans "Spent hours" %}<span
-                                    class="f-right">{{ pd_time }}h</span></p>
-                            <p>{% trans "Tasks done" %}<span
-                                    class="f-right">{{ pd_count }}</span></p>
-
-
-                        </div>
-                    </div>
+        <div class="col-lg-6">
+            <div class="card shadow ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
                 </div>
-            {% endif %}
-            {% if spent_time %}
+                <div class="card-body">
+                    {% if todos %}
 
-                <div class="col-md-6">
+                        {% for todo in todos %}
+                            {% if todo.complete_rate %}
+                                <h4 class="small font-weight-bold text-muted float-start"><a
+                                        href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
+                                <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
+                                <div class="progress mb-4 mt-1">
+                                    <div class="progress-bar bg-info " role="progressbar"
+                                         style="width:{{ todo.complete_rate }}%"
+                                         aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
+                                         aria-valuemax="100"></div>
+                                </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="chart-area">
-                                <canvas id="barChart"></canvas>
-                            </div>
-                        </div>
 
-                    </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h5>{% trans 'No todo created' %}</h5>
+
+
+                    {% endif %}
+
                 </div>
-            {% endif %}
-            {% if  chart_title  and chart_hours %}
+            </div>
+        </div>
 
-                <div class="col-md-6">
+        {% if spent_h or spent_m %}
 
-                    <div class="card">
-
-                        <div class="card-body">
-                            <div class="chart-area">
-                                <canvas id="doughnutChart"></canvas>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            {% endif %}
-
-            <div class="col-lg-6">
-                <div class="card shadow ">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
+            <div class="col-md-3 mt-2 ">
+                <div class="card border-left-info shadow ">
+                    <div class="card-header">
+                        <h6 class=" font-weight-bold text-primary"><i
+                                class="fas fa-solid fa-clock text-info"> {% trans "Spent time" %}</i>
+                        </h6>
                     </div>
                     <div class="card-body">
-                        {% if todos %}
+                        <div class="row no-gutters align-items-center">
+                            <div class="col">
+                                <div class="row no-gutters align-items-start">
+                                    <div class="col font-weight-bold text-success ml-4">
 
-                            {% for todo in todos %}
-                                {% if todo.complete_rate %}
-                                    <h4 class="small font-weight-bold text-muted float-start"><a
-                                            href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
-                                    <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
-                                    <div class="progress mb-4 mt-1">
-                                        <div class="progress-bar bg-info " role="progressbar"
-                                             style="width:{{ todo.complete_rate }}%"
-                                             aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
+                                        <p class="text-center"> {% if spent_h %} {{ spent_h }} hours {% endif %}
+                                            {% if spent_m %} {{ spent_m }} minutes {% endif %}</p>
 
 
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <h5>{% trans 'No todo created' %}</h5>
-
-
-                        {% endif %}
-
-                    </div>
-                </div>
-            </div>
-
-            {% if spent_h or spent_m %}
-
-                <div class="col-md-3 mt-2 ">
-                    <div class="card border-left-info shadow ">
-                        <div class="card-header">
-                            <h6 class=" font-weight-bold text-primary"><i
-                                    class="fas fa-solid fa-clock text-info"> {% trans "Spent time" %}</i>
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col">
-                                    <div class="row no-gutters align-items-start">
-                                        <div class="col font-weight-bold text-success ml-4">
-
-                                            <p class="text-center"> {% if spent_h %} {{ spent_h }} hours {% endif %}
-                                                {% if spent_m %} {{ spent_m }} minutes {% endif %}</p>
-
-
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
+        <!-- range modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select date range' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="GET">
+
+                            {{ form.media }}
+                            {{ form|crispy }}
+
+                            <hr>
+                            <div class="float-right">
+
+                                <button type="submit" class="btn btn-primary">{% trans "Apply range" %}</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
 
 
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
 
+
     </div>
+
+
 
 
     <br><br>
@@ -220,12 +246,11 @@
 {% endblock content %}
 
 {% block script %}
-    <!-- Bootstrap core JavaScript-->
 
 
 
     <!-- Core plugin JavaScript-->
-    <script src="{% static  'vendor/jquery-easing/jquery.easing.js' %}"></script>
+    {#    <script src="{% static  'vendor/jquery-easing/jquery.easing.js' %}"></script>#}
 
     <script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
     {#    <script src="{% static 'vendor/chart.js/Chart.bundle.js' %}"></script>#}
@@ -248,5 +273,5 @@
         setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }})
     </script>
 
-{% endblock script %}w
+{% endblock script %}
 

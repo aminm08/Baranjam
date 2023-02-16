@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 
 from .statistics import DashBoard
-from datetime import datetime
+from datetime import datetime, date
 import json
 from .forms import DateRangeForm
 
@@ -22,8 +22,14 @@ def dashboard_view(request):
         data_date_range = form.cleaned_data
     else:
         data_date_range = ['all']
+    general_date = request.GET.get('date') or date.today()
+    if datetime.strptime(general_date, '%Y-%m-%d') > datetime.today():
+        messages.warning(request, _('you cannot select future date'))
 
-    dashboard = DashBoard(request, data_date_range)
+    dashboard = DashBoard(request, data_date_range, general_date)
+
+    if not dashboard.get_done_dates_in_range():
+        messages.warning(request, _('date range you entered has no data'))
 
     context = None
     if dashboard.all_done_jobs:
@@ -32,8 +38,10 @@ def dashboard_view(request):
         today_done_jobs_titles = dashboard.get_today_done_jobs_title()
         hours_spent = dashboard.hours_per_job()
         context = {
+            "date": general_date,
             "form": form,
-            "labels": json.dumps(dashboard.get_done_dates()),
+            "tasks_done_on_date": dashboard.get_tasks_done().count(),
+            "labels": json.dumps(dashboard.get_done_dates_in_range()),
             "data": json.dumps(dashboard.done_job_per_day()),
             'todos': user_todos,
             'pd_count': pd_count,
