@@ -12,6 +12,7 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    {{ form.media }}
 {% endblock links %}
 {% block content %}
 
@@ -21,11 +22,21 @@
 
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
-            <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}</h1>
-            <p class="badge badge-info" style="width: 200px;height: 30px; font-size: 15px;"><span class="fw-bolder">{% trans 'Date' %}:</span>{{ date }}</p>
+            <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}
+                <span class="badge bg-info  " style=" font-size: 13px;">
+                    {% trans 'shown data for' %}:{{ date }}
+                </span>
+            </h1>
 
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">{% trans 'Select Range' %}</button>
+            <div class="justify-content-end ">
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#date_range_modal"
+                        style="margin-bottom:1rem; font-size: 14px;">
+                    {% trans 'Select date Range' %}
+                </button>
+
+            </div>
+
         </div>
 
 
@@ -45,7 +56,7 @@
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-green order-card">
                 <div class="card-block">
-                    <h6 class="m-b-20">{% trans "Today tasks done" %}</h6>
+                    <h6 class="m-b-20">{% trans "tasks done" %}</h6>
                     <h2 class="text-right"><i
                             class="fa fa-rocket f-left"></i><span>{{ tasks_done_on_date }}</span>
                     </h2>
@@ -58,23 +69,36 @@
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-yellow order-card">
                 <div class="card-block">
-                    <h6 class="m-b-20">{% trans "Today status" %}</h6>
-                    <h2 class="text-right"><img src="/static/icons/{{ arrow }}.png"
+                    <h6 class="m-b-20">{% trans "Jobs status" %}</h6>
+                    <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
                                                 alt="arrow icon" width="30"
                                                 height="30" class="f-left"><span style="font-size: 18px;"
-                                                                                 class="">{{ status }}</span>
+                                                                                 class="">{{ job_status }}</span>
                     </h2>
 
                 </div>
             </div>
         </div>
+{#        <div class="col-md-4 col-xl-3">#}
+{#            <div class="card bg-c-yellow order-card">#}
+{#                <div class="card-block">#}
+{#                    <h6 class="m-b-20">{% trans "Hours status" %}</h6>#}
+{#                    <h2 class="text-right"><img src="/static/icons/{{ hours_arrow }}.png"#}
+{#                                                alt="arrow icon" width="30"#}
+{#                                                height="30" class="f-left"><span style="font-size: 18px;"#}
+{#                                                                                 class="">{{ hours_status }}</span>#}
+{#                    </h2>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
 
 
         <div class="col-md-4 col-xl-3">
             <div class="card bg-c-pink order-card">
                 <div class="card-block">
 
-                    <h6 class="m-b-20">{% trans "Today hours spent" %}</h6>
+                    <h6 class="m-b-20">{% trans "hours spent" %}</h6>
                     <h2 class="text-right"><i
                             class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
 
@@ -204,8 +228,9 @@
                 </div>
             </div>
         {% endif %}
-        <!-- range modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- date change modal -->
+        <div class="modal fade" id="date_range_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -215,14 +240,15 @@
                     <div class="modal-body">
                         <form method="GET">
 
-                            {{ form.media }}
+
                             {{ form|crispy }}
 
                             <hr>
                             <div class="float-right">
 
-                                <button type="submit" class="btn btn-primary">{% trans "Apply range" %}</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">{% trans "Apply" %}</button>
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">{% trans "Close" %} </button>
                             </div>
 
 
