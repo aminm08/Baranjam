@@ -292,10 +292,22 @@
                         <div class="modal-body">
                             {% if user_goals %}
                                 <h4>{% trans 'Your current goals' %}</h4>
-                                <ul>
+                                <ul class="list-group">
                                     {% for goal in user_goals %}
 
-                                        <li>{{ goal.get_measure_display }}: {{ goal.jobs }} : {{ goal.hours }}</li>
+                                        <li class="list-group-item ">
+                                            <div class="row align-items-center">
+                                                <form action="{% url 'goal_delete' goal.id %}" method="post" class="col-2 text-center">
+                                                    {% csrf_token %}
+                                                    <button class="text-danger border-0 bg-transparent"
+                                                            style="font-size: 12px;">&#10060;
+                                                    </button>
+                                                </form>
+                                                <span class="badge bg-info col-2">{{ goal.get_measure_display }}</span>
+                                                <span class="col">Jobs target: {{ goal.jobs }}</span>
+                                                <span class="col">Hours target: {{ goal.hours }}</span>
+                                            </div>
+                                        </li>
                                     {% endfor %}
                                 </ul>
 

@@ -1,18 +1,14 @@
 from django.shortcuts import render
-from todo.models import Todo, Job
-from django.urls import reverse_lazy
+from todo.models import Todo
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from django.views import generic
+
 from .statistics import DashBoard
 from datetime import datetime, date
 import json
-from .forms import DashboardApplyDateForm, GoalForm
-from .models import Goal
+from .forms import DashboardApplyDateForm
+from goals.forms import GoalForm
 
 
 @login_required
@@ -70,17 +66,3 @@ def dashboard_view(request):
     }
 
     return render(request, 'dashboard.html', context)
-
-
-class GoalCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
-    form_class = GoalForm
-    model = Goal
-    http_method_names = ['post']
-    success_url = reverse_lazy('dashboard')
-    success_message = _("Goal successfully added")
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.user = self.request.user
-        obj.save()
-        return super().form_valid(form)

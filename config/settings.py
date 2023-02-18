@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'group_lists',
     'statistics_app',
     'chats',
+    'goals',
 
 ]
 

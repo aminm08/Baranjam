@@ -1,7 +1,6 @@
 import numpy as np
 import math
 from datetime import date, datetime
-from jalali_date import date2jalali
 
 
 class Analytics:
@@ -94,7 +93,7 @@ class Hours(Analytics):
 class DashBoard(DoneJobs, Hours):
 
     def get_user_jobs_status(self):
-        # gets the mean of all done jobs to compare done jobs of given date
+        # gets the mean of all done jobs to compare done jobs of general date
 
         done_jobs = self.done_job_per_day(all_dates=True)
         done_jobs_mean = math.ceil(np.mean(done_jobs))
@@ -139,3 +138,6 @@ class DashBoard(DoneJobs, Hours):
             return None, None, None
 
         return data[max_spent_time_index], round(spent_hours[max_spent_time_index], 2), labels[max_spent_time_index]
+
+    def get_user_done_jobs_goal_progress(self):
+        goals = self.request.user.goals.all()
