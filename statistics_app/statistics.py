@@ -50,6 +50,11 @@ class DoneJobs(Analytics):
 
         return daily_job_done
 
+    def get_all_done_jobs_in_range(self):
+        if self._range_date[0] == "all":
+            return self.all_done_jobs
+        return self.all_done_jobs.filter(user_done_date__range=self._range_date)
+
 
 class Hours(Analytics):
 
@@ -58,7 +63,7 @@ class Hours(Analytics):
         for job in self.all_done_jobs:
             if job.duration:
                 hours_spent += job.duration.hour + job.duration.minute / 60
-        return hours_spent
+        return round(hours_spent, 2)
 
     def get_hours_per_job_in_general_date(self):
         return [float(job.duration.hour + job.duration.minute / 60) for job in self.get_tasks_done_in_general_date() if
@@ -73,7 +78,7 @@ class Hours(Analytics):
             for job in self.request.user.jobs.filter(is_done=True, user_done_date=done_date):
                 if job.duration:
                     time += job.duration.hour + job.duration.minute / 60
-            spent_time.append(time)
+            spent_time.append(round(time, 3))
 
         return spent_time
 
@@ -92,8 +97,9 @@ class DashBoard(DoneJobs, Hours):
         # gets the mean of all done jobs to compare done jobs of given date
 
         done_jobs = self.done_job_per_day(all_dates=True)
-
-        status = self.get_tasks_done_in_general_date().count() - math.ceil(np.mean(done_jobs))
+        done_jobs_mean = math.ceil(np.mean(done_jobs))
+        status = self.get_tasks_done_in_general_date().count() - done_jobs_mean
+        percentage = status * 100 / done_jobs_mean
         if status < 0:
             status = f'{abs(status)} jobs away from average'
             arrow = 'falling_arrow'
@@ -103,12 +109,13 @@ class DashBoard(DoneJobs, Hours):
         else:
             status = f'{status} jobs up the average'
             arrow = 'rising_arrow'
-        return status, arrow
+        return status, arrow, percentage
 
     def get_user_hours_spent_status(self):
         hours_spent = self.hours_per_day(all_dates=True)
-
-        status = self.get_general_date_hours_spend() - math.ceil(np.mean(hours_spent))
+        hours_spent_mean = math.ceil(np.mean(hours_spent))
+        status = self.get_general_date_hours_spend() - hours_spent_mean
+        percentage = status * 100 / hours_spent_mean
 
         if status < 0:
             status = f'{abs(status)} hours away from average'
@@ -119,7 +126,7 @@ class DashBoard(DoneJobs, Hours):
         else:
             status = f'{status} hours up the average'
             arrow = 'rising_arrow'
-        return status, arrow
+        return status, arrow, percentage
 
     def get_most_productive_day_info(self):
         spent_hours = list(self.hours_per_day())

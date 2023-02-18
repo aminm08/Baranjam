@@ -6,7 +6,7 @@
 {% load jalali_tags %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_field %}
-
+{% load dashboard_tags %}
 
 {% block title %}Your Baranjam dashboard{% endblock title %}
 
@@ -30,6 +30,10 @@
 
             <div class="justify-content-end ">
 
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#goals_modal"
+                        style="margin-bottom:1rem; font-size: 14px;">
+                    {% trans 'Your goals' %}
+                </button>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#date_range_modal"
                         style="margin-bottom:1rem; font-size: 14px;">
                     {% trans 'Select date Range' %}
@@ -40,226 +44,286 @@
         </div>
 
 
-    </div>
-    <div class="row justify-content-start">
-        <div class="col-md-4 col-xl-3">
-            <div class="card bg-c-blue order-card">
-                <div class="card-block">
-                    <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
-                    <h2 class="text-right"><i
-                            class="fas fa-tasks f-left"></i><span>{{ user.all_jobs_done }}</span></h2>
-                    {#                        <p class="m-b-0">{% trans "Completed jobs" %}<span class="f-right">{{ user.all_jobs_done }}</span></p>#}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 col-xl-3">
-            <div class="card bg-c-green order-card">
-                <div class="card-block">
-                    <h6 class="m-b-20">{% trans "tasks done" %}</h6>
-                    <h2 class="text-right"><i
-                            class="fa fa-rocket f-left"></i><span>{{ tasks_done_on_date }}</span>
-                    </h2>
-
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-md-4 col-xl-3">
-            <div class="card bg-c-yellow order-card">
-                <div class="card-block">
-                    <h6 class="m-b-20">{% trans "Jobs status" %}</h6>
-                    <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
-                                                alt="arrow icon" width="30"
-                                                height="30" class="f-left"><span style="font-size: 18px;"
-                                                                                 class="">{{ job_status }}</span>
-                    </h2>
-
-                </div>
-            </div>
-        </div>
-{#        <div class="col-md-4 col-xl-3">#}
-{#            <div class="card bg-c-yellow order-card">#}
-{#                <div class="card-block">#}
-{#                    <h6 class="m-b-20">{% trans "Hours status" %}</h6>#}
-{#                    <h2 class="text-right"><img src="/static/icons/{{ hours_arrow }}.png"#}
-{#                                                alt="arrow icon" width="30"#}
-{#                                                height="30" class="f-left"><span style="font-size: 18px;"#}
-{#                                                                                 class="">{{ hours_status }}</span>#}
-{#                    </h2>#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-
-
-        <div class="col-md-4 col-xl-3">
-            <div class="card bg-c-pink order-card">
-                <div class="card-block">
-
-                    <h6 class="m-b-20">{% trans "hours spent" %}</h6>
-                    <h2 class="text-right"><i
-                            class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-9 ">
-
-            <div class="card">
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        {% if pd_date and pd_count and pd_time %}
-
-            <div class="col-md-3 col-xl-3">
-                <div class="card bg-c-gr order-card">
+        <div class="row justify-content-start">
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-blue order-card">
                     <div class="card-block">
-                        <h6>{% trans "Most productive day" %}</h6>
+                        <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
                         <h2 class="text-right"><i
-                                class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
+                                class="fas fa-tasks f-left"></i><span>{{ all_tasks_done_in_range }}</span></h2>
+                        {#                        <p class="m-b-0">{% trans "Completed jobs" %}<span class="f-right">{{ user.all_jobs_done }}</span></p>#}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-green order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "tasks done" %}</h6>
+                        <h2 class="text-right"><i
+                                class="fa fa-rocket f-left"></i><span>{{ tasks_done_on_date }}</span>
                         </h2>
-                        <p>{% trans "Spent hours" %}<span
-                                class="f-right">{{ pd_time }}h</span></p>
-                        <p>{% trans "Tasks done" %}<span
-                                class="f-right">{{ pd_count }}</span></p>
-
 
                     </div>
                 </div>
             </div>
-        {% endif %}
-        {% if spent_time %}
 
-            <div class="col-md-6">
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-yellow order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "All hours spent" %}</h6>
+                        <h2 class="text-right">{{ spent_h|extract_hours_and_minutes }}</h2>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="barChart"></canvas>
-                        </div>
                     </div>
-
                 </div>
             </div>
-        {% endif %}
-        {% if  chart_title  and chart_hours %}
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-pink order-card">
+                    <div class="card-block">
 
-            <div class="col-md-6">
+                        <h6 class="m-b-20">{% trans "hours spent" %}</h6>
+                        <h2 class="text-right"><i
+                                class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
 
-                <div class="card">
-
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="doughnutChart"></canvas>
-                        </div>
                     </div>
-
                 </div>
             </div>
 
-        {% endif %}
 
-        <div class="col-lg-6">
-            <div class="card shadow ">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
-                </div>
-                <div class="card-body">
-                    {% if todos %}
-
-                        {% for todo in todos %}
-                            {% if todo.complete_rate %}
-                                <h4 class="small font-weight-bold text-muted float-start"><a
-                                        href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
-                                <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
-                                <div class="progress mb-4 mt-1">
-                                    <div class="progress-bar bg-info " role="progressbar"
-                                         style="width:{{ todo.complete_rate }}%"
-                                         aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
-                                </div>
-
-
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        <h5>{% trans 'No todo created' %}</h5>
-
-
-                    {% endif %}
-
-                </div>
-            </div>
-        </div>
-
-        {% if spent_h or spent_m %}
-
-            <div class="col-md-3 mt-2 ">
-                <div class="card border-left-info shadow ">
-                    <div class="card-header">
-                        <h6 class=" font-weight-bold text-primary"><i
-                                class="fas fa-solid fa-clock text-info"> {% trans "Spent time" %}</i>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-l-blue order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "Jobs status" %} <span
+                                class="float-right">{{ job_progress_percentage }}%</span>
                         </h6>
+                        <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
+                                                    alt="arrow icon" width="30"
+                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                                                     class="">{{ job_status }}</span>
+                        </h2>
+
                     </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-l-cr order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "Hours status" %} <span
+                                class="float-right">{{ hours_progress_percentage }}%</span></h6>
+                        <h2 class="text-right"><img src="/static/icons/{{ hours_arrow }}.png"
+                                                    alt="arrow icon" width="30"
+                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                                                     class="">{{ hours_status }}</span>
+                        </h2>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-purple order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "goal progress status" %} <span
+                                class="float-right" style="font-size: 12px;">{% trans "jobs" %}</span>
+                        </h6>
+                        <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
+                                                    alt="arrow icon" width="30"
+                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                                                     class="">{{ job_status }}</span>
+                        </h2>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <div class="card bg-c-l-green order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">{% trans "goal progress status" %} <span
+                                class="float-right " style="font-size: 12px;">{% trans "hours" %}</span>
+                        </h6>
+                        <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
+                                                    alt="arrow icon" width="30"
+                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                                                     class="">{{ job_status }}</span>
+                        </h2>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-9 ">
+
+                <div class="card">
                     <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col">
-                                <div class="row no-gutters align-items-start">
-                                    <div class="col font-weight-bold text-success ml-4">
+                        <div class="chart-area">
+                            <canvas id="myAreaChart"></canvas>
+                        </div>
+                    </div>
 
-                                        <p class="text-center"> {% if spent_h %} {{ spent_h }} hours {% endif %}
-                                            {% if spent_m %} {{ spent_m }} minutes {% endif %}</p>
+                </div>
+            </div>
+
+            {% if pd_date and pd_count and pd_time %}
+
+                <div class="col-md-3 col-xl-3">
+                    <div class="card bg-c-gr order-card">
+                        <div class="card-block">
+                            <h6>{% trans "Most productive day" %}</h6>
+                            <h2 class="text-right"><i
+                                    class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
+                            </h2>
+                            <p>{% trans "Spent hours" %}<span
+                                    class="f-right">{{ pd_time }}h</span></p>
+                            <p>{% trans "Tasks done" %}<span
+                                    class="f-right">{{ pd_count }}</span></p>
 
 
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
-        <!-- date change modal -->
-        <div class="modal fade" id="date_range_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select date range' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="GET">
+            {% endif %}
+            {% if spent_time %}
 
+                <div class="col-md-6">
 
-                            {{ form|crispy }}
-
-                            <hr>
-                            <div class="float-right">
-
-                                <button type="submit" class="btn btn-primary">{% trans "Apply" %}</button>
-                                <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">{% trans "Close" %} </button>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="barChart"></canvas>
                             </div>
+                        </div>
 
-
-                        </form>
                     </div>
+                </div>
+            {% endif %}
+            {% if  chart_title  and chart_hours %}
+
+                <div class="col-md-6">
+
+                    <div class="card">
+
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="doughnutChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <div class="col-lg-6">
+                <div class="card shadow ">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if todos %}
+
+                            {% for todo in todos %}
+                                {% if todo.complete_rate %}
+                                    <h4 class="small font-weight-bold text-muted float-start"><a
+                                            href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
+                                    <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
+                                    <div class="progress mb-4 mt-1">
+                                        <div class="progress-bar bg-info " role="progressbar"
+                                             style="width:{{ todo.complete_rate }}%"
+                                             aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
 
 
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <h5>{% trans 'No todo created' %}</h5>
+
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- date change modal -->
+            <div class="modal fade" id="date_range_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select date range' %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="GET">
+
+
+                                {{ form|crispy }}
+                                <button type="button" class="btn btn-info"
+                                        onclick="clearInputs()">{% trans "Clear inputs" %}</button>
+                                <hr>
+                                <div class="float-right">
+
+                                    <button type="submit" class="btn btn-primary">{% trans "Apply" %}</button>
+                                    <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">{% trans "Close" %} </button>
+                                </div>
+
+
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="goals_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add goals' %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% if user_goals %}
+                                <h4>{% trans 'Your current goals' %}</h4>
+                                <ul>
+                                    {% for goal in user_goals %}
+
+                                        <li>{{ goal.get_measure_display }}: {{ goal.jobs }} : {{ goal.hours }}</li>
+                                    {% endfor %}
+                                </ul>
+
+
+                                <hr>
+                            {% endif %}
+                            <form method="post" action="{% url 'goal_create' %}">
+                                {% csrf_token %}
+
+                                {{ goal_form|crispy }}
+
+                                <hr>
+                                <div class="float-right">
+
+                                    <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                                    <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">{% trans "Close" %} </button>
+                                </div>
+
+
+                            </form>
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
         </div>
-
 
     </div>
 
@@ -290,8 +354,8 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
     <script src="{% static 'js/color_generator.js' %}"></script>
-
     <script src="{% static 'js/dashboard_charts.js' %}"></script>
+    <script src="{% static 'js/dashboard_script.js' %}"></script>
 
     <script language="JavaScript">
         setupBarChart({{ labels|safe }}, {{ spent_time|safe }})

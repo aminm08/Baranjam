@@ -23,6 +23,26 @@
     background: linear-gradient(45deg, #FF5370, #ff869a);
 }
 
+.bg-c-l-blue {
+    background: linear-gradient(45deg, #AAE3E2, #bbeae8);
+
+}
+
+.bg-c-l-cr {
+    background: linear-gradient(45deg, #f4c775, #F1DBBF);
+
+}
+
+.bg-c-purple {
+    background: linear-gradient(45deg, #e6a3f8, #AD7BE9);
+
+}
+
+.bg-c-l-green {
+    background: linear-gradient(45deg, #aded76, #daffc4);
+
+}
+
 
 .card {
     border-radius: 5px;

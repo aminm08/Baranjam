@@ -3,6 +3,7 @@ from datetime import date
 from jalali_date.fields import JalaliDateField
 from jalali_date.widgets import AdminJalaliDateWidget
 from django.utils.translation import gettext as _
+from .models import Goal
 
 
 class DashboardApplyDateForm(forms.Form):
@@ -39,3 +40,9 @@ class DashboardApplyDateForm(forms.Form):
             return [('all',), general_date]
 
         return [(start_date, end_date), general_date]
+
+
+class GoalForm(forms.ModelForm):
+    class Meta:
+        model = Goal
+        fields = ('measure', 'jobs', 'hours',)
