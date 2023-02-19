@@ -56,10 +56,10 @@ class DoneJobs(Analytics):
 
 
 class Hours(Analytics):
-
-    def hours_all(self):
+    # extracts the amount of spent time of given done jobs
+    def get_hours_spent(self, done_jobs):
         hours_spent = 0
-        for job in self.all_done_jobs:
+        for job in done_jobs:
             if job.duration:
                 hours_spent += job.duration.hour + job.duration.minute / 60
         return round(hours_spent, 2)
@@ -81,13 +81,11 @@ class Hours(Analytics):
 
         return spent_time
 
-    def get_general_date_hours_spend(self):
-        hours = 0
-        for job in self.get_tasks_done_in_general_date():
-            if job.duration:
-                hours += (job.duration.hour + job.duration.minute / 60)
+    def get_general_date_hours_spent(self):
+        return self.get_hours_spent(self.get_tasks_done_in_general_date())
 
-        return round(hours, 2)
+    def get_all_hours_spent(self):
+        return self.get_hours_spent(self.all_done_jobs)
 
 
 class DashBoard(DoneJobs, Hours):
@@ -113,7 +111,7 @@ class DashBoard(DoneJobs, Hours):
     def get_user_hours_spent_status(self):
         hours_spent = self.hours_per_day(all_dates=True)
         hours_spent_mean = math.ceil(np.mean(hours_spent))
-        status = self.get_general_date_hours_spend() - hours_spent_mean
+        status = self.get_general_date_hours_spent() - hours_spent_mean
         percentage = status * 100 / hours_spent_mean
 
         if status < 0:
@@ -125,7 +123,7 @@ class DashBoard(DoneJobs, Hours):
         else:
             status = f'{status} hours up the average'
             arrow = 'rising_arrow'
-        return status, arrow, percentage
+        return status, arrow, round(percentage, 2)
 
     def get_most_productive_day_info(self):
         spent_hours = list(self.hours_per_day())
@@ -139,5 +137,15 @@ class DashBoard(DoneJobs, Hours):
 
         return data[max_spent_time_index], round(spent_hours[max_spent_time_index], 2), labels[max_spent_time_index]
 
-    def get_user_done_jobs_goal_progress(self):
+    def get_goal_progress_percentage(self):
         goals = self.request.user.goals.all()
+        result = []
+        for goal in goals:
+            target_jobs, target_hours = goal.jobs, goal.hours
+            if goal.measure == 't':
+                current_jobs_count = self.today_jobs_done.count()
+                current_spent_hours = self.get_hours_spent(self.today_jobs_done)
+                job_percentage = current_jobs_count / target_jobs * 100
+                hours_percentage = current_spent_hours / target_hours * 100
+                result.append((goal.get_measure_display(), job_percentage, hours_percentage))
+        return result

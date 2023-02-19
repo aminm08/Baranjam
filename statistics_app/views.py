@@ -40,6 +40,7 @@ def dashboard_view(request):
     today_done_jobs_titles = dashboard.get_done_jobs_titles_by_general_date()
     hours_spent = dashboard.get_hours_per_job_in_general_date()
     context = {
+        "goals_progress": dashboard.get_goal_progress_percentage(),
         "goal_form": goal_form,
         "user_goals": user_goals,
         "form": date_apply_form,
@@ -52,7 +53,7 @@ def dashboard_view(request):
         'pd_count': pd_count,
         'pd_time': pd_time,
         'pd_date': pd_date,
-        'spent_h': dashboard.hours_all(),
+        'spent_h': dashboard.get_all_hours_spent(),
         'job_status': job_status,
         'job_arrow': job_arrow,
         'job_progress_percentage': j_progress_percentage,
@@ -60,7 +61,7 @@ def dashboard_view(request):
         'hours_arrow': hours_arrow,
         'hours_progress_percentage': h_progress_percentage,
         'spent_time': json.dumps(dashboard.hours_per_day()),
-        'spent_today': dashboard.get_general_date_hours_spend(),
+        'spent_today': dashboard.get_general_date_hours_spent(),
         'chart_title': json.dumps(today_done_jobs_titles),
         'chart_hours': json.dumps(hours_spent),
     }

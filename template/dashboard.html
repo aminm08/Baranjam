@@ -247,6 +247,39 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-6">
+                <div class="card shadow ">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your goals' %}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if goals_progress %}
+
+                            {% for goal_data in goals_progress %}
+
+                                {% if todo.complete_rate %}
+                                    <h4 class="small font-weight-bold text-muted float-start"><a
+                                            href="{{ todo.get_absolute_url }}">{{ goal_data[0] }}</a></h4>
+                                    <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
+                                    <div class="progress mb-4 mt-1">
+                                        <div class="progress-bar bg-info " role="progressbar"
+                                             style="width:{{ todo.complete_rate }}%"
+                                             aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
+
+
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <h5>{% trans 'No todo created' %}</h5>
+
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
 
 
             <!-- date change modal -->
@@ -297,7 +330,8 @@
 
                                         <li class="list-group-item ">
                                             <div class="row align-items-center">
-                                                <form action="{% url 'goal_delete' goal.id %}" method="post" class="col-2 text-center">
+                                                <form action="{% url 'goal_delete' goal.id %}" method="post"
+                                                      class="col-2 text-center">
                                                     {% csrf_token %}
                                                     <button class="text-danger border-0 bg-transparent"
                                                             style="font-size: 12px;">&#10060;
