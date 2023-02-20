@@ -145,7 +145,8 @@ class DashBoard(DoneJobs, Hours):
             if goal.measure == 't':
                 current_jobs_count = self.today_jobs_done.count()
                 current_spent_hours = self.get_hours_spent(self.today_jobs_done)
-                job_percentage = current_jobs_count / target_jobs * 100
-                hours_percentage = current_spent_hours / target_hours * 100
+                job_percentage = (current_jobs_count * 100) / target_jobs
+                hours_percentage = (current_spent_hours * 100) / target_hours
                 result.append((goal.get_measure_display(), job_percentage, hours_percentage))
+        print(result)
         return result

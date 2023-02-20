@@ -22,7 +22,7 @@ def dashboard_view(request):
         data_date_range = date_apply_form.cleaned_data[0]
         general_date = date_apply_form.cleaned_data[1]
 
-        print(data_date_range, general_date)
+
     else:
         data_date_range = ('all',)
         general_date = date.today()
@@ -40,7 +40,7 @@ def dashboard_view(request):
     today_done_jobs_titles = dashboard.get_done_jobs_titles_by_general_date()
     hours_spent = dashboard.get_hours_per_job_in_general_date()
     context = {
-        "goals_progress": dashboard.get_goal_progress_percentage(),
+        "goals_progress": json.dumps(dashboard.get_goal_progress_percentage()),
         "goal_form": goal_form,
         "user_goals": user_goals,
         "form": date_apply_form,

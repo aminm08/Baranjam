@@ -46,7 +46,7 @@
 
         <div class="row justify-content-start">
             <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-blue order-card">
+                <div class="dashboard-card bg-c-blue order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
                         <h2 class="text-right"><i
@@ -57,7 +57,7 @@
             </div>
 
             <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-green order-card">
+                <div class="dashboard-card bg-c-green order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "tasks done" %}</h6>
                         <h2 class="text-right"><i
@@ -69,7 +69,7 @@
             </div>
 
             <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-yellow order-card">
+                <div class="dashboard-card bg-c-yellow order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "All hours spent" %}</h6>
                         <h2 class="text-right">{{ spent_h|extract_hours_and_minutes }}</h2>
@@ -78,7 +78,7 @@
                 </div>
             </div>
             <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-pink order-card">
+                <div class="dashboard-card bg-c-pink order-card">
                     <div class="card-block">
 
                         <h6 class="m-b-20">{% trans "hours spent" %}</h6>
@@ -91,61 +91,80 @@
 
 
             <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-l-blue order-card">
+                <div class="dashboard-card bg-c-l-blue order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "Jobs status" %} <span
                                 class="float-right">{{ job_progress_percentage }}%</span>
                         </h6>
                         <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
                                                     alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                    height="30" class="f-left"><span style="font-size: 16px;"
                                                                                      class="">{{ job_status }}</span>
                         </h2>
 
                     </div>
                 </div>
             </div>
+            <div class="col">
+                <div class="dashboard-card shadow ">
+                    <div class="card-body bg-c-gr" style="border-radius: 5px;">
+                        {% if user_goals %}
+
+                            {% for goal in user_goals %}
+                                <div class="row">
+                                    <h4 class="small text-white text-center fw-bold">{{ goal.get_measure_display }}</h4>
+
+                                    {% if goal.jobs %}
+                                        <div class="col">
+
+                                            <h4 class="small font-weight-bold  float-start">jobs</h4>
+                                            <p class=" font-weight-bold small text-right">{{ goal.get_jobs_progress }}%</p>
+                                            <div class="progress mb-4 mt-1">
+                                                <div class="progress-bar bg-primary " role="progressbar"
+                                                     style="width:{{ goal.get_jobs_progress }}%"
+                                                     aria-valuenow="{{ goal.get_jobs_progress }}" aria-valuemin="0"
+                                                     aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+
+
+                                    {% endif %}
+                                    {% if goal.hours %}
+                                        <div class="col">
+
+                                            <h4 class="small font-weight-bold text-success float-start">hours</h4>
+                                            <p class="text-success font-weight-bold small text-right">{{ goal.get_hours_progress }}%</p>
+                                            <div class="progress mb-4 mt-1">
+                                                <div class="progress-bar bg-primary " role="progressbar"
+                                                     style="width:{{ goal.get_hours_progress }}%"
+                                                     aria-valuenow="{{ goal.get_hours_progress }}" aria-valuemin="0"
+                                                     aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+
+
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <h5>{% trans 'No goal created' %}</h5>
+
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
 
             <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-l-cr order-card">
+                <div class="dashboard-card bg-c-l-cr order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "Hours status" %} <span
                                 class="float-right">{{ hours_progress_percentage }}%</span></h6>
                         <h2 class="text-right"><img src="/static/icons/{{ hours_arrow }}.png"
                                                     alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 18px;"
+                                                    height="30" class="f-left"><span style="font-size: 16px;"
                                                                                      class="">{{ hours_status }}</span>
-                        </h2>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-purple order-card">
-                    <div class="card-block">
-                        <h6 class="m-b-20">{% trans "goal progress status" %} <span
-                                class="float-right" style="font-size: 12px;">{% trans "jobs" %}</span>
-                        </h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
-                                                    alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 18px;"
-                                                                                     class="">{{ job_status }}</span>
-                        </h2>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-xl-3">
-                <div class="card bg-c-l-green order-card">
-                    <div class="card-block">
-                        <h6 class="m-b-20">{% trans "goal progress status" %} <span
-                                class="float-right " style="font-size: 12px;">{% trans "hours" %}</span>
-                        </h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
-                                                    alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 18px;"
-                                                                                     class="">{{ job_status }}</span>
                         </h2>
 
                     </div>
@@ -155,7 +174,7 @@
 
             <div class="col-md-9 ">
 
-                <div class="card">
+                <div class="dashboard-card">
                     <div class="card-body">
                         <div class="chart-area">
                             <canvas id="myAreaChart"></canvas>
@@ -168,7 +187,7 @@
             {% if pd_date and pd_count and pd_time %}
 
                 <div class="col-md-3 col-xl-3">
-                    <div class="card bg-c-gr order-card">
+                    <div class="dashboard-card bg-c-gr order-card">
                         <div class="card-block">
                             <h6>{% trans "Most productive day" %}</h6>
                             <h2 class="text-right"><i
@@ -188,7 +207,7 @@
 
                 <div class="col-md-6">
 
-                    <div class="card">
+                    <div class="dashboard-card">
                         <div class="card-body">
                             <div class="chart-area">
                                 <canvas id="barChart"></canvas>
@@ -202,7 +221,7 @@
 
                 <div class="col-md-6">
 
-                    <div class="card">
+                    <div class="dashboard-card">
 
                         <div class="card-body">
                             <div class="chart-area">
@@ -216,7 +235,7 @@
             {% endif %}
 
             <div class="col-lg-6">
-                <div class="card shadow ">
+                <div class="dashboard-card shadow ">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your todos' %}</h6>
                     </div>
@@ -227,39 +246,6 @@
                                 {% if todo.complete_rate %}
                                     <h4 class="small font-weight-bold text-muted float-start"><a
                                             href="{{ todo.get_absolute_url }}">{{ todo.name }}</a></h4>
-                                    <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
-                                    <div class="progress mb-4 mt-1">
-                                        <div class="progress-bar bg-info " role="progressbar"
-                                             style="width:{{ todo.complete_rate }}%"
-                                             aria-valuenow="{{ todo.complete_rate }}" aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
-
-
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <h5>{% trans 'No todo created' %}</h5>
-
-
-                        {% endif %}
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card shadow ">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">{% trans 'Your goals' %}</h6>
-                    </div>
-                    <div class="card-body">
-                        {% if goals_progress %}
-
-                            {% for goal_data in goals_progress %}
-
-                                {% if todo.complete_rate %}
-                                    <h4 class="small font-weight-bold text-muted float-start"><a
-                                            href="{{ todo.get_absolute_url }}">{{ goal_data[0] }}</a></h4>
                                     <p class="text-muted font-weight-bold small text-right">{{ todo.complete_rate }}%</p>
                                     <div class="progress mb-4 mt-1">
                                         <div class="progress-bar bg-info " role="progressbar"
@@ -404,9 +390,10 @@
     <script src="{% static 'js/dashboard_script.js' %}"></script>
 
     <script language="JavaScript">
-        setupBarChart({{ labels|safe }}, {{ spent_time|safe }})
-        setupLinearChart({{ labels|safe }}, {{ data|safe }})
-        setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }})
+        setupBarChart({{ labels|safe }}, {{ spent_time|safe }});
+        setupLinearChart({{ labels|safe }}, {{ data|safe }});
+        setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }});
+        {#getGoalsData({{ goals_progress|safe }});#}
     </script>
 
 {% endblock script %}

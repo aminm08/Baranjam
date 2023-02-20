@@ -1,6 +1,6 @@
-var start_inp = document.getElementById("id_start")
-var end_inp = document.getElementById("id_end")
-var general_date_inp = document.getElementById("id_general_date")
+var start_inp = document.getElementById("id_start");
+var end_inp = document.getElementById("id_end");
+var general_date_inp = document.getElementById("id_general_date");
 
 
 let clearInputs = function () {
@@ -8,3 +8,6 @@ let clearInputs = function () {
 }
 
 
+// let getGoalsData = function (goals){
+//     console.log(goals);
+// }
