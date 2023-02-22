@@ -112,58 +112,68 @@
                                 style=" font-size: 12px;">
                             {% trans ' Manage goals' %}
                         </button>
-                        <button type="button" class="btn btn-danger dropdown-toggle btn-sm float-right mr-2"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false" style="font-size: 12px;">
-                            Action
-                        </button>
-                        <ul class="dropdown-menu">
-                            {% for goal in user_goals %}
-                                <button class="dropdown-item" style="font-size: 14px;"
-                                        onclick="goal.setId('{{ goal.id }}')">{{ goal.get_measure_display }}</button>
-                            {% endfor %}
-
-                        </ul>
-                        <div class="row ">
-                            <h4 class="small text-white text-center fw-bold ">{{ goal.get_measure_display }}</h4>
+                        {% if goals_progress and user_goals %}
 
 
-                            <div class="col">
+                            <button type="button" class="btn btn-danger dropdown-toggle btn-sm float-right mr-2"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false" style="font-size: 12px;">
+                                Action
+                            </button>
+                            <ul class="dropdown-menu">
 
-                                <h4 class="small font-weight-bold  float-start">jobs</h4>
-                                <p class=" font-weight-bold small text-right">{{ goal.get_jobs_progress }}%</p>
-                                <div class="progress mb-4 mt-1">
-                                    <div class="progress-bar bg-primary " role="progressbar"
-                                         style="width:{{ goal.get_jobs_progress }}%"
-                                         aria-valuenow="{{ goal.get_jobs_progress }}" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
+
+                                {% for user_goal in user_goals %}
+                                    <label style="font-size: 10px;">
+                                        <input type="radio" class="dropdown-item"
+                                               onclick="goal.setId({{ user_goal.id }})" name="choose-goal">
+                                        {{ user_goal.get_measure_display }}: {{ user_goal.jobs }}, {{ user_goal.hours }}
+                                    </label>
+                                    <br>
+
+
+
+                                {% endfor %}
+
+
+                            </ul>
+                            <div class="row">
+                                <h4 class="small text-white text-center fw-bold " id="measure-header"></h4>
+
+
+                                <div class="col">
+
+                                    <h4 class="small font-weight-bold  float-start  ">jobs</h4>
+                                    <p class=" font-weight-bold small text-right"
+                                       id="job-progress"></p>
+                                    <div class="progress mb-4 mt-1">
+                                        <div id="bar-job" class="progress-bar bg-primary " role="progressbar"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
                                 </div>
+
+
+                                <div class="col">
+
+                                    <h4 class="small font-weight-bold  float-start">hours</h4>
+                                    <p class="text-success font-weight-bold small text-right"
+                                       id="hour-progress"></p>
+                                    <div class="progress mb-4 mt-1">
+                                        <div id="bar-hour" class="progress-bar bg-primary " role="progressbar"
+                                             aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+
+
                             </div>
 
+                        {% else %}
 
-                            <div class="col">
-
-                                <h4 class="small font-weight-bold text-success float-start">hours</h4>
-                                <p class="text-success font-weight-bold small text-right">{{ goal.get_hours_progress }}%</p>
-                                <div class="progress mb-4 mt-1">
-                                    <div class="progress-bar bg-primary " role="progressbar"
-                                         style="width:{{ goal.get_hours_progress }}%"
-                                         aria-valuenow="{{ goal.get_hours_progress }}" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
-                                </div>
-                            </div>
+                            <h5>{% trans 'No goal created' %}</h5>
 
 
-                        </div>
-
-                        {#                        {% else %}#}
-                        {##}
-                        {#                            <h5>{% trans 'No goal created' %}</h5>#}
-                        {##}
-                        {##}
-                        {##}
-                        {##}
-                        {#                        {% endif %}#}
+                        {% endif %}
 
                     </div>
                 </div>
@@ -313,6 +323,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- goals modal -->
             <div class="modal fade" id="goals_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -349,8 +361,32 @@
                             {% endif %}
                             <form method="post" action="{% url 'goal_create' %}">
                                 {% csrf_token %}
+                                <div class="row ">
+                                    <div class="mt-1">
 
-                                {{ goal_form|crispy }}
+                                        <label for="id_measure"
+                                               class="form-label requiredField">{% trans 'Measures of your goal' %}</label>
+                                        <select name="measure" id="id_measure" class="select form-select" required>
+                                            <option disabled selected>------------</option>
+                                            <option value="d" class="p-2">{% trans 'Daily' %}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col mt-2">
+
+                                        <label for="id_jobs"
+                                               class=" form-label requiredField">{% trans 'Job target' %}</label>
+                                        <input type="number" name="jobs" class="  form-control col p-2" id="id_jobs"
+                                               required>
+                                    </div>
+                                    <div class="col mt-2">
+
+                                        <label for="id_hours"
+                                               class=" form-label requiredField">{% trans 'Hour target' %}</label>
+                                        <input type="number" name="hours" class=" form-control col p-2" id="id_hours"
+                                               required>
+                                    </div>
+                                </div>
+
 
                                 <hr>
                                 <div class="float-right">
@@ -371,8 +407,6 @@
         </div>
 
     </div>
-
-
 
 
     <br><br>
@@ -403,11 +437,16 @@
     <script src="{% static 'js/dashboard_script.js' %}"></script>
 
     <script language="JavaScript">
+        {#if (Object.keys({{ goals_progress|safe }}).length != 0) {#}
+
         setupBarChart({{ labels|safe }}, {{ spent_time|safe }});
         setupLinearChart({{ labels|safe }}, {{ data|safe }});
         setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }});
+
         const goal = new Goal({{ goals_progress|safe }});
-        goal.getGoalData(id = 8);
+        goal.insert_data();
+        console.log("created");
+
 
     </script>
 

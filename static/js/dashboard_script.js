@@ -1,6 +1,11 @@
 var start_inp = document.getElementById("id_start");
 var end_inp = document.getElementById("id_end");
 var general_date_inp = document.getElementById("id_general_date");
+var measure_header = document.getElementById("measure-header");
+var job_progress = document.getElementById("job-progress");
+var bar_job = document.getElementById("bar-job");
+var hour_progress = document.getElementById("hour-progress");
+var bar_hour = document.getElementById("bar-hour");
 
 
 let clearInputs = function () {
@@ -16,37 +21,37 @@ class Goal {
 
     setId(id) {
         this.dropdown_id = id;
+        this.insert_data();
+
     }
 
     getGoalDataById() {
-        if (this.dropdown_id) {
-            let data = this.goals[this.dropdown_id];
+        let data = Object
+        if (this.dropdown_id != null && this.goals[this.dropdown_id]) {
+            data = this.goals[this.dropdown_id];
         } else {
-            let data = this.goals[Object.keys(this.goals)[0]];
+
+            data = this.goals[Object.keys(this.goals)[0]];
         }
         return data
     }
 
-    getDataGoalByMode(mode) {
+
+    insert_data() {
         let data = this.getGoalDataById();
-        let output_data = null;
+        measure_header.innerText = data[0];
 
-        if (mode === 'measure') {
-            output_data = data[0];
-        } else if (mode === 'jobs') {
-            output_data = data[1];
-        } else {
-            output_data = data[2];
-        }
-        
-        return output_data
+        job_progress.innerText = `${data[1]}%`;
+        bar_job.style.width = `${data[1]}%`;
+        bar_job.ariaValueNow = data[1];
+
+        hour_progress.innerText = `${data[2]}%`;
+        bar_hour.style.width = `${data[2]}%`;
+        bar_hour.ariaValueNow = data[2];
+
+
+
     }
-
-
-}
-
-let getGoalsData = function (goals, mode) {
-    console.log(goals);
 
 
 }
