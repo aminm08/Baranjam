@@ -139,14 +139,14 @@ class DashBoard(DoneJobs, Hours):
 
     def get_goal_progress_percentage(self):
         goals = self.request.user.goals.all()
-        result = []
+        result = {}
         for goal in goals:
             target_jobs, target_hours = goal.jobs, goal.hours
-            if goal.measure == 't':
+            if goal.measure == 'd':
                 current_jobs_count = self.today_jobs_done.count()
                 current_spent_hours = self.get_hours_spent(self.today_jobs_done)
                 job_percentage = (current_jobs_count * 100) / target_jobs
                 hours_percentage = (current_spent_hours * 100) / target_hours
-                result.append((goal.get_measure_display(), job_percentage, hours_percentage))
+                result[str(goal.id)] = [goal.get_measure_display(), job_percentage, hours_percentage]
         print(result)
         return result

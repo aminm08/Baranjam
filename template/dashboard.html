@@ -30,10 +30,6 @@
 
             <div class="justify-content-end ">
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#goals_modal"
-                        style="margin-bottom:1rem; font-size: 14px;">
-                    {% trans 'Your goals' %}
-                </button>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#date_range_modal"
                         style="margin-bottom:1rem; font-size: 14px;">
                     {% trans 'Select date Range' %}
@@ -107,50 +103,67 @@
             </div>
             <div class="col">
                 <div class="dashboard-card shadow ">
+
                     <div class="card-body bg-c-gr" style="border-radius: 5px;">
-                        {% if user_goals %}
 
+
+                        <button type="button" class="btn btn-primary float-right btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#goals_modal"
+                                style=" font-size: 12px;">
+                            {% trans ' Manage goals' %}
+                        </button>
+                        <button type="button" class="btn btn-danger dropdown-toggle btn-sm float-right mr-2"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false" style="font-size: 12px;">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu">
                             {% for goal in user_goals %}
-                                <div class="row">
-                                    <h4 class="small text-white text-center fw-bold">{{ goal.get_measure_display }}</h4>
-
-                                    {% if goal.jobs %}
-                                        <div class="col">
-
-                                            <h4 class="small font-weight-bold  float-start">jobs</h4>
-                                            <p class=" font-weight-bold small text-right">{{ goal.get_jobs_progress }}%</p>
-                                            <div class="progress mb-4 mt-1">
-                                                <div class="progress-bar bg-primary " role="progressbar"
-                                                     style="width:{{ goal.get_jobs_progress }}%"
-                                                     aria-valuenow="{{ goal.get_jobs_progress }}" aria-valuemin="0"
-                                                     aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-
-
-                                    {% endif %}
-                                    {% if goal.hours %}
-                                        <div class="col">
-
-                                            <h4 class="small font-weight-bold text-success float-start">hours</h4>
-                                            <p class="text-success font-weight-bold small text-right">{{ goal.get_hours_progress }}%</p>
-                                            <div class="progress mb-4 mt-1">
-                                                <div class="progress-bar bg-primary " role="progressbar"
-                                                     style="width:{{ goal.get_hours_progress }}%"
-                                                     aria-valuenow="{{ goal.get_hours_progress }}" aria-valuemin="0"
-                                                     aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-
-
-                                    {% endif %}
-                                </div>
+                                <button class="dropdown-item" style="font-size: 14px;"
+                                        onclick="goal.setId('{{ goal.id }}')">{{ goal.get_measure_display }}</button>
                             {% endfor %}
-                        {% else %}
-                            <h5>{% trans 'No goal created' %}</h5>
+
+                        </ul>
+                        <div class="row ">
+                            <h4 class="small text-white text-center fw-bold ">{{ goal.get_measure_display }}</h4>
 
 
-                        {% endif %}
+                            <div class="col">
+
+                                <h4 class="small font-weight-bold  float-start">jobs</h4>
+                                <p class=" font-weight-bold small text-right">{{ goal.get_jobs_progress }}%</p>
+                                <div class="progress mb-4 mt-1">
+                                    <div class="progress-bar bg-primary " role="progressbar"
+                                         style="width:{{ goal.get_jobs_progress }}%"
+                                         aria-valuenow="{{ goal.get_jobs_progress }}" aria-valuemin="0"
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+
+                            <div class="col">
+
+                                <h4 class="small font-weight-bold text-success float-start">hours</h4>
+                                <p class="text-success font-weight-bold small text-right">{{ goal.get_hours_progress }}%</p>
+                                <div class="progress mb-4 mt-1">
+                                    <div class="progress-bar bg-primary " role="progressbar"
+                                         style="width:{{ goal.get_hours_progress }}%"
+                                         aria-valuenow="{{ goal.get_hours_progress }}" aria-valuemin="0"
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        {#                        {% else %}#}
+                        {##}
+                        {#                            <h5>{% trans 'No goal created' %}</h5>#}
+                        {##}
+                        {##}
+                        {##}
+                        {##}
+                        {#                        {% endif %}#}
 
                     </div>
                 </div>
@@ -393,7 +406,9 @@
         setupBarChart({{ labels|safe }}, {{ spent_time|safe }});
         setupLinearChart({{ labels|safe }}, {{ data|safe }});
         setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }});
-        {#getGoalsData({{ goals_progress|safe }});#}
+        const goal = new Goal({{ goals_progress|safe }});
+        goal.getGoalData(id = 8);
+
     </script>
 
 {% endblock script %}

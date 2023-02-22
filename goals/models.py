@@ -8,7 +8,7 @@ from datetime import date
 
 class Goal(models.Model):
     MEASURE_CHOICES = (
-        ('t', "Today"),
+        ('d', "Daily"),
         ('w', "This week"),
         ('m', "This month"),
     )
@@ -26,7 +26,7 @@ class Goal(models.Model):
 
     def get_jobs_progress(self):
         progress_percentage = 0
-        if self.measure == 't':
+        if self.measure == 'd':
             current_jobs_count = self.user.jobs.filter(is_done=True, user_done_date=date.today()).count()
             progress_percentage = current_jobs_count / self.jobs * 100
         print(progress_percentage)
@@ -34,7 +34,7 @@ class Goal(models.Model):
 
     def get_hours_progress(self):
         progress_percentage = 0
-        if self.measure == 't':
+        if self.measure == 'd':
             hours = [job.duration.hour + job.duration.minute / 60 for
                                        job in self.user.jobs.filter(is_done=True, user_done_date=date.today())
                                        if job.duration]
