@@ -93,16 +93,12 @@
                 password_field.type = 'password';
             }
         }
+
         signup_link = document.getElementById('signup_link');
-        if (window.location.search){
+        if (window.location.search) {
             link = `{% url 'account_signup' %}${window.location.search}`
             signup_link.href = link;
         }
-
-
-
-
-
 
 
     </script>

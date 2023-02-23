@@ -2,7 +2,7 @@ from django import forms
 from datetime import date
 from jalali_date.fields import JalaliDateField
 from jalali_date.widgets import AdminJalaliDateWidget
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class DashboardApplyDateForm(forms.Form):

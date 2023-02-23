@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from datetime import date, datetime
+from jalali_date import date2jalali
 
 
 class Analytics:
@@ -23,8 +24,17 @@ class Analytics:
     def extract_done_dates(job_list):
         return [str(job.user_done_date) for job in job_list]
 
+    @staticmethod
+    def convert_labels_to_jalali_date(labels):
+        converted_label = []
+        for done_date in labels:
+            dt = datetime.strptime(done_date, "%Y-%m-%d")
+            converted_label.append(str(date2jalali(dt)))
+        return converted_label
+
     # returns a list of distinct done dates in chosen range
     def get_done_dates_in_range(self):
+        print(self._range_date)
         if self._range_date[0] == "all":
             return self.all_distinct_done_dates
         data = self.extract_done_dates(self.all_done_jobs.filter(user_done_date__range=self._range_date))
@@ -143,10 +153,10 @@ class DashBoard(DoneJobs, Hours):
         for goal in goals:
             target_jobs, target_hours = goal.jobs, goal.hours
             if goal.measure == 'd':
-                current_jobs_count = self.today_jobs_done.count()
-                current_spent_hours = self.get_hours_spent(self.today_jobs_done)
-                job_percentage = round((current_jobs_count * 100) / target_jobs,2)
-                hours_percentage = round((current_spent_hours * 100) / target_hours,2)
+                current_jobs_count = self.get_tasks_done_in_general_date().count()
+                current_spent_hours = self.get_general_date_hours_spent()
+                job_percentage = round((current_jobs_count * 100) / target_jobs, 2)
+                hours_percentage = round((current_spent_hours * 100) / target_hours, 2)
                 result[str(goal.id)] = [goal.get_measure_display(), job_percentage, hours_percentage]
-        print(result)
+
         return result

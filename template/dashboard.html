@@ -8,7 +8,7 @@
 {% load crispy_forms_field %}
 {% load dashboard_tags %}
 
-{% block title %}Your Baranjam dashboard{% endblock title %}
+{% block title %}{% trans 'baranjam dashboard' %}{% endblock title %}
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -47,7 +47,7 @@
                         <h6 class="m-b-20">{% trans "All tasks done" %}</h6>
                         <h2 class="text-right"><i
                                 class="fas fa-tasks f-left"></i><span>{{ all_tasks_done_in_range }}</span></h2>
-                        {#                        <p class="m-b-0">{% trans "Completed jobs" %}<span class="f-right">{{ user.all_jobs_done }}</span></p>#}
+
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
             <div class="col-md-4 col-xl-3">
                 <div class="dashboard-card bg-c-green order-card">
                     <div class="card-block">
-                        <h6 class="m-b-20">{% trans "tasks done" %}</h6>
+                        <h6 class="m-b-20">{% trans "Tasks done" %}</h6>
                         <h2 class="text-right"><i
                                 class="fa fa-rocket f-left"></i><span>{{ tasks_done_on_date }}</span>
                         </h2>
@@ -68,7 +68,9 @@
                 <div class="dashboard-card bg-c-yellow order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "All hours spent" %}</h6>
-                        <h2 class="text-right">{{ spent_h|extract_hours_and_minutes }}</h2>
+                        <h2 class="text-right"><i
+                                class="fas fa-solid text-white fa-clock f-left"></i>{{ spent_h|extract_hours_and_minutes }}
+                        </h2>
 
                     </div>
                 </div>
@@ -77,7 +79,7 @@
                 <div class="dashboard-card bg-c-pink order-card">
                     <div class="card-block">
 
-                        <h6 class="m-b-20">{% trans "hours spent" %}</h6>
+                        <h6 class="m-b-20">{% trans "Hours spent" %}</h6>
                         <h2 class="text-right"><i
                                 class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
 
@@ -118,24 +120,24 @@
                             <button type="button" class="btn btn-danger dropdown-toggle btn-sm float-right mr-2"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false" style="font-size: 12px;">
-                                Action
+                                {% trans "Choose" %}
                             </button>
                             <ul class="dropdown-menu">
 
 
                                 {% for user_goal in user_goals %}
-                                    <label style="font-size: 10px;">
-                                        <input type="radio" class="dropdown-item"
-                                               onclick="goal.setId({{ user_goal.id }})" name="choose-goal">
-                                        {{ user_goal.get_measure_display }}: {{ user_goal.jobs }}, {{ user_goal.hours }}
-                                    </label>
-                                    <br>
+                                    <div class="dropdown-item">
+                                        <input type="radio"
+                                               onclick="goal.setId({{ user_goal.id }})" name="choose-goal"
+                                               style="width: 20%; height:1em; margin:1px 1px 1px 0;"
+                                                {% if user_goal == user_goals|first %} checked {% endif %}>
+                                        <label style="font-size: 14px;">
+                                            {{ user_goal.get_measure_display }}: {{ user_goal.jobs }}, {{ user_goal.hours }}
+                                        </label>
 
-
+                                    </div>
 
                                 {% endfor %}
-
-
                             </ul>
                             <div class="row">
                                 <h4 class="small text-white text-center fw-bold " id="measure-header"></h4>
@@ -143,7 +145,7 @@
 
                                 <div class="col">
 
-                                    <h4 class="small font-weight-bold  float-start  ">jobs</h4>
+                                    <h4 class="small font-weight-bold  float-start  ">{% trans "Jobs" %}</h4>
                                     <p class=" font-weight-bold small text-right"
                                        id="job-progress"></p>
                                     <div class="progress mb-4 mt-1">
@@ -156,7 +158,7 @@
 
                                 <div class="col">
 
-                                    <h4 class="small font-weight-bold  float-start">hours</h4>
+                                    <h4 class="small font-weight-bold  float-start">{% trans "Hours" %}</h4>
                                     <p class="text-success font-weight-bold small text-right"
                                        id="hour-progress"></p>
                                     <div class="progress mb-4 mt-1">
@@ -301,7 +303,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="GET">
+                            <form method="GET" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif%}>
 
 
                                 {{ form|crispy }}
@@ -349,8 +351,8 @@
                                                     </button>
                                                 </form>
                                                 <span class="badge bg-info col-2">{{ goal.get_measure_display }}</span>
-                                                <span class="col">Jobs target: {{ goal.jobs }}</span>
-                                                <span class="col">Hours target: {{ goal.hours }}</span>
+                                                <span class="col">{% trans 'Jobs target' %}: {{ goal.jobs }}</span>
+                                                <span class="col">{% trans 'Hours target' %}: {{ goal.hours }}</span>
                                             </div>
                                         </li>
                                     {% endfor %}
@@ -419,10 +421,9 @@
 
 
     <!-- Core plugin JavaScript-->
-    {#    <script src="{% static  'vendor/jquery-easing/jquery.easing.js' %}"></script>#}
 
     <script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
-    {#    <script src="{% static 'vendor/chart.js/Chart.bundle.js' %}"></script>#}
+
 
     <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
@@ -437,7 +438,6 @@
     <script src="{% static 'js/dashboard_script.js' %}"></script>
 
     <script language="JavaScript">
-        {#if (Object.keys({{ goals_progress|safe }}).length != 0) {#}
 
         setupBarChart({{ labels|safe }}, {{ spent_time|safe }});
         setupLinearChart({{ labels|safe }}, {{ data|safe }});

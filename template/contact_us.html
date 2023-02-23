@@ -27,7 +27,7 @@
                         <div class="row no-gutters">
                             <div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
                                 <div class="contact-wrap w-100 p-md-5 p-4">
-                                    <h3 class="mb-4">Contact me</h3>
+                                    <h3 class="mb-4">{% trans 'Contact me' %}</h3>
                                     {% if form.non_field_errors %}
                                         <span class="text-danger mt-2">{{ form.non_field_errors }}</span>
                                     {% endif %}
@@ -38,7 +38,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label class="label" for="name">Full Name</label>
+                                                    <label class="label" for="name">{% trans 'Full Name' %}</label>
                                                     <input type="text" class="form-control" name="full_name" id="name"
                                                            placeholder="Name" required>
                                                 </div>
@@ -47,7 +47,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label class="label" for="phone">Phone number</label>
+                                                    <label class="label" for="phone">{% trans 'Full Name' %}</label>
                                                     <input id="phone" type="tel" name="phone_number" required
                                                            class="form-control ">
                                                 </div>
@@ -55,7 +55,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label class="label" for="email">Email Address</label>
+                                                    <label class="label" for="email">{% trans Full Name'' %}</label>
                                                     <input type="email" class="form-control" name="email" id="email"
                                                            placeholder="Email" required>
                                                 </div>
@@ -63,7 +63,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label class="label" for="#">Message</label>
+                                                    <label class="label" for="#">{% trans 'Message' %}</label>
                                                     <textarea name="message" class="form-control" id="message" cols="30"
                                                               rows="4" placeholder="Message" required></textarea>
                                                 </div>
