@@ -21,7 +21,8 @@
                 <div class="col">
 
                     <div class="{% if  LANGUAGE == 'en' %} justify-content-end {% else %} justify-content-start{% endif %} ">
-                        <a href="{% url 'group_create' %}" class="btn btn-dark float-end text-white">{% trans 'Add Group' %}</a>
+                        <a href="{% url 'group_create' %}"
+                           class="btn btn-dark float-end text-white">{% trans 'Add Group' %}</a>
 
                     </div>
                     <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group lists' %}</h2>
@@ -41,21 +42,29 @@
                                         <img src="{{ group.get_group_picture_or_blank }}" alt="group pic" width="45"
                                              height="45"
                                              style="margin-right:3px;">
-                                        <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
+                                        <a href="{{ group.get_absolute_url }}" style="text-decoration: none;">
+                                            {{ group.title }}
+                                        </a>
 
                                     </div>
                                 </div>
 
                                 <div class="mr-auto text-center my-auto">
-                                    <p><span class="fw-bolder"
-                                             style="color:#f4623a; ">{% trans 'Members' %}:</span><span
-                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.get_all_members_length }}</span>
+                                    <p>
+                                        <span class="fw-bolder"
+                                              style="color:#f4623a; ">{% trans 'Members' %}:
+                                        </span>
+                                        <span
+                                                class="ml-1 badge bg-success rounded-pill ">
+                                            {{ group.get_all_members_length }}
+                                        </span>
                                     </p>
                                 </div>
 
                                 <div class="btn-group">
                                     <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
+                                            style="background-color: #f4623a; border:none;">
                                         {% trans 'Options' %}
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">

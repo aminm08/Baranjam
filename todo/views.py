@@ -1,10 +1,9 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
-from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
@@ -64,16 +63,17 @@ def todo_list_main_page(request, signed_pk):
 
     if request.user == todo.user or todo.user_from_group_has_permission(request.user):
 
-        user_jobs = Job.objects.filter(todo=todo).order_by('is_done', '-datetime_created')
+        user_jobs = Job.objects.filter(todo=todo).order_by('is_done', 'user_date', '-datetime_created')
         user_filter = str(request.GET.get('filter'))
 
         match user_filter:
             case 'all':
-                user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', '-datetime_created')
+                user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', 'user_date', '-datetime_created')
             case 'actives':
-                user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('-datetime_created')
+                user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('user_date',
+                                                                                        '-datetime_created')
             case 'done':
-                user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('-datetime_created')
+                user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('user_date', '-datetime_created')
 
         return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form': JobForm()})
 
@@ -82,20 +82,18 @@ def todo_list_main_page(request, signed_pk):
 
 @login_required()
 @require_POST
-def job_is_done_assign(request, job_id):
+def job_set_done_status(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     if job.todo.user == request.user:
 
         if not job.is_done:
             job.is_done = True
             job.user_done_date = date.today()  # for statistics
-            request.user.update_done_jobs()
             messages.success(request, _('job completed! congrats'))
 
         else:
             job.is_done = False
             job.user_done_date = None
-            request.user.update_done_jobs(add=False)
         job.save()
         return redirect(job.todo.get_absolute_url())
     raise PermissionDenied
@@ -158,7 +156,9 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, _('invalid field value'))
+
+        self.request.session['form-errors'] = form.errors.as_json()
+        # messages.error(self.request, _('invalid field value'))
         return redirect(self.get_todo_from_kwargs().get_absolute_url())
 
     def test_func(self):
@@ -177,28 +177,15 @@ class JobDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
         return self.request.user == self.get_object().todo.user
 
 
-class TodoDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, generic.DeleteView):
-    model = Todo
-    template_name = 'todo/todo_delete.html'
-    context_object_name = 'todo'
-    success_url = reverse_lazy('user_todos')
-    success_message = _('todo list successfully deleted')
-
-    def test_func(self):
-        return self.request.user == self.get_object().user
-
-    def get_object(self, queryset=None):
-        signed_pk = self.kwargs.get('signed_pk')
-        if signed_pk:
-            try:
-                todo_obj = get_object_or_404(self.model, pk=self.model.signer.unsign(signed_pk))
-            except:
-                raise Http404
-
-            return todo_obj
-        raise AttributeError(
-            "Generic Detail view %s must be called"
-            "with signed pk in the URLconf" % self.__class__.__name__)
+def todo_delete_view(request, signed_pk):
+    todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
+    if todo.user == request.user:
+        if request.method == 'POST':
+            todo.delete()
+            messages.success(request, _("todo list successfully deleted"))
+            return redirect('user_todos')
+        return render(request, 'todo/todo_delete.html', {'todo': todo})
+    raise PermissionDenied
 
 
 @login_required()

@@ -47,15 +47,15 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label class="label" for="phone">{% trans 'Full Name' %}</label>
+                                                    <label class="label" for="phone">{% trans 'Phone number' %}</label>
                                                     <input id="phone" type="tel" name="phone_number" required
-                                                           class="form-control ">
+                                                           class="form-control " placeholder="phone number">
                                                 </div>
                                                 <span class="text-danger">{{ form.phone_number.errors }}</span>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label class="label" for="email">{% trans Full Name'' %}</label>
+                                                    <label class="label" for="email">{% trans 'Email' %}</label>
                                                     <input type="email" class="form-control" name="email" id="email"
                                                            placeholder="Email" required>
                                                 </div>
@@ -126,74 +126,9 @@
         </div>
     </section>
 
-    <script>
-        const phoneInputField = document.querySelector("#phone");
-        const phoneInput = window.intlTelInput(phoneInputField, {
-            utilsScript:
-                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-        });
-    </script>
 
 
 
-
-
-
-
-
-
-
-    {#    <style>#}
-    {#        .r-plc::placeholder {#}
-    {#            text-align: right;#}
-    {#        }#}
-    {##}
-    {##}
-    {#    </style>#}
-    {#    <h1 class="text-center mt-3">{% trans 'Contact me' %}</h1>#}
-    {#    <div class="container">#}
-    {##}
-    {##}
-    {#        <div class="col-md-3 offset-md-2 mt-auto">#}
-    {##}
-    {#            <div>#}
-    {#                <button class="fab fa-github bg-transparent border-0 mb-2" style="font-size: 40px;"#}
-    {#                        onclick="window.open('https://github.com/aminm08/', '_blank')">#}
-    {#                    <span class="text" style="font-size: 20px;">Github</span>#}
-    {##}
-    {#                </button>#}
-    {#                <i class="fa fa-envelope" aria-hidden="true" style="font-size: 40px;">maf081378@gmail.com</i>#}
-    {##}
-    {#            </div>#}
-    {#        </div>#}
-    {#        <div class="col-md-5 m-auto">#}
-    {#            <form method="post" class="mb-lg-5">#}
-    {#                {% csrf_token %}#}
-    {#                {{ form.non_field_errors }}#}
-    {##}
-    {##}
-    {#                <input type="text" class="form-control  form mt-2"#}
-    {#                       aria-describedby="emailHelp"#}
-    {#                       placeholder="{% trans 'your full name' %}  " name="full_name" required>#}
-    {#                {{ form.full_name.errors }}#}
-    {#                <input type="email" class="form-control mt-2 mb-2"#}
-    {#                       placeholder="{% trans 'your email' %}  "#}
-    {#                       name="email" required>#}
-    {#                {{ form.email.errors }}#}
-    {##}
-    {#                <input id="phone" type="tel" name="phone_number" required class="form-control ">#}
-    {#                {{ form.phone_number.errors }}#}
-    {##}
-    {#                <textarea class="form-control mt-2 float-start" name="message" id="message"#}
-    {#                          placeholder="{% trans 'your message' %}" required rows="5"></textarea>#}
-    {#                {{ form.message.errors }}#}
-    {#                <button type="submit" class="btn btn-success float-end mt-3">{% trans 'Submit' %}</button>#}
-    {##}
-    {##}
-    {#            </form>#}
-    {#        </div>#}
-    {#    </div>#}
-    {##}
 
 
 {% endblock content %}

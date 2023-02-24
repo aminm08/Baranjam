@@ -2,6 +2,7 @@ import numpy as np
 import math
 from datetime import date, datetime
 from jalali_date import date2jalali
+from django.utils.translation import gettext as _
 
 
 class Analytics:
@@ -25,16 +26,16 @@ class Analytics:
         return [str(job.user_done_date) for job in job_list]
 
     @staticmethod
-    def convert_labels_to_jalali_date(labels):
+    def convert_done_dates_to_jalali_date(done_dates):
         converted_label = []
-        for done_date in labels:
+        for done_date in done_dates:
             dt = datetime.strptime(done_date, "%Y-%m-%d")
             converted_label.append(str(date2jalali(dt)))
         return converted_label
 
     # returns a list of distinct done dates in chosen range
     def get_done_dates_in_range(self):
-        print(self._range_date)
+
         if self._range_date[0] == "all":
             return self.all_distinct_done_dates
         data = self.extract_done_dates(self.all_done_jobs.filter(user_done_date__range=self._range_date))
@@ -49,17 +50,15 @@ class Analytics:
 
 
 class DoneJobs(Analytics):
-    def done_job_per_day(self, all_dates=False):
+
+    # gets done jobs count by the number of available done dates in all done dates
+    def get_done_jobs_count_per_day(self, done_dates):
         daily_job_done = []
-
-        done_dates = self.all_distinct_done_dates if all_dates else self.get_done_dates_in_range()
-
         for done_date in done_dates:
             daily_job_done.append(self.all_done_dates.count(done_date))
-
         return daily_job_done
 
-    def get_all_done_jobs_in_range(self):
+    def get_done_jobs_in_range(self):
         if self._range_date[0] == "all":
             return self.all_done_jobs
         return self.all_done_jobs.filter(user_done_date__range=self._range_date)
@@ -67,7 +66,8 @@ class DoneJobs(Analytics):
 
 class Hours(Analytics):
     # extracts the amount of spent time of given done jobs
-    def get_hours_spent(self, done_jobs):
+    @staticmethod
+    def get_hours_spent(done_jobs):
         hours_spent = 0
         for job in done_jobs:
             if job.duration:
@@ -78,23 +78,20 @@ class Hours(Analytics):
         return [float(job.duration.hour + job.duration.minute / 60) for job in self.get_tasks_done_in_general_date() if
                 job.duration]
 
-    def hours_per_day(self, all_dates=False):
+    def get_hours_spent_per_day(self, done_dates):
         spent_time = []
-        done_dates = self.all_distinct_done_dates if all_dates else self.get_done_dates_in_range()
-
         for done_date in done_dates:
             time = 0
             for job in self.request.user.jobs.filter(is_done=True, user_done_date=done_date):
                 if job.duration:
                     time += job.duration.hour + job.duration.minute / 60
             spent_time.append(round(time, 3))
-
         return spent_time
 
     def get_general_date_hours_spent(self):
         return self.get_hours_spent(self.get_tasks_done_in_general_date())
 
-    def get_all_hours_spent(self):
+    def get_total_hours_spent(self):
         return self.get_hours_spent(self.all_done_jobs)
 
 
@@ -103,41 +100,41 @@ class DashBoard(DoneJobs, Hours):
     def get_user_jobs_status(self):
         # gets the mean of all done jobs to compare done jobs of general date
 
-        done_jobs = self.done_job_per_day(all_dates=True)
+        done_jobs = self.get_done_jobs_count_per_day(self.all_distinct_done_dates)
         done_jobs_mean = math.ceil(np.mean(done_jobs))
         status = self.get_tasks_done_in_general_date().count() - done_jobs_mean
         percentage = status * 100 / done_jobs_mean
         if status < 0:
-            status = f'{abs(status)} jobs away from average'
+            status = _('%s jobs away from average' % abs(status))
             arrow = 'falling_arrow'
         elif status == 0:
-            status = 'you are on average'
+            status = _('you are on average')
             arrow = 'rising_arrow'
         else:
-            status = f'{status} jobs up the average'
+            status = _('%s jobs up the average' % status)
             arrow = 'rising_arrow'
-        return status, arrow, percentage
+        return percentage, arrow, status
 
     def get_user_hours_spent_status(self):
-        hours_spent = self.hours_per_day(all_dates=True)
+        hours_spent = self.get_hours_spent_per_day(self.all_distinct_done_dates)
         hours_spent_mean = math.ceil(np.mean(hours_spent))
         status = self.get_general_date_hours_spent() - hours_spent_mean
         percentage = status * 100 / hours_spent_mean
 
         if status < 0:
-            status = f'{abs(status)} hours away from average'
+            status = _('%s hours away from average' % abs(status))
             arrow = 'falling_arrow'
         elif status == 0:
-            status = 'you are on average'
+            status = _('you are on average')
             arrow = 'rising_arrow'
         else:
-            status = f'{status} hours up the average'
+            status = _('%s hours up the average' % status)
             arrow = 'rising_arrow'
-        return status, arrow, round(percentage, 2)
+        return round(percentage, 2), arrow, status
 
-    def get_most_productive_day_info(self):
-        spent_hours = list(self.hours_per_day())
-        data, labels = list(self.done_job_per_day()), list(self.get_done_dates_in_range())
+    def get_most_productive_day_info(self):  # replace
+        spent_hours = self.get_hours_spent_per_day(self.get_done_dates_in_range())
+        data, labels = self.get_done_jobs_count_per_day(self.get_done_jobs_in_range()), self.get_done_dates_in_range()
         if spent_hours:
             max_spent_time_index = spent_hours.index(max(spent_hours))
         elif data:
@@ -145,7 +142,8 @@ class DashBoard(DoneJobs, Hours):
         else:
             return None, None, None
 
-        return data[max_spent_time_index], round(spent_hours[max_spent_time_index], 2), labels[max_spent_time_index]
+        return (date2jalali(datetime.strptime(labels[max_spent_time_index], "%Y-%m-%d")),
+                round(spent_hours[max_spent_time_index], 2), data[max_spent_time_index],)
 
     def get_goal_progress_percentage(self):
         goals = self.request.user.goals.all()

@@ -1,4 +1,3 @@
-{#<body id="page-top">#}
 {% extends '_base.html' %}
 {% load static %}
 {% load i18n %}
@@ -12,7 +11,7 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    {{ form.media }}
+    {{ apply_date_form.media }}
 {% endblock links %}
 {% block content %}
 
@@ -24,7 +23,7 @@
 
             <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}
                 <span class="badge bg-info  " style=" font-size: 13px;">
-                    {% trans 'shown data for' %}:{{ date }}
+                    {% trans 'shown data for' %}:{{ general_date }}
                 </span>
             </h1>
 
@@ -57,7 +56,7 @@
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "Tasks done" %}</h6>
                         <h2 class="text-right"><i
-                                class="fa fa-rocket f-left"></i><span>{{ tasks_done_on_date }}</span>
+                                class="fa fa-rocket f-left"></i><span>{{ tasks_done_in_general_date }}</span>
                         </h2>
 
                     </div>
@@ -69,7 +68,7 @@
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "All hours spent" %}</h6>
                         <h2 class="text-right"><i
-                                class="fas fa-solid text-white fa-clock f-left"></i>{{ spent_h|extract_hours_and_minutes }}
+                                class="fas fa-solid text-white fa-clock f-left"></i>{{ total_hours_spent|extract_hours_and_minutes }}
                         </h2>
 
                     </div>
@@ -81,7 +80,7 @@
 
                         <h6 class="m-b-20">{% trans "Hours spent" %}</h6>
                         <h2 class="text-right"><i
-                                class="fas fa-solid fa-clock f-left"></i><span>{{ spent_today }}h</span></h2>
+                                class="fas fa-solid fa-clock f-left"></i><span>{{ hours_spent_in_general_date }}h</span></h2>
 
                     </div>
                 </div>
@@ -92,12 +91,12 @@
                 <div class="dashboard-card bg-c-l-blue order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "Jobs status" %} <span
-                                class="float-right">{{ job_progress_percentage }}%</span>
+                                class="float-right">{{ job_status|first }}%</span>
                         </h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ job_arrow }}.png"
+                        <h2 class="text-right"><img src="/static/icons/{{ job_status|get_obj_by_index:1 }}.png"
                                                     alt="arrow icon" width="30"
                                                     height="30" class="f-left"><span style="font-size: 16px;"
-                                                                                     class="">{{ job_status }}</span>
+                                                                                     class="">{{ job_status|get_obj_by_index:2 }}</span>
                         </h2>
 
                     </div>
@@ -185,11 +184,11 @@
                 <div class="dashboard-card bg-c-l-cr order-card">
                     <div class="card-block">
                         <h6 class="m-b-20">{% trans "Hours status" %} <span
-                                class="float-right">{{ hours_progress_percentage }}%</span></h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ hours_arrow }}.png"
+                                class="float-right">{{ hour_status|first }}%</span></h6>
+                        <h2 class="text-right"><img src="/static/icons/{{ hour_status|get_obj_by_index:1 }}.png"
                                                     alt="arrow icon" width="30"
                                                     height="30" class="f-left"><span style="font-size: 16px;"
-                                                                                     class="">{{ hours_status }}</span>
+                                                                                     class="">{{ hour_status|get_obj_by_index:2 }}</span>
                         </h2>
 
                     </div>
@@ -209,19 +208,20 @@
                 </div>
             </div>
 
-            {% if pd_date and pd_count and pd_time %}
+            {% if most_productive_day_info %}
 
                 <div class="col-md-3 col-xl-3">
                     <div class="dashboard-card bg-c-gr order-card">
                         <div class="card-block">
                             <h6>{% trans "Most productive day" %}</h6>
                             <h2 class="text-right"><i
-                                    class="fa fa-check f-left"></i><span style="font-size: 16px;">{{ pd_date }}</span>
+                                    class="fa fa-check f-left"></i><span
+                                    style="font-size: 16px;">{{ most_productive_day_info|first }}</span>
                             </h2>
                             <p>{% trans "Spent hours" %}<span
-                                    class="f-right">{{ pd_time }}h</span></p>
+                                    class="f-right">{{ most_productive_day_info|get_obj_by_index:1 }}h</span></p>
                             <p>{% trans "Tasks done" %}<span
-                                    class="f-right">{{ pd_count }}</span></p>
+                                    class="f-right">{{ most_productive_day_info|get_obj_by_index:2 }}</span></p>
 
 
                         </div>
@@ -242,7 +242,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if  chart_title  and chart_hours %}
+            {% if  general_date_done_jobs_titles  and general_date_hours_spent_per_job %}
 
                 <div class="col-md-6">
 
@@ -303,10 +303,10 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="GET" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif%}>
+                            <form method="GET" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif %}>
 
 
-                                {{ form|crispy }}
+                                {{ apply_date_form|crispy }}
                                 <button type="button" class="btn btn-info"
                                         onclick="clearInputs()">{% trans "Clear inputs" %}</button>
                                 <hr>
@@ -439,9 +439,9 @@
 
     <script language="JavaScript">
 
-        setupBarChart({{ labels|safe }}, {{ spent_time|safe }});
-        setupLinearChart({{ labels|safe }}, {{ data|safe }});
-        setupDoughnutChart({{ chart_title|safe }}, {{ chart_hours|safe }});
+        setupBarChart({{ jalali_done_dates_in_range|safe }}, {{ spent_time|safe }});
+        setupLinearChart({{ jalali_done_dates_in_range|safe }}, {{ done_jobs_count_per_day_in_range|safe }});
+        setupDoughnutChart({{ general_date_done_jobs_titles|safe }}, {{ general_date_hours_spent_per_job|safe }});
 
         const goal = new Goal({{ goals_progress|safe }});
         goal.insert_data();

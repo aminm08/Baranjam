@@ -6,9 +6,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Todo(models.Model):
-    name = models.CharField(max_length=50)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='todos')
-
+    name = models.CharField(max_length=50, verbose_name=_("Todo-list name"))
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='todos',
+                             verbose_name=_("Todo-list owner"))
     signer = Signer(sep='/', salt='todo.Todo')
 
     datetime_created = models.DateTimeField(auto_now_add=True)
@@ -16,10 +16,6 @@ class Todo(models.Model):
 
     def __str__(self):
         return self.name
-
-    def delete(self, *args, **kwargs):
-        self.group_todos.all().delete()
-        super(Todo, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
         signed_pk = self.get_signed_pk()
@@ -39,9 +35,8 @@ class Todo(models.Model):
 
     def get_jobs(self, finished=True):
         return self.jobs.all().filter(is_done=finished)
-
+        
     def user_from_group_has_permission(self, user):
-
         for group in self.group_todos.all():
             if user in group.members.all() or user in group.admins.all():
                 return True
@@ -52,17 +47,15 @@ class Todo(models.Model):
 
 
 class Job(models.Model):
-    text = models.CharField(max_length=300, verbose_name=_('your job text'),
-                            error_messages={'required': _('Please enter job text')})
+    text = models.CharField(max_length=300, verbose_name=_('your job text'))
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=True, related_name='jobs')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='jobs')
     duration = models.TimeField(verbose_name=_('job duration'), blank=True, null=True)
     is_done = models.BooleanField(default=False, verbose_name=_('job is done'))
     notes = models.TextField(null=True, blank=True, verbose_name=_('job notes'))
 
-    user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True, )
-    user_time = models.TimeField(verbose_name=_('job time'), blank=True, null=True)
-    user_done_date = models.DateField(null=True, blank=True)
+    user_date = models.DateField(verbose_name=_('job date'), blank=True, null=True)
+    user_done_date = models.DateField(null=True, blank=True, verbose_name=_("done date"))
     datetime_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -75,8 +68,8 @@ class Job(models.Model):
     def get_duration(self):
 
         if self.duration.hour and self.duration.minute:
-            return '%d hours, %d minutes' % (self.duration.hour, self.duration.minute)
+            return '%dh, %dm' % (self.duration.hour, self.duration.minute)
         elif self.duration.hour and not self.duration.minute:
-            return '%d hours ' % self.duration.hour
+            return '%d h ' % self.duration.hour
         else:
-            return '%d minutes' % self.duration.minute
+            return '%d m' % self.duration.minute

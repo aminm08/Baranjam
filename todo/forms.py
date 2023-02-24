@@ -15,7 +15,7 @@ class TodoForm(forms.ModelForm):
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['text', 'is_done', 'user_date', 'duration', 'user_done_date', 'notes']
+        fields = ['text', 'user_date', 'duration', 'user_done_date', 'notes']
 
     def __init__(self, *args, **kwargs):
         super(JobForm, self).__init__(*args, **kwargs)
