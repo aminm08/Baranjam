@@ -1,8 +1,7 @@
 from django import forms
 from django.utils.translation import gettext as _
-from jalali_date.fields import JalaliDateField, SplitJalaliDateTimeField
-from jalali_date.admin import AdminJalaliDateWidget, AdminSplitJalaliDateTime
-from crispy_forms.helper import FormHelper
+from jalali_date.fields import JalaliDateField
+from jalali_date.admin import AdminJalaliDateWidget
 from .models import Job, Todo
 
 
@@ -22,6 +21,7 @@ class JobForm(forms.ModelForm):
 
         self.fields['user_date'] = JalaliDateField(label=_('Due date time'), widget=AdminJalaliDateWidget,
                                                    required=False)
+        self.fields['user_done_date'] = JalaliDateField(label=_('Done date'), widget=AdminJalaliDateWidget, required=False)
         self.fields['text'].required = True
 
         self.fields['notes'].required = False

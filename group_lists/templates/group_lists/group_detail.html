@@ -256,30 +256,43 @@
                                                      style="max-height: 220px; overflow-y:auto;">
                                                     {% for message in group_chats %}
 
+                                                        {% if user == message.user %}
+                                                            <div class="mb-2" dir="rtl">
 
-                                                        <div class="mb-2"
-                                                             {% if user == message.user %}dir="rtl"{% endif %}>
-                                                            {% if message.user.profile_picture %}
-                                                                <img src="{{ message.user.profile_picture.url }}" alt=""
-                                                                     width="50"
-                                                                     height="50">
-                                                            {% else %}
-                                                                <img src="{% static 'img/blank_user.png' %}" alt=""
-                                                                     width="50" height="50">
+                                                                <img src="{{ message.user.get_profile_pic_or_blank }}"
+                                                                     alt="user-img" width="50" height="50"
+                                                                     class="float-right">
 
-                                                            {% endif %}
-                                                            <div class="col-md-4 card shadow"
-                                                                 style="background-color:{% if user == message.user %} rgba(130,243,183,0.72)  {% else %}    rgba(47,193,239,0.68){% endif %}">
-                                                                <p class="" style="font-size: 12px;"><span
-                                                                        class="float-left">{{ message.user.username }} </span>
-                                                                    <span class="float-right"
-                                                                          dir="ltr">{{ message.datetime_created|to_jalali:'%Y %B %d' }}</span>
-                                                                </p>
+                                                                <div class="col-md-4 card shadow"
+                                                                     style="background-color: rgba(130,243,183,0.72)  ">
+                                                                    <p style="font-size: 12px;"><span
+                                                                            class="float-right">{{ message.user.username }} </span>
+                                                                        <span class="float-left"
+                                                                              dir="ltr">{{ message.datetime_created|to_jalali:'%Y %B %d' }}</span>
+                                                                    </p>
 
-                                                                <span {% if user == message.user %}
-                                                                    dir="ltr" {% endif %}>{{ message.text }}</span>
+                                                                    <span dir="ltr">{{ message.text }}</span>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        {% else %}
+                                                            <div class="mb-2">
+
+                                                                <img src="{{ message.user.get_profile_pic_or_blank }}"
+                                                                     alt="user-img" width="50" height="50"
+                                                                     class="float-left">
+
+                                                                <div class="col-md-4 card shadow"
+                                                                     style="background-color:rgba(47,193,239,0.68)">
+                                                                    <p style="font-size: 12px;"><span
+                                                                            class="float-left">{{ message.user.username }} </span>
+                                                                        <span class="float-right"
+                                                                              dir="ltr">{{ message.datetime_created|to_jalali:'%Y %B %d' }}</span>
+                                                                    </p>
+
+                                                                    <span>{{ message.text }}</span>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
 
                                                     {% endfor %}
 
@@ -310,7 +323,7 @@
                                                 <div class="col-md-10">
 
                                                     <input type="text" class="form-control " name="messaage"
-                                                           id="id_message_send_input">
+                                                           id="id_message_send_input" required>
                                                 </div>
                                                 <div class="col float-right w-100 ">
                                                     <button class="text-info bg-transparent border-0 " width="90"><i

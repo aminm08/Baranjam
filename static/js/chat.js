@@ -28,37 +28,46 @@ let setupChats = async (groupUUID, username) => {
         var messageInput = document.querySelector(
             "#id_message_send_input"
         ).value;
-        chatSocket.send(JSON.stringify({message: messageInput, username: username}));
+
+        if (messageInput) {
+
+            chatSocket.send(JSON.stringify({message: messageInput, username: username}));
+        }
     };
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         var div = document.createElement("div");
         var innerdiv = document.createElement("div");
-        var span = document.createElement("span");
-        var para = document.createElement("p");
-        div.innerHTML = `<img src="${data.img}" width="50" height="50"> `
-        para.style.fontSize = '12px';
+        var MessageContainer = document.createElement("span");
+        var usernameAndCreateDateContainer = document.createElement("p");
 
-        para.innerHTML = `
-            <span class="float-left">${data.username}</span>
-            <span class="float-right" dir="ltr">${data.datetime}</span>
-            `
-        span.innerHTML = `${data.message}`
+        usernameAndCreateDateContainer.style.fontSize = '12px';
+
+
+        MessageContainer.innerHTML = `${data.message}`
 
 
         innerdiv.classList.add('col-md-4', 'card', 'shadow')
 
         if (username == data.username) {
+            usernameAndCreateDateContainer.innerHTML = `
+                <span class="float-right">${data.username}</span>
+                <span class="float-left" dir="ltr">${data.datetime}</span>`
+            div.innerHTML = `<img src="${data.img}" width="50" height="50" class="float-right"> `
             div.dir = 'rtl'
-            span.dir = "ltr"
+
             innerdiv.style.backgroundColor = "rgba(130, 243, 183, 0.72)"
         } else {
+            usernameAndCreateDateContainer.innerHTML = `
+                <span class="float-left">${data.username}</span>
+                <span class="float-right" dir="ltr">${data.datetime}</span>`
+            div.innerHTML = `<img src="${data.img}" width="50" height="50" class="float-left"> `
             innerdiv.style.backgroundColor = "rgba(47, 193, 239, 0.68)"
 
         }
 
-        innerdiv.appendChild(para)
-        innerdiv.appendChild(span)
+        innerdiv.appendChild(usernameAndCreateDateContainer)
+        innerdiv.appendChild(MessageContainer)
 
 
         div.appendChild(innerdiv)

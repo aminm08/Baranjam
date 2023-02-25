@@ -1,10 +1,11 @@
 {% extends '_base.html' %}
 
-{% block title %}Update your job{% endblock title %}
-{% load crispy_forms_tags %}
 {% load i18n %}
+{% load crispy_forms_tags %}
+{% load jalali_tags %}
 {% load persian_trans_tags %}
 
+{% block title %}{% trans 'Update job' %}{% endblock title %}
 {% block content %}
     {% get_current_language as LANGUAGE %}
     <div class="container mt-5" >
@@ -15,8 +16,8 @@
 
         <form method="post" class="mb-lg-5">
             {% csrf_token %}
-            <div >
-
+            <div>
+                {{ form.media }}
                 {{ form|crispy }}
             </div>
             {{ form.media }}

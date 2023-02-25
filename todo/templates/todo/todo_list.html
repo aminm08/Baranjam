@@ -15,7 +15,21 @@
 
 {% block content %}
 
+    <style>
+        @media (min-width: 1200px) {
+            .responsive-font-example {
+                font-size: 23px;
+            }
+        }
 
+
+        {#@media (max-width: 1199.98px) {#}
+        {#    .responsive-font-example {#}
+        {#        font-size: 10px;#}
+        {#    }#}
+        {
+        #}#}
+    </style>
 
     <section>
         <div class="container py-3 ">
@@ -94,7 +108,6 @@
                                                     {% trans 'List is empty' %}
                                                 </option>
                                             {% endif %}
-
                                         </select>
                                     </form>
 
@@ -154,14 +167,14 @@
                                                         <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                            style="color:#000000;text-decoration: none;">
                                                             <p class="lead fw-normal mb-0">
-                                                                <del>{{ user_job.text|truncatechars:30 }}</del>
+                                                                <del style="font-size: 1.8vw">{{ user_job.text|truncatechars:30 }}</del>
                                                             </p>
                                                         </a>
                                                     {% else %}
                                                         <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                            style="color:#000000;text-decoration: none;">
-                                                            <p class="lead fw-normal mb-0">
-                                                                {{ user_job.text|truncatechars:30 }}
+                                                            <p class="lead fw-normal mb-0 " style="font-size: 1.8vw">
+                                                                {{ user_job.text|truncatechars:25 }}
                                                             </p>
                                                         </a>
                                                     {% endif %}

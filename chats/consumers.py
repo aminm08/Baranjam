@@ -42,7 +42,7 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.group_room_name,
             {'type': 'chat_message', 'message': text_data_json["message"], 'username': user.username,
-             'img': user.get_profile_picture_or_blank(),
+             'img': user.get_profile_pic_or_blank(),
              'datetime': str(date2jalali(message_obj.datetime_created.date()))
              }
         )
@@ -56,6 +56,7 @@ class ChatConsumer(WebsocketConsumer):
         }))
 
     def save_message(self, user, text, group):
+
         message = Message.objects.create(user=user, text=text, group=group)
         return message
 
