@@ -7,6 +7,18 @@
 {% endblock title %}
 
 {% block content %}
+    <style>
+
+        .not-visible {
+            display: none;
+        }
+
+        .image-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    </style>
 
 
     {% get_current_language as LANGUAGE %}
@@ -140,13 +152,11 @@
                                 {% for admin in group.admins.all %}
                                     <div class="col mb-4">
 
-                                        {% if admin.profile_picture %}
-                                            <img src="{{ admin.profile_picture.url }}" alt="" width="55"
-                                                 height="55">
-                                        {% else %}
-                                            <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
-                                                 height="55">
-                                        {% endif %} <span class="ml-2 mr-2">{{ admin.username }}</span>
+
+                                        <img src="{{ admin.get_profile_pic_or_blank }}" alt="profile_pic" width="55"
+                                             height="55">
+
+                                        <span class="ml-2 mr-2">{{ admin.username }}</span>
                                         <span class="badge bg-info rounded-pill mb-3">{% trans 'admin' %}</span>
                                         {% if user == group.admins.first  and admin != group.admins.first %}
 
@@ -189,21 +199,19 @@
                                 {% for member in group.members.all %}
                                     <div class="col mb-4">
 
-                                        {% if member.profile_picture %}
-                                            <img class="rounded" src="{{ member.profile_picture.url }}" alt=""
-                                                 width="55" height="55">
-                                        {% else %}
-                                            <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
-                                                 height="55">
-                                        {% endif %} <span class="ml-2 mr-2">{{ member.username }}</span>
+
+                                        <img class="rounded" src="{{ member.get_profile_pic_or_blank }}" alt="prof_pic"
+                                             width="55" height="55">
+                                        <span class="ml-2 mr-2">{{ member.username }}</span>
 
                                         {% if user in group.admins.all %}
 
 
                                             <div class="dropdown-center float-right">
-                                                <button class="btn btn-secondary dropdown-toggle border-0"
+                                                <button class="btn btn-info btn-sm dropdown-toggle "
                                                         type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                                        style="border:none; ">
                                                     :
                                                 </button>
                                                 <ul class="dropdown-menu">
@@ -359,23 +367,25 @@
                     <div class="modal-body">
                         <form action="{% url 'invite_members' group.id %}" method="post">
                             {% csrf_token %}
-                            {% for user in all_users %}
-                                <div class="col mb-4">
 
-                                    {% if user.profile_picture %}
-                                        <img class="rounded" src="{{ user.profile_picture.url }}" alt=""
-                                             width="55" height="55">
-                                    {% else %}
-                                        <img src="{% static 'img/blank_user.png' %}" alt="" width="55"
-                                             height="55">
-                                    {% endif %} <span class="ml-2 mr-2">{{ user.username }}</span>
-                                    <input type="checkbox" class="form-check float-right"
-                                           style="margin-top: 1rem; width: 16px;" name="{{ user.id }}">
+                            <div class="col mb-4">
+
+                                <div class="mt-3">
+
+
+                                    <input type="text" class="form-control-sm me-2"
+                                           placeholder="{% trans 'enter users' %}" id="search_input">
+                                    <br>
+
+
+                                    <div class="card mt-2" id="result_box" style="max-height:200px;overflow-y: auto;">
+
+                                    </div>
 
 
                                 </div>
+                            </div>
 
-                            {% endfor %}
                             <hr>
                             <div class="float-right">
 
@@ -403,11 +413,22 @@
     {% if group.enable_chat %}
 
         <script src="{% static 'js/chat.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
         <script>
 
 
             setupChats("{{ group.uuid }}", "{{ user.username }}");
             getOnlineUsersList('{{ group.id }}');
+            search_input.addEventListener('keyup', e => {
+
+
+                if (result_box.classList.contains('not-visible')) {
+                    result_box.classList.remove('not-visible');
+                }
+                SendSearchData(e.target.value, {{ group.id }});
+            })
+
+
         </script>
     {% endif %}
 {% endblock script %}

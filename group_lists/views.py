@@ -13,11 +13,11 @@ from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 
-from .models import GroupList
+from .models import GroupList, Invitation
 from .forms import GroupListForm
 from .decorators import admin_required
 
-from pages.models import Invitation
+
 from chats.models import Message
 from chats.models import OnlineUsers
 
@@ -36,11 +36,7 @@ def user_group_details(request, pk):
         if group.enable_chat:
             previous_messages = Message.objects.filter(group=group)
 
-        context = {'todos': group.todo.all(), 'group': group,
-                   'all_users': [user for user in get_user_model().objects.all() if
-                                 user not in group.get_all_members_obj()],
-                   'group_chats': previous_messages,
-                   }
+        context = {'todos': group.todo.all(), 'group': group, 'group_chats': previous_messages}
         return render(request, 'group_lists/group_detail.html', context=context)
     raise PermissionDenied
 
@@ -51,12 +47,11 @@ def create_group(request):
     if request.method == 'POST':
         form = GroupListForm(request.user, request.POST, request.FILES)
         if form.is_valid():
-            obj = form.save()
-            data = form.cleaned_data
+            form.instance.save()
+            obj = form.save_todo_m2m_and_add_admin()
             if obj.enable_chat:
                 OnlineUsers.objects.create(group=obj)
 
-            send_group_list_invitation(request, data['members'], obj)
             messages.success(request, _("Group created successfully and invitations are sent"))
             return redirect('group_lists')
     return render(request, 'group_lists/group_create.html', {'form': form})
@@ -81,11 +76,9 @@ def group_update_view(request, group_id):
     form = GroupListForm(request.user, instance=group, exclude_members=True)
 
     if request.method == 'POST':
-        form = GroupListForm(request.user, request.POST, request.FILES, instance=group, exclude_members=True)
-
+        form = GroupListForm(request.user, request.POST, request.FILES, instance=group)
         if form.is_valid():
-            form.save(create=False)
-
+            form.save()
             messages.success(request, _("Group successfully updated"))
             return redirect('group_lists')
     return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
@@ -133,10 +126,10 @@ def manage_group_users(request, group_id):
 @admin_required
 def invite_new_members(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
-
     user_ids = list(request.POST.keys())[1:]
     users = [get_object_or_404(get_user_model(), pk=pk) for pk in user_ids]
     send_group_list_invitation(request, users, group)
+    messages.success(request, _("Invitations successfully sent"))
     return redirect('group_detail', group_id)
 
 
@@ -208,31 +201,26 @@ def accept_foreign_invite_view(request, group_id):
     return redirect_to_login(reverse('foreign_inv_show_info', args=[group.get_signed_pk()]))
 
 
-def search_view(request):
-    if request.method == 'POST':
-        series = str(request.POST['series'])
-        query_set = get_user_model().objects.filter(username__icontains=series)
-        res = None
-        if query_set and series:
-
+@require_POST
+def group_invite_user_search_view(request, group_id):
+    series = str(request.POST['series'])
+    group = get_object_or_404(GroupList, pk=group_id)
+    users = get_user_model().objects.filter(username__icontains=series).exclude(pk__in=group.get_all_members_ids())
+    if request.user in group.get_all_members_obj():
+        if users and series:
             data = []
-
-            for user in query_set:
+            for user in users:
                 if user != request.user:
                     item = {
                         'pk': user.pk,
                         'username': user.username,
+                        'image': user.get_profile_pic_or_blank()
                     }
-
-                    if user.profile_picture:
-                        item['image'] = str(user.profile_picture.url)
-                    else:
-                        item['image'] = '/static/img/blank_user.png'
-
                     data.append(item)
 
             res = data
         else:
             res = 'No data'
-        return JsonResponse({'data': res[:11]})
-    return JsonResponse({})
+
+        return JsonResponse({'data': res})
+    raise PermissionDenied

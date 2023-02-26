@@ -12,8 +12,10 @@ class GroupList(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(max_length=200, verbose_name=_('Group title'))
     todo = models.ManyToManyField('todo.Todo', related_name='group_todos')
-    members = models.ManyToManyField(get_user_model(), related_name='group_lists_as_member',verbose_name=_('member users'),blank=True)
-    admins = models.ManyToManyField(get_user_model(), related_name='group_lists_as_admin',verbose_name=_('Group admins'),blank=True)
+    members = models.ManyToManyField(get_user_model(), related_name='group_lists_as_member',
+                                     verbose_name=_('member users'), blank=True)
+    admins = models.ManyToManyField(get_user_model(), related_name='group_lists_as_admin',
+                                    verbose_name=_('Group admins'), blank=True)
     description = models.TextField(verbose_name=_('group description'), null=True, blank=True)
     picture = models.ImageField(verbose_name=_('group Picture'), upload_to='group_pics/', null=True, blank=True)
     enable_chat = models.BooleanField(default=True, verbose_name=_('Group members chat'))
@@ -27,13 +29,16 @@ class GroupList(models.Model):
         return reverse('group_detail', args=[self.pk])
 
     def get_all_members_length(self):
-        return len(self.members.all()) + len(self.admins.all())
+        return self.members.count() + self.admins.count()
 
     def get_group_picture_or_blank(self):
         return self.picture.url if self.picture else '/static/img/blank_user.png'
 
     def get_all_members_obj(self):
         return [*self.admins.all(), *self.members.all()]
+
+    def get_all_members_ids(self):
+        return [m.id for m in self.get_all_members_obj()]
 
     def get_signed_pk(self):
         return self.InvLink.sign(self.pk)
@@ -44,3 +49,16 @@ class GroupList(models.Model):
 
     def picture_preview(self):
         return mark_safe(f'<img src={self.get_group_picture_or_blank()} width=60 height=60> </img>')
+
+
+class Invitation(models.Model):
+    user_sender = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='sender',
+                                    verbose_name=_('the sender user'))
+    user_receiver = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='receiver',
+                                      verbose_name=_('the receiver user'))
+    group_list = models.ForeignKey(GroupList, on_delete=models.CASCADE, related_name='invitations',
+                                   verbose_name=_('group list'))
+    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_('date time created'))
+
+    def __str__(self):
+        return f'{self.user_sender}->{self.user_receiver}'

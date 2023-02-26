@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import GroupList
+from .models import GroupList, Invitation
 
 
 @admin.register(GroupList)
@@ -8,3 +8,7 @@ class GroupListAdmin(admin.ModelAdmin):
     search_fields = ['todo__name', 'members__username', 'admins__username', 'title']
     list_filter = ('enable_chat',)
 
+
+@admin.register(Invitation)
+class InvitationAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'user_sender', 'user_receiver', 'group_list', 'datetime_created']

@@ -5,7 +5,6 @@ from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 
-
 @login_required()
 def get_group_online_users(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
