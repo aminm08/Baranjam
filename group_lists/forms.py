@@ -3,10 +3,8 @@ from .models import GroupList
 from todo.models import Todo
 
 
-
 class GroupListForm(forms.ModelForm):
-    todo = forms.ModelMultipleChoiceField(queryset=Todo.objects.all(), widget=forms.CheckboxSelectMultiple,
-                                          required=False)
+    todo = forms.ModelMultipleChoiceField(queryset=Todo.objects.all(), widget=forms.CheckboxSelectMultiple,required=False)
 
     def __init__(self, user, *args, **kwargs):
         super(GroupListForm, self).__init__(*args, **kwargs)

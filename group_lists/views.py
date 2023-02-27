@@ -17,7 +17,6 @@ from .models import GroupList, Invitation
 from .forms import GroupListForm
 from .decorators import admin_required
 
-
 from chats.models import Message
 from chats.models import OnlineUsers
 
@@ -35,7 +34,6 @@ def user_group_details(request, pk):
         previous_messages = None
         if group.enable_chat:
             previous_messages = Message.objects.filter(group=group)
-
         context = {'todos': group.todo.all(), 'group': group, 'group_chats': previous_messages}
         return render(request, 'group_lists/group_detail.html', context=context)
     raise PermissionDenied
@@ -68,21 +66,22 @@ class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
         return self.request.user == self.get_object().admins.first()
 
 
+
 @login_required()
 @admin_required
 def group_update_view(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
+    if request.user in group.admins.all():
+        form = GroupListForm(request.user, instance=group)
 
-    form = GroupListForm(request.user, instance=group, exclude_members=True)
-
-    if request.method == 'POST':
-        form = GroupListForm(request.user, request.POST, request.FILES, instance=group)
-        if form.is_valid():
-            form.save()
-            messages.success(request, _("Group successfully updated"))
-            return redirect('group_lists')
-    return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
-
+        if request.method == 'POST':
+            form = GroupListForm(request.user, request.POST, request.FILES, instance=group)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _("Group successfully updated"))
+                return redirect('group_lists')
+        return render(request, 'group_lists/group_update.html', {'form': form, 'group': group})
+    raise PermissionDenied
 
 @login_required()
 @require_POST

@@ -167,13 +167,13 @@
                                                         <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                            style="color:#000000;text-decoration: none;">
                                                             <p class="lead fw-normal mb-0">
-                                                                <del style="font-size: 1.8vw">{{ user_job.text|truncatechars:30 }}</del>
+                                                                <del >{{ user_job.text|truncatechars:30 }}</del>
                                                             </p>
                                                         </a>
                                                     {% else %}
                                                         <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                            style="color:#000000;text-decoration: none;">
-                                                            <p class="lead fw-normal mb-0 " style="font-size: 1.8vw">
+                                                            <p class="lead fw-normal mb-0 " >
                                                                 {{ user_job.text|truncatechars:25 }}
                                                             </p>
                                                         </a>

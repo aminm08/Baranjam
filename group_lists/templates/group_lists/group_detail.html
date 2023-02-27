@@ -258,7 +258,23 @@
 
                                     <div class="col-md-9">
                                         <diV class="card shadow ">
-                                            <h6 class="card-header text-center">{% trans 'Chat with group members' %}</h6>
+                                            <div class="card-header ">
+                                                <div class="row">
+
+                                                    <h6 class="col-md-9 text-center">{% trans 'Chat with group members' %}</h6>
+                                                    {% if user == group.admins.first %}
+                                                        <form action="{% url 'delete_chats' group.id %}" method="post"
+                                                              class="col-md-3">
+                                                            {% csrf_token %}
+                                                            <button class=" btn btn-sm btn-warning  float-right"
+                                                                    type="submit">{% trans "Delete chats" %}
+                                                            </button>
+
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+
+                                            </div>
                                             <div class="card-body">
                                                 <div id="id_chat_item_container"
                                                      style="max-height: 220px; overflow-y:auto;">

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Message(models.Model):
-    group = models.ForeignKey(GroupList, on_delete=models.CASCADE, verbose_name=_('Message group'))
+    group = models.ForeignKey(GroupList, on_delete=models.CASCADE, verbose_name=_('Message group'), related_name='messages')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name=_("Message sender"))
     text = models.TextField(verbose_name=_('Message text'))
     datetime_created = models.DateTimeField(auto_now_add=True)
