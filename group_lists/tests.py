@@ -126,6 +126,22 @@ class GroupListTests(TestCase):
         response = self.client.get(reverse('group_update', args=[self.group_list_1.id]))
         self.assertEqual(response.status_code, 403)
 
+    def test_group_update_view_functionality(self):
+        self.client.login(email=self.adminUserEmail, password=self.password)
+        updated_post_credentials = {
+            'title': 'updated_title',
+            'description': 'new_desc',
+            'enable_chat': 0,
+            'todo': self.todo_list1.id,
+        }
+        response = self.client.post(reverse('group_update', args=[self.group_list_1.id]), updated_post_credentials)
+        updated_group_list = GroupList.objects.last()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(updated_group_list.title, 'updated_title')
+        self.assertEqual(updated_group_list.description, 'new_desc')
+        self.assertEqual(updated_group_list.enable_chat, False)
+        self.assertTrue(self.todo_list1 in updated_group_list.todos.all())
+
     # def test_group_list_admin_can_view_page(self):
     #     self.client.login(email=self.email1, password=self.password)
     #     response = self.client.get(reverse('group_lists', args=[self.todo_list1.get_signed_pk()]))
