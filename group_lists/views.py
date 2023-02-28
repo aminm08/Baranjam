@@ -102,20 +102,20 @@ def leave_group_view(request, group_id):
 def manage_group_members_grade(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
 
-    if request.user == group.admins.first():
+    if group.is_owner(request.user):
         user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
-
-        if group.is_member(user):
-            group.members.remove(user)
-            group.admins.add(user)
-            messages.success(request, _('User promoted to admin'))
-        elif group.is_admin(user):
-            group.admins.remove(user)
-            group.members.add(user)
-            messages.success(request, _('User degraded to regular member'))
-        else:
-            messages.error(request, _('user is not a member of %s ' % group.title))
-        return redirect('group_detail', group_id)
+        if not group.is_owner(user):
+            if group.is_member(user):
+                group.members.remove(user)
+                group.admins.add(user)
+                messages.success(request, _('User promoted to admin'))
+            elif group.is_admin(user):
+                group.admins.remove(user)
+                group.members.add(user)
+                messages.success(request, _('User degraded to regular member'))
+            else:
+                messages.error(request, _('user is not a member of %s ' % group.title))
+            return redirect('group_detail', group_id)
     raise PermissionDenied
 
 

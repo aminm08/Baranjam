@@ -167,7 +167,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <form action="{% url 'manage_admins' group.id %}" method="post">
+                                                        <form action="{% url 'manage_members_grade' group.id %}" method="post">
                                                             {% csrf_token %}
                                                             <button class="dropdown-item" name="{{ admin.id }}"
                                                                     type="submit"><i
@@ -216,7 +216,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <form action="{% url 'manage_admins' group.id %}"
+                                                        <form action="{% url 'manage_members_grade' group.id %}"
                                                               method="post">
                                                             {% csrf_token %}
                                                             <button class="dropdown-item" type="submit"
