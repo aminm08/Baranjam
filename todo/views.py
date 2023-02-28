@@ -59,6 +59,7 @@ def todo_apply_options_post_view(request, pk):
 
 @login_required()
 def todo_list_main_page(request, signed_pk):
+
     todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
 
     if request.user == todo.user or todo.user_from_group_has_permission(request.user):
@@ -156,9 +157,7 @@ class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
         return super().form_valid(form)
 
     def form_invalid(self, form):
-
-        self.request.session['form-errors'] = form.errors.as_json()
-        # messages.error(self.request, _('invalid field value'))
+        messages.error(self.request, form.errors)
         return redirect(self.get_todo_from_kwargs().get_absolute_url())
 
     def test_func(self):

@@ -16,19 +16,7 @@
 {% block content %}
 
     <style>
-        @media (min-width: 1200px) {
-            .responsive-font-example {
-                font-size: 23px;
-            }
-        }
 
-
-        {#@media (max-width: 1199.98px) {#}
-        {#    .responsive-font-example {#}
-        {#        font-size: 10px;#}
-        {#    }#}
-        {
-        #}#}
     </style>
 
     <section>
@@ -36,7 +24,7 @@
             <div class="row d-flex justify-content-center align-items-center">
                 <div class="col">
                     <div class="card rounded-2" id="list1" style="border-radius: 5px; background-color: #e2e4e5;">
-                        <div class="card-body  " style="background-color: #f4623a;">
+                        <div class="card-body" style="background-color: #f4623a;">
 
                             <h1 class=" text-center mt-3 mb-4 pb-3 text-dark">
                                 <i class="fas fa-check-square me-1"></i>
@@ -52,6 +40,7 @@
                                             <form action="{% url 'job_create' todo.id %}" method="post">
                                                 {% csrf_token %}
                                                 {{ form.media }}
+                                                {{ form.non_field_errors }}
                                                 <div class="row">
 
                                                     <div class="col-3">
@@ -70,11 +59,12 @@
                                                                placeholder="{% trans 'Date' %}">
                                                     </div>
                                                     <div class="col-3">
-                                                        <input type="time" name="duration"
-                                                               class=" form-control "
+                                                        <input type="text" name="duration"
+                                                               class=" form-control"
                                                                id="id_user_datetime_1"
                                                                style="border:#f4623a solid 2px;"
-                                                               placeholder="{% trans "Duration" %}">
+                                                               placeholder="--:--">
+                                                        <p>{{ form.duration.errors }}</p>{{ form.duration.errors }}
                                                     </div>
                                                     <div class="col-3 align-self-center text-center">
                                                         <button type="submit"

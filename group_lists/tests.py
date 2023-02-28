@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from .models import GroupList
-
+from chats.models import OnlineUsers
 from .models import Invitation
 from todo.models import Todo, Job
 
@@ -43,9 +43,9 @@ class GroupListTests(TestCase):
             name='todo_test',
             user=cls.user1
         )
-        cls.todo_list2 = Todo.objects.create(
+        cls.reg_user_todo_list = Todo.objects.create(
             name='todo_test2',
-            user=cls.user1
+            user=cls.user3
         )
 
         cls.job1 = Job.objects.create(
@@ -82,6 +82,7 @@ class GroupListTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.group_list_1.title)
 
+    # delete
     def test_group_delete_url_can_only_be_accessed_by_first_admin(self):
         self.client.login(email=self.adminUserEmail, password=self.password)
         response = self.client.get(reverse('group_delete', args=[self.group_list_1.id]))
@@ -108,6 +109,11 @@ class GroupListTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(GroupList.objects.count(), 0)
 
+    def test_group_delete_template_used(self):
+        self.client.login(email=self.adminUserEmail, password=self.password)
+        response = self.client.get(reverse('group_delete', args=[self.group_list_1.id]))
+        self.assertTemplateUsed(response, 'group_lists/group_delete.html')
+
     # group update
 
     def test_group_update_view_can_be_accessed_by_admins(self):
@@ -131,16 +137,57 @@ class GroupListTests(TestCase):
         updated_post_credentials = {
             'title': 'updated_title',
             'description': 'new_desc',
-            'enable_chat': 0,
-            'todo': self.todo_list1.id,
+            'todos': str(self.todo_list1.id),
         }
+
         response = self.client.post(reverse('group_update', args=[self.group_list_1.id]), updated_post_credentials)
         updated_group_list = GroupList.objects.last()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(updated_group_list.title, 'updated_title')
         self.assertEqual(updated_group_list.description, 'new_desc')
-        self.assertEqual(updated_group_list.enable_chat, False)
+        self.assertFalse(updated_group_list.enable_chat)
         self.assertTrue(self.todo_list1 in updated_group_list.todos.all())
+
+    def test_group_update_template_used(self):
+        self.client.login(email=self.adminUserEmail, password=self.password)
+        response = self.client.get(reverse('group_update', args=[self.group_list_1.id]))
+        self.assertTemplateUsed(response, 'group_lists/group_update.html')
+
+    # create
+
+    def test_create_group_url(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.get('/group_lists/create/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_group_url_by_name(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.get(reverse('group_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_group_template_used(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.get(reverse('group_create'))
+        self.assertTemplateUsed(response, 'group_lists/group_create.html')
+
+    def test_create_group_functionality(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        post_credentials = {
+            'title': 'new_group',
+            'description': 'ng_desc',
+            'enable_chat': ['on'],
+            'todos': [self.reg_user_todo_list.id],
+        }
+        response = self.client.post(reverse('group_create'), post_credentials)
+        new_group_list = GroupList.objects.last()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(GroupList.objects.count(), 2)
+        self.assertEqual(OnlineUsers.objects.count(), 1)
+        self.assertEqual(new_group_list.title, 'new_group')
+        self.assertEqual(new_group_list.description, 'ng_desc')
+        self.assertTrue(new_group_list.enable_chat)
+        self.assertTrue(self.reg_user_todo_list in new_group_list.todos.all())
+        self.assertEqual(self.user3, new_group_list.admins.first())
 
     # def test_group_list_admin_can_view_page(self):
     #     self.client.login(email=self.email1, password=self.password)

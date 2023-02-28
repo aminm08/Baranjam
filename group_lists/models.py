@@ -11,7 +11,7 @@ import uuid
 class GroupList(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(max_length=200, verbose_name=_('Group title'))
-    todo = models.ManyToManyField('todo.Todo', related_name='group_todos')
+    todos = models.ManyToManyField('todo.Todo', related_name='group_todos')
     members = models.ManyToManyField(get_user_model(), related_name='group_lists_as_member',
                                      verbose_name=_('member users'), blank=True)
     admins = models.ManyToManyField(get_user_model(), related_name='group_lists_as_admin',
