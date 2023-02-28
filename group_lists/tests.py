@@ -216,3 +216,28 @@ class GroupListTests(TestCase):
         response = self.client.get(reverse('group_detail', args=[self.group_list_1.id]))
         self.assertContains(response, self.todo_list1.name)
 
+        # leave group
+
+        def test_leave_group_denies_not_member_users(self):
+            self.client.login(email=self.regularUserEmail, password=self.password)
+            response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]))
+            self.assertEqual(response.status_code, 403)
+
+        def test_leave_group_denies_owner_request(self):
+            self.client.login(email=self.adminUserEmail, password=self.password)
+            response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]))
+            self.assertEqual(response.status_code, 403)
+
+        def test_leave_group_functionality_with_admins(self):
+            self.client.login(email=self.adminUser2Email, password=self.password)
+            response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]))
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(self.adminUser2Email not in GroupList.objects.last().admins.all())
+
+        def test_leave_group_functionality_with_members(self):
+            self.client.login(email=self.memberUserEmail, password=self.password)
+            response = self.client.post(reverse('leave_group', args=[self.group_list_1.id]))
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(self.memberUserEmail not in GroupList.objects.last().members.all())
+
+
