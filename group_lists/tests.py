@@ -250,8 +250,7 @@ class GroupListTests(TestCase):
 
     def test_manage_group_members_grade_denies_not_owner_request(self):
         self.client.login(email=self.adminUser2Email, password=self.password)
-        response = self.client.post(reverse('manage_members_grade', args=[self.group_list_1.id]),
-                                    {'': '', str(self.ownerUser.id): ''})
+        response = self.client.post(reverse('manage_members_grade', args=[self.group_list_1.id]), )
         self.assertEqual(response.status_code, 403)
 
     def test_manage_group_members_grade_denies_request_to_manage_owner(self):
@@ -277,3 +276,28 @@ class GroupListTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(group.is_admin(self.adminUser))
         self.assertFalse(group.is_member(self.adminUser))
+
+    # invite new members
+    def test_invite_members_denies_not_admin_users(self):
+        self.client.login(email=self.memberUserEmail, password=self.password)
+        response = self.client.post(reverse('invite_members', args=[self.group_list_1.id]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_invite_members_does_not_send_inv_for_already_joined_users(self):
+        self.client.login(email=self.ownerUserEmail, password=self.password)
+        self.client.post(reverse('invite_members', args=[self.group_list_1.id]), {'': '', str(self.memberUser.id): ''})
+        self.assertFalse(GroupList.objects.last().user_has_invitation(receiver=self.memberUser, sender=self.ownerUser))
+
+    def test_invite_members_does_not_send_inv_twice_for_one_user(self):
+        self.client.login(email=self.ownerUserEmail, password=self.password)
+        Invitation.objects.create(group_list=self.group_list_1, user_receiver=self.regularUser,
+                                  user_sender=self.ownerUser)
+        self.client.post(reverse('invite_members', args=[self.group_list_1.id]), {'': '', str(self.regularUser.id): ''})
+        self.assertEqual(Invitation.objects.count(), 1)
+
+    def test_invite_members_functionality(self):
+        self.client.login(email=self.ownerUserEmail, password=self.password)
+        user_ids_inv = {'': '', str(self.regularUser.id): ''}
+        response = self.client.post(reverse('invite_members', args=[self.group_list_1.id]), user_ids_inv)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(GroupList.objects.last().user_has_invitation(receiver=self.regularUser, sender=self.ownerUser))
