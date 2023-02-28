@@ -9,10 +9,10 @@ urlpatterns = [
     path('create/', views.create_group, name='group_create'),
     path('delete/<int:pk>/', views.GroupDeleteView.as_view(), name='group_delete'),
     path('update/<int:group_id>/', views.group_update_view, name='group_update'),
-    #endpoint
-    path('manage_admins/<int:group_id>/', views.manage_group_users, name='manage_admins'),
+    # endpoint
+    path('manage_admins/<int:group_id>/', views.manage_group_members_grade, name='manage_members_grade'),
     path('leave_group/<int:group_id>/', views.leave_group_view, name='leave_group'),
-    path('remove_member/<int:group_id>/', views.remove_user_from_list, name='remove_group_member'),
+    path('remove_member/<int:group_id>/', views.remove_user_from_group, name='remove_group_member'),
     # invitation
     path('invite/users/<int:group_id>/', views.invite_new_members, name='invite_members'),
     path('invite/accept/<int:group_id>/<int:inv_id>/', views.accept_invite, name='accept_inv'),

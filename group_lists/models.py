@@ -50,6 +50,21 @@ class GroupList(models.Model):
     def picture_preview(self):
         return mark_safe(f'<img src={self.get_group_picture_or_blank()} width=60 height=60> </img>')
 
+    def is_admin(self, user):
+        return user in self.admins.all()
+
+    def is_owner(self, user):
+        return user == self.admins.first()
+
+    def is_member(self, user):
+        return user in self.members.all()
+
+    def is_in_group(self, user):
+        return user in self.get_all_members_obj()
+
+    def user_has_invitation(self, receiver, sender):
+        return self.invitations.filter(user_receiver=receiver, user_sender=sender).exists()
+
 
 class Invitation(models.Model):
     user_sender = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='sender',
@@ -62,3 +77,5 @@ class Invitation(models.Model):
 
     def __str__(self):
         return f'{self.user_sender}->{self.user_receiver}'
+
+
