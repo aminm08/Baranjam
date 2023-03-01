@@ -113,7 +113,7 @@ class DashBoard(DoneJobs, Hours):
         else:
             status = _('%s jobs up the average' % status)
             arrow = 'rising_arrow'
-        return percentage, arrow, status
+        return round(percentage, 2), arrow, status
 
     def get_user_hours_spent_status(self):
         hours_spent = self.get_hours_spent_per_day(self.all_distinct_done_dates)

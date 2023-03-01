@@ -28,7 +28,7 @@ class Todo(models.Model):
     def complete_rate(self):
         completed_jobs = self.jobs.filter(is_done=True)
         not_completed = self.jobs.filter(is_done=False)
-        if self.jobs:
+        if completed_jobs:
             return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed)))
         else:
             return None
