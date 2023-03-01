@@ -150,7 +150,7 @@ def send_group_list_invitation(request, users, group_list):
 def accept_invite(request, group_id, inv_id):
     group = get_object_or_404(GroupList, pk=group_id)
     inv = get_object_or_404(Invitation, pk=inv_id)
-    if request.user == inv.user_receiver:
+    if request.user == inv.user_receiver and not group.is_in_group(inv.user_receiver):
         group.members.add(inv.user_receiver)
         inv.delete()
         messages.success(request, _('invite accepted you are now a member of the group-list'))
@@ -164,18 +164,31 @@ def accept_invite(request, group_id, inv_id):
 def remove_user_from_group(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
     user_for_delete = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
-    if group.is_admin(request.user) and not group.is_owner(user_for_delete):
+    if not group.is_owner(user_for_delete):
+        if group.is_admin(user_for_delete):
 
-        if group.is_admin(user_for_delete) and group.is_owner(request.user):
-            group.admins.remove(user_for_delete)
+            if group.is_owner(request.user):
+                group.admins.remove(user_for_delete)
+            else:
+                raise PermissionDenied
 
         elif group.is_member(user_for_delete):
             group.members.remove(user_for_delete)
-
         messages.success(request, _('user successfully removed from list'))
 
         return redirect('group_detail', group.id)
     raise PermissionDenied
+
+
+#
+#
+#     if group.is_admin(user_for_delete) and group.is_owner(request.user):
+#         group.admins.remove(user_for_delete)
+#
+#     elif group.is_member(user_for_delete):
+#         group.members.remove(user_for_delete)
+#
+#
 
 
 def foreign_invitation_show_info(request, signed_pk):
