@@ -301,3 +301,28 @@ class GroupListTests(TestCase):
         response = self.client.post(reverse('invite_members', args=[self.group_list_1.id]), user_ids_inv)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(GroupList.objects.last().user_has_invitation(receiver=self.regularUser, sender=self.ownerUser))
+
+    # accept invite
+    def test_accept_invite_denies_not_receiver_users_request(self):
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        inv = Invitation.objects.create(group_list=self.group_list_1, user_sender=self.adminUser,
+                                        user_receiver=self.regularUser)
+        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, inv.id]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_accept_invite_denies_already_joined_users(self):
+        self.client.login(email=self.memberUserEmail, password=self.password)
+        inv = Invitation.objects.create(group_list=self.group_list_1, user_sender=self.adminUser,
+                                        user_receiver=self.memberUser)
+        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, inv.id]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_accept_invite_functionality(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        inv = Invitation.objects.create(group_list=self.group_list_1, user_sender=self.adminUser,
+                                        user_receiver=self.regularUser)
+        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, inv.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(self.group_list_1.is_in_group(self.regularUser))
+        self.assertEqual(Invitation.objects.count(), 0)
+
