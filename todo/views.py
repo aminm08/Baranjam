@@ -59,7 +59,6 @@ def todo_apply_options_post_view(request, pk):
 
 @login_required()
 def todo_list_main_page(request, signed_pk):
-
     todo = get_object_or_404(Todo, pk=Todo.signer.unsign(signed_pk))
 
     if request.user == todo.user or todo.user_from_group_has_permission(request.user):
@@ -117,7 +116,7 @@ def job_update_view(request, signed_pk, job_id):
 
                 job_obj.save()
                 messages.success(request, _('your job updated successfully'))
-                return redirect('job_update', todo.get_signed_pk(), job.id)
+                return redirect(todo.get_absolute_url())
 
         return render(request, 'todo/update_job.html', {'form': form, 'todo': todo, 'job': job})
     raise PermissionDenied

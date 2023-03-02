@@ -81,11 +81,9 @@ class TodoPagesTests(TestCase):
     # add todo
     def test_user_todo_lists_add_form(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
-        response = self.client.post(
-            reverse('add_todo'),
-            {'name': 'my_test_todo'})
+        response = self.client.post(reverse('add_todo'), {'name': 'my_test_todo'})
         self.assertEqual(Todo.objects.last().name, 'my_test_todo')
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('user_todos'), status_code=302)
 
     def test_user_todo_lists_add_only_accepts_get_request(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
@@ -109,7 +107,7 @@ class TodoPagesTests(TestCase):
         self.assertTemplateUsed(response, 'todo/todo_delete.html')
 
     def test_todo_delete_page_permission_deny_on_not_owner_users(self):
-        self.client.login(email='testuser2@test.com', password=self.password)
+        self.client.login(email=self.notOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
         self.assertEqual(response.status_code, 403)
 
@@ -117,7 +115,7 @@ class TodoPagesTests(TestCase):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('todo_delete', args=[self.todo_list1.get_signed_pk()]))
         self.assertEqual(Todo.objects.count(), 0)
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('user_todos'), status_code=302)
 
     # todo-list main page
     def test_todo_list_page_url(self):
@@ -202,7 +200,7 @@ class TodoPagesTests(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_job_delete_page_permission_deny_on_not_owner_users(self):
-        self.client.login(email='testuser2@test.com', password=self.password)
+        self.client.login(email=self.notOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('job_delete', args=[self.todo_list1.id]))
         self.assertEqual(response.status_code, 403)
 
@@ -234,7 +232,7 @@ class TodoPagesTests(TestCase):
         response = self.client.post(reverse('job_update', args=[self.todo_list1.get_signed_pk(), self.job1.id]), data)
         self.assertTrue(Job.objects.filter(text='new_update').exists())
         self.assertTrue(Job.objects.filter(duration='03:00:00').exists())
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
 
     def test_job_update_template_used(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
@@ -284,25 +282,25 @@ class TodoPagesTests(TestCase):
     def test_todo_apply_options_delete_all_jobs(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '1'})
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
         self.assertFalse(self.todo_list1.jobs.exists())
 
     def test_todo_apply_options_delete_finished_jobs(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '2'})
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
         self.assertFalse(self.todo_list1.jobs.filter(is_done=True).exists())
 
     def test_todo_apply_options_active_all_jobs(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '3'})
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
         self.assertFalse(self.todo_list1.jobs.filter(is_done=True).exists())
 
     def test_todo_apply_options_finish_all_jobs(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('apply_todo_actions', args=[self.todo_list1.id]), {'action': '4'})
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
         self.assertFalse(self.todo_list1.jobs.filter(is_done=False).exists())
 
     def test_todo_apply_options_permission_deny_on_not_owners(self):
@@ -314,14 +312,14 @@ class TodoPagesTests(TestCase):
     def test_set_job_status_to_done(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('job_assign', args=[self.job1.id]))
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
         self.assertTrue(Job.objects.get(text=self.job1.text).is_done)
         self.assertTrue(Job.objects.get(text=self.job1.text).user_done_date)
 
     def test_set_job_status_to_todo(self):
         self.client.login(email=self.todoListOwnerUserEmail, password=self.password)
         response = self.client.post(reverse('job_assign', args=[self.job2.id]))
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.todo_list1.get_absolute_url(), status_code=302)
         self.assertFalse(Job.objects.get(text=self.job2.text).is_done)
         self.assertFalse(Job.objects.get(text=self.job2.text).user_done_date)
 
