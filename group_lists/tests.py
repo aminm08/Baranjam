@@ -372,4 +372,17 @@ class GroupListTests(TestCase):
         self.client.login(email=self.adminUser2Email, password=self.password)
         response = self.client.get(f'/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/')
         self.assertEqual(response.status_code, 200)
-    
+
+    # accept foreign invitation
+
+    def test_accept_foreign_invite_redirect_unauthenticated_users(self):
+        response = self.client.post(reverse('accept_inv_foreign', args=[self.group_list_1.id]))
+        redirect_url = f'/accounts/login/?next=/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/'
+        self.assertRedirects(response, redirect_url, status_code=302)
+
+    def test_accept_foreign_invite_functionality(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.post(reverse('accept_inv_foreign', args=[self.group_list_1.id]))
+        self.assertRedirects(response, self.group_list_1.get_absolute_url(), status_code=302)
+        self.assertTrue(self.group_list_1.is_member(self.regularUser))
+        self.assertFalse(self.group_list_1.is_admin(self.regularUser))
