@@ -14,7 +14,7 @@ class GroupListTests(TestCase):
         cls.adminUser2Email = 'user2admin@ser.com'
         cls.memberUserEmail = 'testuser2@test.com'
         cls.regularUserEmail = 'hello@hello.com'
-        cls.username = 'group_admin_user'
+        cls.username = 'group_admin_owner'
         cls.username4 = 'group_admin_user_2'
         cls.username2 = 'group_member_user'
         cls.username3 = 'regular_user'
@@ -386,3 +386,26 @@ class GroupListTests(TestCase):
         self.assertRedirects(response, self.group_list_1.get_absolute_url(), status_code=302)
         self.assertTrue(self.group_list_1.is_member(self.regularUser))
         self.assertFalse(self.group_list_1.is_admin(self.regularUser))
+
+    # group invite user search
+
+    def test_group_invite_user_search_denies_not_admin_request(self):
+        self.client.login(email=self.memberUserEmail, password=self.password)
+        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'a'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_group_invite_user_search_functionality_with_no_data(self):
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'No data!!'})
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), {"data": "No data"})
+
+    def test_group_invite_user_search_functionality(self):
+        # response has to contain not member users result
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'a'})
+        self.assertJSONEqual(str(response.content, encoding='utf-8'),
+                             {"data": [{
+                                 "pk": self.regularUser.id,
+                                 "username": self.regularUser.username,
+                                 "image": self.regularUser.get_profile_pic_or_blank(),
+                             }]})
