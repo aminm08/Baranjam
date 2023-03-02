@@ -83,7 +83,7 @@ def todo_list_main_page(request, signed_pk):
 
 @login_required()
 @require_POST
-def job_set_done_status(request, job_id):
+def job_set_is_done_status(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     if job.todo.user == request.user:
 
@@ -188,7 +188,7 @@ def todo_delete_view(request, signed_pk):
 
 
 @login_required()
-def todo_list_detail_and_settings(request, pk):
+def todo_list_settings(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
     if request.user == todo.user:
         return render(request, 'todo/todo_settings.html', {'todo': todo})
