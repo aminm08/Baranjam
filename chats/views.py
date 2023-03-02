@@ -12,11 +12,10 @@ from django.views.decorators.http import require_POST
 @login_required()
 def get_group_online_users(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
-    if request.user in group.get_all_members_obj() and group.enable_chat:
-
+    if group.is_in_group(request.user) and group.enable_chat:
         data = []
-        online_group_obj = get_object_or_404(OnlineUsers, group=group)
-        for user in online_group_obj.online_users.all():
+        online_users_obj = get_object_or_404(OnlineUsers, group=group)
+        for user in online_users_obj.online_users.all():
             data.append([user.username, user.get_profile_pic_or_blank()])
 
         return JsonResponse(data, safe=False)
@@ -25,7 +24,7 @@ def get_group_online_users(request, group_id):
 
 @login_required()
 @require_POST
-def delete_group_chat(request, group_id):
+def delete_group_chat_history(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
     if request.user in group.admins.all():
         group.messages.all().delete()
