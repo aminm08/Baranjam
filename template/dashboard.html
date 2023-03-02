@@ -22,7 +22,7 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
             <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}
-                <span class="badge bg-info  " style=" font-size: 13px;">
+                <span class="badge bg-info  " style=" font-size: 13px;" >
                     {% trans 'shown data for' %}:{{ general_date }}
                 </span>
             </h1>
@@ -80,28 +80,31 @@
 
                         <h6 class="m-b-20">{% trans "Hours spent" %}</h6>
                         <h2 class="text-right"><i
-                                class="fas fa-solid fa-clock f-left"></i><span>{{ hours_spent_in_general_date }}h</span></h2>
-
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4 col-xl-3">
-                <div class="dashboard-card bg-c-l-blue order-card">
-                    <div class="card-block">
-                        <h6 class="m-b-20">{% trans "Jobs status" %} <span
-                                class="float-right">{{ job_status|first }}%</span>
-                        </h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ job_status|get_obj_by_index:1 }}.png"
-                                                    alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 16px;"
-                                                                                     class="">{{ job_status|get_obj_by_index:2 }}</span>
+                                class="fas fa-solid fa-clock f-left"></i><span>{{ hours_spent_in_general_date }}h</span>
                         </h2>
 
                     </div>
                 </div>
             </div>
+
+            {% if job_status %}
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="dashboard-card bg-c-l-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">{% trans "Jobs status" %} <span
+                                    class="float-right">{{ job_status|first }}%</span>
+                            </h6>
+                            <h2 class="text-right"><img src="/static/icons/{{ job_status|get_obj_by_index:1 }}.png"
+                                                        alt="arrow icon" width="30"
+                                                        height="30" class="f-left"><span style="font-size: 16px;"
+                                                                                         class="">{{ job_status|get_obj_by_index:2 }}</span>
+                            </h2>
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             <div class="col">
                 <div class="dashboard-card shadow ">
 
@@ -140,8 +143,6 @@
                             </ul>
                             <div class="row">
                                 <h4 class="small text-white text-center fw-bold " id="measure-header"></h4>
-
-
                                 <div class="col">
 
                                     <h4 class="small font-weight-bold  float-start  ">{% trans "Jobs" %}</h4>
@@ -179,34 +180,38 @@
                     </div>
                 </div>
             </div>
+            {% if hour_status %}
 
-            <div class="col-md-4 col-xl-3">
-                <div class="dashboard-card bg-c-l-cr order-card">
-                    <div class="card-block">
-                        <h6 class="m-b-20">{% trans "Hours status" %} <span
-                                class="float-right">{{ hour_status|first }}%</span></h6>
-                        <h2 class="text-right"><img src="/static/icons/{{ hour_status|get_obj_by_index:1 }}.png"
-                                                    alt="arrow icon" width="30"
-                                                    height="30" class="f-left"><span style="font-size: 16px;"
-                                                                                     class="">{{ hour_status|get_obj_by_index:2 }}</span>
-                        </h2>
+                <div class="col-md-4 col-xl-3">
+                    <div class="dashboard-card bg-c-l-cr order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">{% trans "Hours status" %} <span
+                                    class="float-right">{{ hour_status|first }}%</span></h6>
+                            <h2 class="text-right"><img src="/static/icons/{{ hour_status|get_obj_by_index:1 }}.png"
+                                                        alt="arrow icon" width="30"
+                                                        height="30" class="f-left"><span style="font-size: 14px;"
+                                                                                         class="">{{ hour_status|get_obj_by_index:2 }}</span>
+                            </h2>
 
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-9 ">
-
-                <div class="dashboard-card">
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="myAreaChart"></canvas>
                         </div>
                     </div>
-
                 </div>
-            </div>
+            {% endif %}
+
+            {% if done_jobs_count_per_day_in_range %}
+
+                <div class="col-md-9 ">
+
+                    <div class="dashboard-card">
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="myAreaChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endif %}
 
             {% if most_productive_day_info %}
 
@@ -377,7 +382,7 @@
 
                                         <label for="id_jobs"
                                                class=" form-label requiredField">{% trans 'Job target' %}</label>
-                                        <input type="number" name="jobs" class="  form-control col p-2" id="id_jobs"
+                                        <input type="number" name="jobs" class=" form-control col p-2" id="id_jobs"
                                                required>
                                     </div>
                                     <div class="col mt-2">

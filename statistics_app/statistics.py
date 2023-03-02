@@ -85,7 +85,7 @@ class Hours(Analytics):
             for job in self.request.user.jobs.filter(is_done=True, user_done_date=done_date):
                 if job.duration:
                     time += job.duration.hour + job.duration.minute / 60
-            spent_time.append(round(time, 3))
+            spent_time.append(round(time, 2))
         return spent_time
 
     def get_general_date_hours_spent(self):
@@ -117,8 +117,8 @@ class DashBoard(DoneJobs, Hours):
 
     def get_user_hours_spent_status(self):
         hours_spent = self.get_hours_spent_per_day(self.all_distinct_done_dates)
-        hours_spent_mean = math.ceil(np.mean(hours_spent))
-        status = self.get_general_date_hours_spent() - hours_spent_mean
+        hours_spent_mean = np.mean(hours_spent)
+        status = round(self.get_general_date_hours_spent() - hours_spent_mean, 2)
         percentage = status * 100 / hours_spent_mean
 
         if status < 0:

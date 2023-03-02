@@ -18,9 +18,6 @@ class Goal(models.Model):
     hours = models.PositiveIntegerField(verbose_name=_("your spent hours goal"))
     measure = models.CharField(choices=MEASURE_CHOICES, max_length=1, verbose_name=_("the measure of your goal"))
 
-    # custom_start = JalaliDateField(label=_("from"), widget=AdminJalaliDateWidget)
-    # custom_end = JalaliDateField(label=_("to"), widget=AdminJalaliDateWidget)
-
     def __str__(self):
         return f"{self.user} : {self.measure}"
 
@@ -36,8 +33,8 @@ class Goal(models.Model):
         progress_percentage = 0
         if self.measure == 'd':
             hours = [job.duration.hour + job.duration.minute / 60 for
-                                       job in self.user.jobs.filter(is_done=True, user_done_date=date.today())
-                                       if job.duration]
+                     job in self.user.jobs.filter(is_done=True, user_done_date=date.today())
+                     if job.duration]
             current_hours_count = sum(hours)
             progress_percentage = current_hours_count / self.hours * 100
         return progress_percentage
