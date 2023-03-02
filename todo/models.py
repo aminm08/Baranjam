@@ -70,6 +70,6 @@ class Job(models.Model):
         if self.duration.hour and self.duration.minute:
             return '%dh, %dm' % (self.duration.hour, self.duration.minute)
         elif self.duration.hour and not self.duration.minute:
-            return '%d h ' % self.duration.hour
+            return '%dh ' % self.duration.hour
         else:
-            return '%d m' % self.duration.minute
+            return '%dm ' % self.duration.minute

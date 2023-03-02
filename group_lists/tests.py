@@ -14,7 +14,7 @@ class GroupListTests(TestCase):
         cls.adminUser2Email = 'user2admin@ser.com'
         cls.memberUserEmail = 'testuser2@test.com'
         cls.regularUserEmail = 'hello@hello.com'
-        cls.username = 'group_admin_user'
+        cls.username = 'group_admin_owner'
         cls.username4 = 'group_admin_user_2'
         cls.username2 = 'group_member_user'
         cls.username3 = 'regular_user'
@@ -340,24 +340,72 @@ class GroupListTests(TestCase):
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 403)
 
-    def test_remove_user_from_group_deleting_admin_works_only_for_owner(self):
+    def test_remove_user_from_group_on_admin_works_only_for_owner(self):
         self.client.login(email=self.adminUser2Email, password=self.password)
         user_post_data = {'': '', str(self.adminUser.id): ''}
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 403)
 
-    def test_remove_user_from_group_deleting_admin_functionality(self):
+    def test_remove_user_from_group_on_admin_functionality(self):
         self.client.login(email=self.ownerUserEmail, password=self.password)
         user_post_data = {'': '', str(self.adminUser.id): ''}
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(self.group_list_1.is_admin(self.adminUser))
-        self.assertFalse(self.group_list_1.is_member(self.adminUser))
+        self.assertFalse(self.group_list_1.is_in_group(self.adminUser))
 
-    def test_remove_user_from_group_deleting_member_functionality(self):
+    def test_remove_user_from_group_on_member_functionality(self):
         self.client.login(email=self.adminUser2Email, password=self.password)
         user_post_data = {'': '', str(self.memberUser.id): ''}
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(self.group_list_1.is_admin(self.memberUser))
-        self.assertFalse(self.group_list_1.is_member(self.memberUser))
+        self.assertFalse(self.group_list_1.is_in_group(self.memberUser))
+
+    # foreign invite show info
+
+    def test_foreign_invitation_show_info_url_by_name(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.get(reverse('foreign_inv_show_info', args=[self.group_list_1.get_signed_pk()]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.group_list_1.title)
+
+    def test_foreign_invitation_show_info_url(self):
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        response = self.client.get(f'/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/')
+        self.assertEqual(response.status_code, 200)
+
+    # accept foreign invitation
+
+    def test_accept_foreign_invite_redirect_unauthenticated_users(self):
+        response = self.client.post(reverse('accept_inv_foreign', args=[self.group_list_1.id]))
+        redirect_url = f'/accounts/login/?next=/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/'
+        self.assertRedirects(response, redirect_url, status_code=302)
+
+    def test_accept_foreign_invite_functionality(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.post(reverse('accept_inv_foreign', args=[self.group_list_1.id]))
+        self.assertRedirects(response, self.group_list_1.get_absolute_url(), status_code=302)
+        self.assertTrue(self.group_list_1.is_member(self.regularUser))
+        self.assertFalse(self.group_list_1.is_admin(self.regularUser))
+
+    # group invite user search
+
+    def test_group_invite_user_search_denies_not_admin_request(self):
+        self.client.login(email=self.memberUserEmail, password=self.password)
+        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'a'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_group_invite_user_search_functionality_with_no_data(self):
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'No data!!'})
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), {"data": "No data"})
+
+    def test_group_invite_user_search_functionality(self):
+        # response has to contain not member users result
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'a'})
+        self.assertJSONEqual(str(response.content, encoding='utf-8'),
+                             {"data": [{
+                                 "pk": self.regularUser.id,
+                                 "username": self.regularUser.username,
+                                 "image": self.regularUser.get_profile_pic_or_blank(),
+                             }]})

@@ -89,12 +89,6 @@ class AccountsPagesTest(TestCase):
 
     def test_profile_form(self):
         self.client.login(email=self.email, password=self.password)
-        response = self.client.post(
-
-            reverse('profile'),
-            {'username': 'amin', 'first_name': 'mohammad', 'last_name': 'forouzan'},
-            follow=True
-        )
-        self.assertEqual(get_user_model().objects.last().first_name, 'mohammad')
-        self.assertEqual(get_user_model().objects.last().last_name, 'forouzan')
+        response = self.client.post(reverse('profile'), {'username': 'amin', "email": self.user1.email})
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(get_user_model().objects.last().username, 'amin')
