@@ -179,17 +179,6 @@ def remove_user_from_group(request, group_id):
     raise PermissionDenied
 
 
-#
-#
-#     if group.is_admin(user_for_delete) and group.is_owner(request.user):
-#         group.admins.remove(user_for_delete)
-#
-#     elif group.is_member(user_for_delete):
-#         group.members.remove(user_for_delete)
-#
-#
-
-
 def foreign_invitation_show_info(request, signed_pk):
     group = get_object_or_404(GroupList, pk=GroupList.InvLink.unsign(signed_pk))
     return render(request, 'group_lists/foreign_invite_page.html', {'group': group})
@@ -199,7 +188,6 @@ def foreign_invitation_show_info(request, signed_pk):
 def accept_foreign_invite_view(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
     if request.user.is_authenticated:
-
         if not group.is_in_group(request.user):
             group.members.add(request.user)
             messages.success(request, _('Welcome! you are now a member of this group'))
@@ -215,7 +203,8 @@ def group_invite_user_search_view(request, group_id):
     series = str(request.POST['series'])
     group = get_object_or_404(GroupList, pk=group_id)
     users = get_user_model().objects.filter(username__icontains=series).exclude(pk__in=group.get_all_members_ids())
-    if group.is_in_group(request.user):
+
+    if group.is_admin(request.user):
         if users and series:
             data = []
             for user in users:
