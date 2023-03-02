@@ -359,3 +359,17 @@ class GroupListTests(TestCase):
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 302)
         self.assertFalse(self.group_list_1.is_in_group(self.memberUser))
+
+    # foreign invite show info
+
+    def test_foreign_invitation_show_info_url_by_name(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.get(reverse('foreign_inv_show_info', args=[self.group_list_1.get_signed_pk()]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.group_list_1.title)
+
+    def test_foreign_invitation_show_info_url(self):
+        self.client.login(email=self.adminUser2Email, password=self.password)
+        response = self.client.get(f'/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/')
+        self.assertEqual(response.status_code, 200)
+    
