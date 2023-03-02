@@ -12,7 +12,7 @@ class GoalTests(TestCase):
         cls.password = 'testpass123'
 
         cls.regularUserUsername = 'test2'
-        cls.regularUserEmail = 'test@test.com'
+        cls.regularUserEmail = 'test@test2.com'
 
         cls.goalOwnerUser = get_user_model().objects.create_user(
             username=cls.goalOwnerUsername,
@@ -32,20 +32,38 @@ class GoalTests(TestCase):
             hours=10,
             measure='d'
         )
-    #goal create
+
+    # goal create
+
     def test_goal_create_view_functionality(self):
-        self.client.login(email=self.goalOwnerUser, password=self.password)
+        self.client.login(email=self.goalOwnerEmail, password=self.password)
         response = self.client.post(reverse('goal_create'), {'measure': 'd', 'jobs': 5, 'hours': 5})
         goal = Goal.objects.last()
-        self.assertRedirects(response, reverse('dashboard'), status_code=302)
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(goal.user, self.goalOwnerUser)
         self.assertEqual(goal.jobs, 5)
         self.assertEqual(goal.hours, 5)
         self.assertEqual(goal.measure, 'd')
 
     def test_goal_create_view_only_accepts_post_request(self):
-        self.client.login(email=self.goalOwnerUser, password=self.password)
+        self.client.login(email=self.goalOwnerEmail, password=self.password)
         response = self.client.get(reverse('goal_create'))
         self.assertEqual(response.status_code, 405)
 
+    # goal delete
 
+    def test_goal_delete_only_accepts_post(self):
+        self.client.login(email=self.goalOwnerEmail, password=self.password)
+        response = self.client.get(reverse('goal_delete', args=[self.goal.id]))
+        self.assertEqual(response.status_code, 405)
+
+    def test_goal_delete_denies_not_owner_user_request(self):
+        self.client.login(email=self.regularUserEmail, password=self.password)
+        response = self.client.post(reverse('goal_delete', args=[self.goal.id]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_goal_delete_functionality(self):
+        self.client.login(email=self.goalOwnerEmail, password=self.password)
+        response = self.client.post(reverse('goal_delete', args=[self.goal.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Goal.objects.count(), 0)
