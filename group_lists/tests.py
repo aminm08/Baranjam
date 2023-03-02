@@ -340,24 +340,22 @@ class GroupListTests(TestCase):
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 403)
 
-    def test_remove_user_from_group_deleting_admin_works_only_for_owner(self):
+    def test_remove_user_from_group_on_admin_works_only_for_owner(self):
         self.client.login(email=self.adminUser2Email, password=self.password)
         user_post_data = {'': '', str(self.adminUser.id): ''}
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 403)
 
-    def test_remove_user_from_group_deleting_admin_functionality(self):
+    def test_remove_user_from_group_on_admin_functionality(self):
         self.client.login(email=self.ownerUserEmail, password=self.password)
         user_post_data = {'': '', str(self.adminUser.id): ''}
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(self.group_list_1.is_admin(self.adminUser))
-        self.assertFalse(self.group_list_1.is_member(self.adminUser))
+        self.assertFalse(self.group_list_1.is_in_group(self.adminUser))
 
-    def test_remove_user_from_group_deleting_member_functionality(self):
+    def test_remove_user_from_group_on_member_functionality(self):
         self.client.login(email=self.adminUser2Email, password=self.password)
         user_post_data = {'': '', str(self.memberUser.id): ''}
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(self.group_list_1.is_admin(self.memberUser))
-        self.assertFalse(self.group_list_1.is_member(self.memberUser))
+        self.assertFalse(self.group_list_1.is_in_group(self.memberUser))

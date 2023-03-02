@@ -166,7 +166,6 @@ def remove_user_from_group(request, group_id):
     user_for_delete = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
     if not group.is_owner(user_for_delete):
         if group.is_admin(user_for_delete):
-
             if group.is_owner(request.user):
                 group.admins.remove(user_for_delete)
             else:
