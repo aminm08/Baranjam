@@ -9,9 +9,9 @@
     {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-7 ml-auto mr-auto">
+            <div class="col-6 center-container" >
 
-                <div class="card shadow mt-lg-5">
+                <div class="card shadow ">
                     <div class="card-title text-center mt-2">
                         <h5>{% if LANGUAGE == 'fa' %} ؟({{ todo.name }}) {% endif %}
                             {% trans 'Are you sure you want to  permenantly delete' %}
@@ -21,12 +21,11 @@
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
-                            <div class=" row  mr-5 ml-5">
+                            <div class="row">
 
-                                <button type="submit" class="btn"
-                                        style="background-color: #f4623a;">{% trans 'Yes, Delete' %}</button>
+                                <button type="submit" class="btn btn-primary w-75 text-dark" id="yes-btn">{% trans 'Yes, Delete' %}</button>
 
-                                <a href="{% url 'user_todos' %}" class="btn btn-dark mt-2">{% trans 'No back ' %}</a>
+                                <a href="{% url 'user_todos' %}" class="btn btn-dark mt-2 w-75" id="no-btn">{% trans 'No back ' %}</a>
                             </div>
                         </form>
 
