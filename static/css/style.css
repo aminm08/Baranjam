@@ -1,95 +1,131 @@
+@charset "UTF-8";
+:root {
 
-/*#list1 .form-control {*/
-/*    border-color: transparent;*/
-/*}*/
-
-#list1 .form-control:focus {
-    border-color: transparent;
-    box-shadow: none;
+    --bs-primary: #f4623a;
+    --bs-primary-rgb: 244, 98, 58;
+    --bs-secondary-rgb: 108, 117, 125;
+    --bs-success-rgb: 25, 135, 84;
+    --bs-info-rgb: 13, 202, 240;
+    --bs-warning-rgb: 255, 193, 7;
+    --bs-danger-rgb: 220, 53, 69;
+    --bs-light-rgb: 248, 249, 250;
+    --bs-dark-rgb: 33, 37, 41;
+    --bs-white-rgb: 255, 255, 255;
+    --bs-black-rgb: 0, 0, 0;
+    --bs-font-sans-serif: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    --bs-body-font-family: Merriweather, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    --bs-body-font-size: 1rem;
+    --bs-body-font-weight: 400;
+    --bs-body-line-height: 1.5;
+    --bs-body-color: #212529;
+    --bs-body-bg: #fff;
 }
 
-/*#list1 .select-input.form-control[readonly]:not([disabled]) {*/
-/*    background-color: #fbfbfb;*/
-/*}*/
 
+body {
+    margin: 0;
+    font-family: var(--bs-body-font-family);
+    font-size: var(--bs-body-font-size);
+    font-weight: var(--bs-body-font-weight);
+    line-height: var(--bs-body-line-height);
 
-/*.btn-color {*/
-/*    background-color: #0e1c36;*/
-/*    color: #fff;*/
-
-/*}*/
-
-.profile-image-pic {
-    height: 200px;
-    width: 200px;
-    object-fit: cover;
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 
-.cardbody-color {
-    background-color: #ebf2fa;
+hr {
+    margin: 1rem 0;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: 0.25;
 }
 
-/*profile page*/
 
-.profile-body {
-    background: rgb(99, 39, 120)
+header.masthead {
+    padding-top: 11rem;
+    padding-bottom: calc(10rem - 4.5rem);
+    background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../img/bg-masthead.jpg") no-repeat center scroll;
+    background-size: cover;
+
 }
 
-.form-control:focus {
-    box-shadow: none;
-    border-color: #BA68C8
+.text-white-75 {
+    color: rgba(255, 255, 255, 0.75) !important;
 }
 
-.profile-button {
-    background: rgb(99, 39, 120);
-    box-shadow: none;
-    border: none
+.text-muted {
+    --bs-text-opacity: 1;
+    color: #6c757d !important;
 }
 
-.profile-button:hover {
-    background: #682773
+
+hr.divider {
+    height: 0.2rem;
+    max-width: 3.25rem;
+    margin: 1.5rem auto;
+    background-color: #f4623a;
+    opacity: 1;
 }
 
-.profile-button:focus {
-    background: #682773;
-    box-shadow: none
+hr.divider-light {
+    background-color: #fff;
 }
 
-.profile-button:active {
-    background: #682773;
-    box-shadow: none
+.page-section {
+    padding: 8rem 0;
 }
 
-.back:hover {
-    color: #682773;
-    cursor: pointer
-}
-
-.labels {
-    font-size: 11px
-}
-
-.add-experience:hover {
-    background: #BA68C8;
+.btn-primary {
     color: #fff;
-    cursor: pointer;
-    border: solid 1px #BA68C8
+    background-color: #f4623a;
+    border-color: #f4623a;
 }
 
-.star {
-    visibility: hidden;
-    font-size: 30px;
-    cursor: pointer;
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.star:before {
-    content: "\2605";
-    position: absolute;
-    visibility: visible;
+.btn-xl {
+    padding: 1.25rem 2.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10rem;
 }
 
-.star:checked:before {
-    content: "\2606";
-    position: absolute;
+
+.profile_image {
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+
+}
+
+
+.circular--landscape {
+    width: 65px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+.icon {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 600;
+}
+
+.right-placeholder input::placeholder {
+    text-align: right;
 }

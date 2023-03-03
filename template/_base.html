@@ -1,7 +1,9 @@
-<!doctype html>
 {% load static %}
 {% load i18n %}
-<html lang="en">
+{% get_current_language as LANGUAGE %}
+
+<!doctype html>
+<html lang="{{ LANGUAGE }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,24 +12,24 @@
     {% endblock meta %}
     <title>{% block title %}{% endblock title %}</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="{% static 'icons/favicon2.png' %}"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
 
     <!-- font awesome -->
     <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Bootstrap Icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
 
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
-          rel="stylesheet" type="text/css"/>
-    <!-- SimpleLightbox plugin CSS-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet"/>
+
     <!--jquery -->
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
-
 
     {% block links %}
 
@@ -35,57 +37,56 @@
     {% endblock links %}
 
 </head>
-<body>
 
 
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #292424 ;">
+<body lang="{{ LANGUAGE }}">
+<style>
+
+
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark px-3" style="background-color: #292424; ">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'homepage' %}">
             <img src="{% static 'icons/favicon2.png' %}" alt="baranjam icon" height="50" width="50">
         </a>
-        <a class="navbar-brand text" href="{% url 'homepage' %}" style="color:#f4623a;">{% trans 'BarAnjam' %}</a>
+        <a class="navbar-brand text-primary" href="{% url 'homepage' %}">{% trans 'BarAnjam' %}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page"
-                       href="{% url 'user_todos' %}" style="font-size: 18px;">{% trans 'My todo lists' %}</a>
-                </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page"
+                           href="{% url 'user_todos' %}" style="font-size: 18px;">{% trans 'My todo lists' %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active"
                            href="{% url 'dashboard' %}" style="font-size: 16px;">{% trans 'Dashboard' %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page"
-                           href="{% url 'profile' %}">{% trans 'Profile' %}</a>
+                        <a class="nav-link active" href="{% url 'profile' %}">{% trans 'Profile' %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page"
-                           href="{% url 'group_lists' %}">{% trans 'Group todos' %}</a>
+                        <a class="nav-link active" href="{% url 'group_lists' %}">{% trans 'Group todos' %}</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page"
-                       href="{% url 'about_us' %}">{% trans 'About me' %}</a>
+                    <a class="nav-link " href="{% url 'about_us' %}">{% trans 'About me' %}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page"
-                       href="{% url 'contact_us' %}">{% trans 'Contact me' %}</a>
+                    <a class="nav-link" href="{% url 'contact_us' %}">{% trans 'Contact me' %}</a>
                 </li>
             </ul>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav">
                 {% if user.is_authenticated %}
-                    {% get_current_language as LANGUAGE %}
-
-                    <li class="nav-item dropdown me-3 align-self-center">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    <li class="nav-item dropdown  align-self-center">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="fas fa-solid fa-inbox text-white " style="font-size: 18px;"></i><span
-                                class="badge badge-info rounded-circle">{{ inbox|length }}</span>
+                                class="badge bg-info rounded-circle ">{{ inbox|length }}</span>
                         </a>
                         <ul class="dropdown-menu text-center" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif %}>
                             {% if inbox %}
@@ -115,13 +116,12 @@
                 {% endif %}
 
 
-                <li class="nav-item no-arrow mr-3 align-self-center">
+                <li class="nav-item  align-self-center mx-3">
                     <form action="{% url 'set_language' %}" method="post">
                         {% csrf_token %}
                         <input name="next" type="hidden" value="/"/>
 
-                        <select class="form-select bg-dark text-light" name="language" style="width: auto; "
-                                onchange="this.form.submit()">
+                        <select class="form-select text-white bg-dark" name="language" onchange="this.form.submit()">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
                             {% get_language_info_list for LANGUAGES as languages %}
@@ -140,19 +140,13 @@
 
                 <!-- Nav Item - User Information -->
 
-                <li class="nav-item dropdown no-arrow">
+                <li class="nav-item dropdown no-arrow mx-2">
                     {% if user.is_authenticated %}
-                        {% if user.profile_picture %}
-                            <a href="{% url 'profile' %}"><img class="rounded-circle mr-2"
-                                                               src="{{ user.profile_picture.url }}" width="50"></a>
+                        <a href="{% url 'profile' %}" class="p-2">
+                            <img class="circular--landscape" src="{{ user.get_profile_pic_or_blank }}"
+                                 width="50"></a>
 
 
-                        {% else %}
-                            <a href="{% url 'profile' %}">
-                                <img class="rounded-circle mr-2 " src="{% static 'img/blank_user.png' %}"
-                                     width="50"></a>
-
-                        {% endif %}
                         <a href="{% url 'account_logout' %}" class="btn btn-outline-danger">{% trans 'Logout' %}</a>
 
                     {% else %}
@@ -174,7 +168,7 @@
         {% for message in messages %}
 
             <div class="alert alert-{{ message.tags }} text-center alert-dismissible fade show">
-                <button type="button" class="close" data-bs-dismiss="alert" aria-label="close">&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
                 {{ message|safe }}
             </div>
         {% endfor %}
@@ -185,14 +179,13 @@
 
 
 {% endblock content %}
-
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
-        integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+        integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
         crossorigin="anonymous"></script>
+
 
 
 

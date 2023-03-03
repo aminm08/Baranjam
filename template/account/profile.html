@@ -13,17 +13,11 @@
 
 {% block content %}
     {% get_current_language as LANGUAGE %}
-    <style>
-        .profile_image {
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
 
     <div class="container mt-3" {% if LANGUAGE == 'fa' %} dir="rtl" style="text-align: right;" {% endif %}>
-        <img src="{{ user.get_profile_pic_or_blank }}" alt="" class="profile_image" width="200" height="200">
+        <img src="{{ user.get_profile_pic_or_blank }}" alt="" class="profile_image">
 
-        <form method="post" class=" pb-lg-5">
+        <form method="post" class=" pb-lg-5" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
             <button type="submit" class="btn btn-success">{% trans 'Submit' %}</button>
