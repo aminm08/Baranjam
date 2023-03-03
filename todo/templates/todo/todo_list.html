@@ -4,29 +4,20 @@
 {% load jalali_tags %}
 {% load persian_trans_tags %}
 
-{% block links %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-{% endblock links %}
-
-
 {% block title %}<<{{ todo.name }}>> {% trans 'your baranjam list' %}{% endblock title %}
 
 
 
 {% block content %}
 
-    <style>
-
-    </style>
-
     <section>
         <div class="container py-3 ">
             <div class="row d-flex justify-content-center align-items-center">
                 <div class="col">
-                    <div class="card rounded-2" id="list1" style="border-radius: 5px; background-color: #e2e4e5;">
-                        <div class="card-body" style="background-color: #f4623a;">
+                    <div class="card rounded-2" style="border-radius: 5px; background-color: #e2e4e5;">
+                        <div class="card-body bg-primary">
 
-                            <h1 class=" text-center mt-3 mb-4 pb-3 text-dark">
+                            <h1 class="text-center mt-3 mb-2 pb-3 text-dark">
                                 <i class="fas fa-check-square me-1"></i>
                                 {{ todo.name|capfirst }}</h1>
                             {% if user != todo.user %}
@@ -40,36 +31,30 @@
                                             <form action="{% url 'job_create' todo.id %}" method="post">
                                                 {% csrf_token %}
                                                 {{ form.media }}
-                                                {{ form.non_field_errors }}
-                                                <div class="row">
 
-                                                    <div class="col-3">
+                                                <div class="row" id="input-container">
+
+                                                    <div class="col-3 align-self-center">
                                                         <input type="text"
                                                                class="form-control"
-                                                               style="border:#f4623a solid 2px;"
                                                                placeholder="{% trans 'Name' %}" name="text"
                                                                required>
                                                     </div>
 
-                                                    <div class="col-3">
+                                                    <div class="col-3 align-self-center">
                                                         <input type="text" name="user_date"
                                                                class="jalali_date-date form-control"
-                                                               style="border:#f4623a solid 2px;"
-                                                               id="id_user_datetime_0"
                                                                placeholder="{% trans 'Date' %}">
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-3 align-self-center">
                                                         <input type="text" name="duration"
                                                                class=" form-control"
-                                                               id="id_user_datetime_1"
-                                                               style="border:#f4623a solid 2px;"
                                                                placeholder="--:--">
-                                                        <p>{{ form.duration.errors }}</p>{{ form.duration.errors }}
+
                                                     </div>
                                                     <div class="col-3 align-self-center text-center">
-                                                        <button type="submit"
-                                                                class="btn btn-dark"
-                                                                style="width: 80%">{% trans 'Add' %}
+                                                        <button type="submit" class="btn btn-dark"
+                                                                id="todo-add-btn">{% trans 'Add' %}
                                                         </button>
                                                     </div>
                                                 </div>
@@ -89,10 +74,22 @@
                                                 name="filter" aria-label="size 3 select example">
                                             {% if todo.jobs.exists %}
 
-                                                <option selected disabled>{% trans '--Apply filter--' %}</option>
-                                                <option value="all">{% trans 'All' %}</option>
-                                                <option value="done">{% trans 'Completed' %}</option>
-                                                <option value="actives">{% trans 'Active' %}</option>
+                                                <option selected disabled
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans '--Apply filter--' %}
+                                                </option>
+                                                <option value="all"
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans 'All' %}
+                                                </option>
+                                                <option value="done"
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans 'Completed' %}
+                                                </option>
+                                                <option value="actives"
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans 'Active' %}
+                                                </option>
                                             {% else %}
                                                 <option class="text-center " disabled selected>
                                                     {% trans 'List is empty' %}
@@ -106,18 +103,33 @@
 
                                         <select class="form-select  text-dark bg-light shadow"
                                                 onchange="this.form.submit();" name="action">
-                                            <option selected disabled>{% trans 'actions' %}</option>
+                                            <option selected disabled
+                                                    {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                {% trans 'actions' %}
+                                            </option>
                                             {% if todo.jobs.exists %}
 
-                                                <option value="1">{% trans 'clear this list' %}</option>
+                                                <option value="1"
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans 'clear this list' %}
+                                                </option>
 
                                                 {% if todo.get_jobs %}
-                                                    <option value="2">{% trans 'delete finished jobs' %}</option>
+                                                    <option value="2"
+                                                            {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                        {% trans 'delete finished jobs' %}
+                                                    </option>
                                                 {% endif %}
 
-                                                <option value="3">{% trans 'make all jobs active' %}</option>
+                                                <option value="3"
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans 'make all jobs active' %}
+                                                </option>
 
-                                                <option value="4">{% trans 'check all jobs' %}</option>
+                                                <option value="4"
+                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                    {% trans 'check all jobs' %}
+                                                </option>
 
 
                                             {% else %}
@@ -143,7 +155,7 @@
                                                         <form method="post" action="{% url 'job_assign' user_job.id %}">
                                                             {% csrf_token %}
                                                             {% if user_job.is_done %}
-                                                                <input class="form-check-input me-0" type="checkbox"
+                                                                <input class="form-check-input " type="checkbox"
                                                                        onchange="this.form.submit();"
                                                                        checked/>
 
@@ -157,13 +169,13 @@
                                                         <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                            style="color:#000000;text-decoration: none;">
                                                             <p class="lead fw-normal mb-0">
-                                                                <del >{{ user_job.text|truncatechars:30 }}</del>
+                                                                <del>{{ user_job.text|truncatechars:30 }}</del>
                                                             </p>
                                                         </a>
                                                     {% else %}
                                                         <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
                                                            style="color:#000000;text-decoration: none;">
-                                                            <p class="lead fw-normal mb-0 " >
+                                                            <p class="lead fw-normal mb-0 ">
                                                                 {{ user_job.text|truncatechars:25 }}
                                                             </p>
                                                         </a>
@@ -188,9 +200,10 @@
                                                     {% endif %}
 
                                                 </div>
+
                                                 {% if user_job.duration %}
                                                     <div class=" border text-center border-warning rounded-3 align-self-center bg-light"
-                                                         style="width: 120px;">
+                                                         style="width: 15%;" id="job-duration">
 
                                                         <i class="fas fa-solid fa-clock  text-info "></i>
                                                         {{ user_job.get_duration }}
@@ -200,7 +213,7 @@
                                                 {% if user_job.user_date %}
 
                                                     <div class=" border text-center border-warning rounded-3 align-self-center bg-light"
-                                                         style="width: 140px;">
+                                                         style="width: 15%;" id="user-date">
 
                                                         <i class="fas fa-hourglass-half text-warning"></i>
                                                         {{ user_job.user_date|to_jalali:'%Y %B %d'|translate_numbers }}
@@ -210,9 +223,8 @@
                                                 {% endif %}
 
                                                 {% if todo.user == user %}
-                                                    <div class="col form-inline ">
-                                                        <form action="{% url 'job_delete' user_job.id %}" method="post"
-                                                              class="ml-auto">
+                                                    <div class="col-sm-1 float-end align-self-center">
+                                                        <form action="{% url 'job_delete' user_job.id %}" method="post">
 
                                                             {% csrf_token %}
                                                             <button type="submit"

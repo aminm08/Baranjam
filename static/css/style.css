@@ -48,6 +48,48 @@ hr {
     opacity: 0.25;
 }
 
+.form-check .form-check-input {
+    float: left;
+    margin-left: -1.5em;
+}
+
+.form-check-input {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.25em;
+    vertical-align: top;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+}
+
+.form-check-input[type=checkbox] {
+    border-radius: 0.25em;
+}
+
+.form-check-input:active {
+    filter: brightness(90%);
+}
+
+.form-check-input:focus {
+    border-color: #fab19d;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(244, 98, 58, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #f4623a;
+    border-color: #f4623a;
+}
+
+
 .text-white-75 {
     color: rgba(255, 255, 255, 0.75) !important;
 }
@@ -61,6 +103,12 @@ hr {
     color: #fff;
     background-color: #f4623a;
     border-color: #f4623a;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #cf5331;
+    border-color: #c34e2e;
 }
 
 .bg-primary {
@@ -111,6 +159,7 @@ header.masthead {
     border-radius: 10rem;
 }
 
+
 /* profile */
 
 .profile_image {
@@ -141,3 +190,31 @@ header.masthead {
         display: none;
     }
 }
+
+
+/* todo main page */
+#input-container input {
+    border: #f4623a solid 2px;
+}
+
+#todo-add-btn {
+    padding-right: .5rem;
+    padding-left: .5rem;
+    width: 100%;
+
+}
+
+@media only screen and (max-width: 460px) {
+    #todo-add-btn {
+        font-size: 12px;
+
+    }
+}
+
+@media only screen and (max-width: 770px) {
+    #job-duration, #user-date {
+        font-size: 12px;
+
+    }
+}
+
