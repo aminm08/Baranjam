@@ -218,3 +218,14 @@ header.masthead {
     }
 }
 
+/* todo delete */
+
+#yes-btn, #no-btn {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: 0 auto;
+}
+
+.center-container {
+    margin: 100px auto 0;
+}
