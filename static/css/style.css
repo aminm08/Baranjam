@@ -1,4 +1,6 @@
 @charset "UTF-8";
+
+/* basic stuff */
 :root {
 
     --bs-primary: #f4623a;
@@ -46,15 +48,6 @@ hr {
     opacity: 0.25;
 }
 
-
-header.masthead {
-    padding-top: 11rem;
-    padding-bottom: calc(10rem - 4.5rem);
-    background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../img/bg-masthead.jpg") no-repeat center scroll;
-    background-size: cover;
-
-}
-
 .text-white-75 {
     color: rgba(255, 255, 255, 0.75) !important;
 }
@@ -62,23 +55,6 @@ header.masthead {
 .text-muted {
     --bs-text-opacity: 1;
     color: #6c757d !important;
-}
-
-
-hr.divider {
-    height: 0.2rem;
-    max-width: 3.25rem;
-    margin: 1.5rem auto;
-    background-color: #f4623a;
-    opacity: 1;
-}
-
-hr.divider-light {
-    background-color: #fff;
-}
-
-.page-section {
-    padding: 8rem 0;
 }
 
 .btn-primary {
@@ -92,6 +68,40 @@ hr.divider-light {
     background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
+.circular--landscape {
+    width: 65px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* home page */
+hr.divider {
+    height: 0.2rem;
+    max-width: 3.25rem;
+    margin: 1.5rem auto;
+    background-color: #f4623a;
+    opacity: 1;
+}
+
+hr.divider-light {
+    background-color: #fff;
+}
+
+header.masthead {
+    padding-top: 11rem;
+    padding-bottom: calc(10rem - 4.5rem);
+    background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../img/bg-masthead.jpg") no-repeat center scroll;
+    background-size: cover;
+
+}
+
+
+.page-section {
+    padding: 8rem 0;
+}
+
+
 .btn-xl {
     padding: 1.25rem 2.25rem;
     font-size: 0.85rem;
@@ -101,6 +111,7 @@ hr.divider-light {
     border-radius: 10rem;
 }
 
+/* profile */
 
 .profile_image {
     display: block;
@@ -112,15 +123,7 @@ hr.divider-light {
 
 }
 
-
-.circular--landscape {
-    width: 65px;
-    height: 65px;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-
+/* authentication */
 .icon {
     font-family: 'Font Awesome 5 Free';
     font-weight: 600;
@@ -128,4 +131,13 @@ hr.divider-light {
 
 .right-placeholder input::placeholder {
     text-align: right;
+}
+
+
+/* user todos */
+
+@media only screen and (max-width: 530px) {
+    #finished-container {
+        display: none;
+    }
 }

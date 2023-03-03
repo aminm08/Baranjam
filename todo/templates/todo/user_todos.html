@@ -18,12 +18,11 @@
 
 
 {% block content %}
-
     <div class="container-fluid">
         <div class="card shadow bg-dark mt-5">
-            <div class="card-header " style="background-color: #f4623a;">
+            <div class="card-header bg-primary">
 
-                <a href="" class="float-start btn btn-dark text-left" data-bs-toggle="modal"
+                <a class="float-end btn btn-dark text-left" data-bs-toggle="modal"
                    data-bs-target="#exampleModal">{% trans 'Add todo-list' %}</a>
                 {% if todos %}
 
@@ -33,15 +32,15 @@
                 {% endif %}
             </div>
             <div class="card-body bg-dark">
-
-
                 <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
                     {% for todo in todos %}
                         <li class="list-group-item d-flex justify-content-between align-items-start">
 
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">
-                                    <a href="{{ todo.get_absolute_url }}" style="text-decoration: none;">{{ todo.name }}
+                                    <a href="{{ todo.get_absolute_url }}" style="text-decoration: none;"
+                                       class="text-primary">
+                                        {{ todo.name }}
                                         <span class="badge bg-primary rounded-pill ml-1" style="font-size: 14px;">
                                             {{ todo.jobs.all|length }}
                                         </span>
@@ -54,10 +53,11 @@
                                 {{ todo.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
                             </div>
 
-                            <div class="mr-auto text-center my-auto">
-                                <p><span class="fw-bolder"
-                                         style="color:#f4623a; ">{% trans 'finished' %}:</span><span
-                                        class="ml-2 badge bg-success rounded-pill  mt-0"> {{ todo.get_jobs|length }}</span>
+                            <div class="align-self-center" id="finished-container">
+                                <p><span class="fw-bolder text-primary">{% trans 'finished' %}:</span>
+                                    <span class="ml-2 badge bg-success rounded-pill  mt-0">
+                                        {{ todo.get_jobs|length }}
+                                    </span>
                                 </p>
                             </div>
                             {% if user == todo.user %}
@@ -66,9 +66,9 @@
                                     <i class="fa fa-cog" aria-hidden="true"></i>
                                 </a>
                             {% endif %}
-                            {% csrf_token %}
+
                             <a href="{% url 'todo_delete' todo.get_signed_pk %}"
-                               class="btn text-danger shadow  border-secondary rounded-pill">
+                               class="btn text-danger shadow  border-secondary border-1 rounded-pill">
 
                                 <span class="fa fa-solid fa-trash px-3 "></span>
                             </a>
@@ -87,30 +87,33 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="text ml-lg-3" id="exampleModalLabel"
-                                style="color:#f4623a;">{% trans 'Add a new list' %}</h5>
+                            <h5 class="text ml-lg-3 text-primary"
+                                id="exampleModalLabel">{% trans 'Add a new list' %}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
 
-                            <div class="d-flex justify-content-end">
-
-                                <form action="{% url 'add_todo' %}" class="form-inline" method="post">
+                            <div>
+                                <form action="{% url 'add_todo' %}" method="post">
                                     {% csrf_token %}
-                                    <input type="text" name="name" class="form-control form-text"
-                                           placeholder="{% trans 'Add Todo-list' %}" required>
-                                    <button type="submit"
-                                            class="btn  ml-3 mr-0"
-                                            style="background-color: #f4623a;">{% trans 'Submit' %}</button>
+                                    <input type="text" name="name" class="form-control"
+                                           placeholder="{% trans 'Todo-list name' %}" required>
+
+
+                                    <div class="float-end mt-4">
+
+                                        <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                                            {% trans 'Close' %}
+                                        </button>
+                                    </div>
+
                                 </form>
                             </div>
 
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-danger mr-0"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
 
-                        </div>
+
                     </div>
                 </div>
             </div>
