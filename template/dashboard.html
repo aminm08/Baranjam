@@ -18,24 +18,19 @@
 
     {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
-
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-
             <h1 class="h3 mb-0 text-gray-800 py-4">{% trans 'Dashboard' %}
-                <span class="badge bg-info  " style=" font-size: 13px;">
-                    {% trans 'shown data for' %}:{{ general_date }}
+                <span class="badge bg-info f-13">
+                    {% trans 'shown data for' %}:{{ general_date_jalali }}
                 </span>
             </h1>
 
             <div class="justify-content-end ">
-
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#date_range_modal"
-                        style="margin-bottom:1rem; font-size: 14px;">
+                <button type="button" class="btn btn-primary f-14" data-bs-toggle="modal"
+                        data-bs-target="#date_range_modal" id="date-range-btn">
                     {% trans 'Select date Range' %}
                 </button>
-
             </div>
-
         </div>
 
 
@@ -44,10 +39,9 @@
                 <div class="dashboard-card bg-c-blue order-card">
                     <div class="card-block">
                         <h6>{% trans "All tasks done" %}</h6>
-                        <h2 class="text-end"><i
-                                class="fas fa-tasks f-left mt-2"></i><span class="">{{ all_tasks_done_in_range }}</span>
+                        <h2 class="text-end">
+                            <i class="fas fa-tasks f-left mt-2"></i><span>{{ all_tasks_done_in_range }}</span>
                         </h2>
-
                     </div>
                 </div>
             </div>
@@ -55,7 +49,9 @@
             <div class="col-md-4 col-xl-3">
                 <div class="dashboard-card bg-c-green order-card">
                     <div class="card-block">
-                        <h6 class="m-b-20">{% trans "Tasks done" %}</h6>
+                        <h6 class="m-b-20">{% trans "Tasks done" %}
+                            <span class="float-end f-14">{{ general_date|simplify_date }}</span>
+                        </h6>
                         <h2 class="text-end"><i
                                 class="fa fa-rocket f-left mt-2"></i><span>{{ tasks_done_in_general_date }}</span>
                         </h2>
@@ -71,17 +67,20 @@
                         <h2 class="text-end"><i
                                 class="fas fa-solid text-white fa-clock f-left mt-2"></i>{{ total_hours_spent|extract_hours_and_minutes }}
                         </h2>
-
                     </div>
                 </div>
             </div>
             <div class="col-md-4 col-xl-3">
                 <div class="dashboard-card bg-c-pink order-card">
                     <div class="card-block">
-
-                        <h6 class="m-b-20">{% trans "Hours spent" %}</h6>
-                        <h2 class="text-end"><i
-                                class="fas fa-solid fa-clock f-left mt-2"></i><span>{{ hours_spent_in_general_date }}h</span>
+                        <h6 class="m-b-20">{% trans "Hours spent" %}
+                            <span class="float-end f-14">{{ general_date|simplify_date }}</span>
+                        </h6>
+                        <h2 class="text-end">
+                            <i class="fas fa-solid fa-clock f-left mt-2"></i>
+                            <span>
+                                {{ hours_spent_in_general_date|extract_hours_and_minutes }}
+                            </span>
                         </h2>
 
                     </div>
@@ -89,16 +88,16 @@
             </div>
 
             {% if job_status %}
-
                 <div class="col-md-4 col-xl-3">
                     <div class="dashboard-card bg-c-l-blue order-card">
                         <div class="card-block">
-                            <h6>{% trans "Jobs status" %} <span
-                                    class="float-end">{{ job_status|first }}%</span>
+                            <h6>{% trans "Jobs status" %}
+                                <span class="f-14"> ({{ general_date|simplify_date }})</span>
+                                <span class="float-end">{{ job_status|first }}%</span>
                             </h6>
                             <h2 class="text-end"><img src="/static/icons/{{ job_status|get_obj_by_index:1 }}.png"
                                                       alt="arrow icon" width="30"
-                                                      height="30" class="f-left mt-2"><span style="font-size: 16px;">
+                                                      height="30" class="f-left mt-2"><span style="font-size: 15px;">
                                                                                          {{ job_status|get_obj_by_index:2 }}</span>
                             </h2>
 
@@ -108,33 +107,26 @@
             {% endif %}
             <div class="col">
                 <div class="dashboard-card shadow ">
-
-                    <div class="card-body bg-c-gr" style="border-radius: 5px;">
-
-
-                        <button type="button" class="btn btn-primary float-end btn-sm mt-2 mx-2" data-bs-toggle="modal"
-                                data-bs-target="#goals_modal"
-                                style=" font-size: 12px;">
+                    <div class="card-body bg-c-gr radius-5">
+                        <button type="button" class="btn btn-primary float-end btn-sm mt-2 mx-2 f-12"
+                                data-bs-toggle="modal"
+                                data-bs-target="#goals_modal">
                             {% trans ' Manage goals' %}
                         </button>
                         {% if goals_progress and user_goals %}
-
-
-                            <button type="button" class="btn btn-danger dropdown-toggle btn-sm float-end mx-2 mt-2"
+                            <button type="button" class="btn btn-danger dropdown-toggle btn-sm float-end mx-2 mt-2 f-12"
                                     data-bs-toggle="dropdown"
-                                    aria-expanded="false" style="font-size: 12px;">
+                                    aria-expanded="false">
                                 {% trans "Choose" %}
                             </button>
                             <ul class="dropdown-menu">
-
-
                                 {% for user_goal in user_goals %}
                                     <div class="dropdown-item">
                                         <input type="radio"
                                                onclick="goal.setId({{ user_goal.id }})" name="choose-goal"
-                                               style="width: 20%; height:1em; margin:1px 1px 1px 0;"
+                                               id="choose-goal-inp"
                                                 {% if user_goal == user_goals|first %} checked {% endif %}>
-                                        <label style="font-size: 14px;">
+                                        <label class="f-14">
                                             {{ user_goal.get_measure_display }}: {{ user_goal.jobs }}, {{ user_goal.hours }}
                                         </label>
 
@@ -172,8 +164,12 @@
                             </div>
 
                         {% else %}
+                            <div id="no-goal-container">
+                                <br><br>
+                                <h5>{% trans 'No goal created' %}</h5>
 
-                            <h5>{% trans 'No goal created' %}</h5>
+                            </div>
+
 
 
                         {% endif %}
@@ -186,12 +182,16 @@
                 <div class="col-md-4 col-xl-3">
                     <div class="dashboard-card bg-c-l-cr order-card">
                         <div class="card-block">
-                            <h6 class="m-b-20">{% trans "Hours status" %} <span
-                                    class="float-end">{{ hour_status|first }}%</span></h6>
-                            <h2 class="text-end"><img src="/static/icons/{{ hour_status|get_obj_by_index:1 }}.png"
-                                                      alt="arrow icon" width="30"
-                                                      height="30" class="f-left mt-2"><span style="font-size: 14px;"
-                                                                                       class="">{{ hour_status|get_obj_by_index:2 }}</span>
+                            <h6 class="m-b-20">{% trans "Hours status" %}
+                                <span class="f-14"> ({{ general_date|simplify_date }})</span>
+                                <span class="float-end">{{ hour_status|first }}%</span></h6>
+                            <h2 class="text-end">
+                                <img src="/static/icons/{{ hour_status|get_obj_by_index:1 }}.png"
+                                     alt="arrow icon" width="30"
+                                     height="30" class="f-left mt-2">
+                                <span class="f-14">
+                                                 {{ hour_status|get_obj_by_index:2 }}
+                                </span>
                             </h2>
 
                         </div>
@@ -248,18 +248,15 @@
                     </div>
                 </div>
             {% endif %}
-            {% if  general_date_done_jobs_titles|safe  and general_date_hours_spent_per_job|safe %}
 
+            {% if  general_date_done_jobs_titles and general_date_hours_spent_per_job %}
                 <div class="col-md-6">
-
                     <div class="dashboard-card">
-
                         <div class="card-body">
                             <div class="chart-area">
                                 <canvas id="doughnutChart"></canvas>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -272,7 +269,6 @@
                     </div>
                     <div class="card-body px-3 ">
                         {% if todos %}
-
                             {% for todo in todos %}
                                 {% if todo.complete_rate %}
                                     <h4 class="small font-weight-bold text-muted float-start">
@@ -291,7 +287,10 @@
                             {% endfor %}
                             <br>
                         {% else %}
-                            <h5>{% trans 'No todo created' %}</h5>
+                            <div id="no-todo-container">
+
+                                <h5>{% trans 'No todo created' %}</h5>
+                            </div>
 
 
                         {% endif %}
@@ -354,8 +353,8 @@
                                                 <form action="{% url 'goal_delete' goal.id %}" method="post"
                                                       class="col-2 text-center">
                                                     {% csrf_token %}
-                                                    <button class="text-danger border-0 bg-transparent"
-                                                            style="font-size: 12px;">&#10060;
+                                                    <button class="text-danger border-0 bg-transparent f-12">
+                                                        &#10060;
                                                     </button>
                                                 </form>
                                                 <span class="badge bg-info col-2">{{ goal.get_measure_display }}</span>
@@ -374,15 +373,15 @@
                                 <div class="row ">
                                     <div class="mt-1">
 
-                                        <label for="id_measure"
-                                               class="form-label requiredField">{% trans 'Measures of your goal' %}</label>
+                                        <label for="id_measure" class="form-label requiredField">
+                                            {% trans 'Measures of your goal' %}
+                                        </label>
                                         <select name="measure" id="id_measure" class="select form-select" required>
                                             <option disabled selected>------------</option>
                                             <option value="d" class="p-2">{% trans 'Daily' %}</option>
                                         </select>
                                     </div>
                                     <div class="col mt-2">
-
                                         <label for="id_jobs"
                                                class=" form-label requiredField">{% trans 'Job target' %}</label>
                                         <input type="number" name="jobs" class=" form-control col p-2" id="id_jobs"
@@ -449,11 +448,8 @@
 
         setupBarChart({{ jalali_done_dates_in_range|safe }}, {{ spent_time|safe }});
         setupLinearChart({{ jalali_done_dates_in_range|safe }}, {{ done_jobs_count_per_day_in_range|safe }});
-        if ({{ general_date_hours_spent_per_job|safe }} &&
-        {{ general_date_done_jobs_titles|safe }})
-        {
-            setupDoughnutChart({{ general_date_done_jobs_titles|safe }}, {{ general_date_hours_spent_per_job|safe }});
-        }
+        setupDoughnutChart({{ general_date_done_jobs_titles|safe }}, {{ general_date_hours_spent_per_job|safe }});
+
 
         const goal = new Goal({{ goals_progress|safe }});
         goal.insert_data();

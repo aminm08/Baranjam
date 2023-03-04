@@ -138,8 +138,24 @@ hr {
     text-decoration: none;
 }
 
-.dropdown-toggle::after{
+.dropdown-toggle::after {
     display: none;
+}
+
+.f-12 {
+    font-size: 12px;
+}
+
+.f-13 {
+    font-size: 13px;
+}
+
+.f-14 {
+    font-size: 14px;
+}
+
+.radius-5{
+    border-radius: 5px;
 }
 
 
@@ -377,9 +393,6 @@ header.masthead {
     max-width: 200px;
 }
 
-.f-12 {
-    font-size: 12px;
-}
 
 #online-users-container {
     max-height: 205px;

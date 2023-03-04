@@ -25,6 +25,9 @@ class Analytics:
     def extract_done_dates(job_list):
         return [str(job.user_done_date) for job in job_list]
 
+    def get_done_jobs_in_range(self):
+        return self.all_done_jobs.filter(user_done_date__range=self._range_date)
+
     @staticmethod
     def convert_done_dates_to_jalali_date(done_dates):
         converted_label = []
@@ -38,7 +41,7 @@ class Analytics:
 
         if self._range_date[0] == "all":
             return self.all_distinct_done_dates
-        data = self.extract_done_dates(self.all_done_jobs.filter(user_done_date__range=self._range_date))
+        data = self.extract_done_dates(self.get_done_jobs_in_range())
         labels = sorted(set(data), key=self.all_done_dates.index)  # replace it
         return list(labels)
 
@@ -75,7 +78,7 @@ class Hours(Analytics):
         return round(hours_spent, 2)
 
     def get_hours_per_job_in_general_date(self):
-        return [float(job.duration.hour + job.duration.minute / 60) for job in self.get_tasks_done_in_general_date() if
+        return [round(job.duration.hour + job.duration.minute / 60,2) for job in self.get_tasks_done_in_general_date() if
                 job.duration]
 
     def get_hours_spent_per_day(self, done_dates):
@@ -92,14 +95,13 @@ class Hours(Analytics):
         return self.get_hours_spent(self.get_tasks_done_in_general_date())
 
     def get_total_hours_spent(self):
-        return self.get_hours_spent(self.all_done_jobs)
+        return self.get_hours_spent(self.get_done_jobs_in_range())
 
 
 class DashBoard(DoneJobs, Hours):
 
     def get_user_jobs_status(self):
         # gets the mean of all done jobs to compare done jobs of general date
-
         done_jobs = self.get_done_jobs_count_per_day(self.all_distinct_done_dates)
         done_jobs_mean = math.ceil(np.mean(done_jobs))
         status = self.get_tasks_done_in_general_date().count() - done_jobs_mean
