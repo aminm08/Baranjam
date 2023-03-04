@@ -9,7 +9,7 @@
     {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-6 center-container" >
+            <div class="col-6 center-container">
 
                 <div class="card shadow ">
                     <div class="card-title text-center mt-2">
@@ -23,9 +23,13 @@
                             {% csrf_token %}
                             <div class="row">
 
-                                <button type="submit" class="btn btn-primary w-75 text-dark" id="yes-btn">{% trans 'Yes, Delete' %}</button>
+                                <button type="submit" class="btn btn-primary w-75 text-dark center-btn">
+                                    {% trans 'Yes, Delete' %}
+                                </button>
 
-                                <a href="{% url 'user_todos' %}" class="btn btn-dark mt-2 w-75" id="no-btn">{% trans 'No back ' %}</a>
+                                <a href="{% url 'user_todos' %}" class="btn btn-dark mt-2 w-75 center-btn">
+                                    {% trans 'No back ' %}
+                                </a>
                             </div>
                         </form>
 
