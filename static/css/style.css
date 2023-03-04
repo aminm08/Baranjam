@@ -111,6 +111,17 @@ hr {
     border-color: #c34e2e;
 }
 
+.btn-outline-primary {
+    color: #f4623a;
+    border-color: #f4623a;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #f4623a;
+    border-color: #f4623a;
+}
+
 .bg-primary {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
@@ -122,6 +133,11 @@ hr {
     object-fit: cover;
     border-radius: 50%;
 }
+
+.unlink {
+    text-decoration: none;
+}
+
 
 /* home page */
 hr.divider {
@@ -159,6 +175,21 @@ header.masthead {
     border-radius: 10rem;
 }
 
+.center-container {
+    margin: 80px auto 0;
+}
+
+.center-btn {
+    display: block;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: 0 auto;
+}
+
+.center-image {
+    display: block;
+    margin: 0 auto;
+}
 
 /* profile */
 
@@ -218,14 +249,53 @@ header.masthead {
     }
 }
 
-/* todo delete */
 
-#yes-btn, #no-btn {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin: 0 auto;
+/* user group lists */
+
+#members-badge {
+
+    padding: 10px 15px 0 0;
 }
 
-.center-container {
-    margin: 100px auto 0;
+#badge-on-title {
+    display: none;
+    font-size: 12px;
+    margin-bottom: 5px;
+    padding: 1px 3px;
+}
+
+@media only screen and (max-width: 545px) {
+    #members-badge {
+        font-size: 12px;
+    }
+
+    #group-title {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 522px) {
+    #members-badge {
+        display: none;
+    }
+
+    #badge-on-title {
+        display: inline;
+    }
+
+    #group-pic {
+        width: 55px;
+        height: 55px;
+    }
+
+}
+
+@media only screen and (max-width: 430px) {
+    #btn-options {
+        width: 72px;
+        font-size: 14px;
+        padding-right: 6px;
+        padding-left: 6px;
+    }
+
 }
