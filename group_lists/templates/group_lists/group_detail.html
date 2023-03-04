@@ -13,11 +13,6 @@
             display: none;
         }
 
-        .image-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
     </style>
 
 
@@ -28,30 +23,25 @@
 
             <div class="col-md-5 mb-5">
                 <div class="card shadow">
-                    <h1 class="card-header  text-center "
-                        style="background-color: #f4623a;">{{ group.title|capfirst }}</h1>
+                    <h1 class="card-header  text-center bg-primary text-white">{{ group.title|capfirst }}</h1>
                     <div class="card-body border-3 border-dark">
-
-                        <div class="row ">
-
-                            <div class="col ">
-                                <img src="{{ group.get_group_picture_or_blank }}" alt="" width="120" height="120"
-                                     style="display: block; margin: 0 auto;">
+                        <div class="row">
+                            <div class="col">
+                                <img src="{{ group.get_group_picture_or_blank }}" alt="group-pic" class="profile_image">
                             </div>
-                            <div class=" card shadow  mt-3 p-2 ">
+                            <hr id="hr-custom">
+
+                            <p>{{ group.description|linebreaks }}</p>
+                            <div class="card shadow mt-3 p-2 bg-primary">
                                 <div class="row">
+                                    <p class="col text-white">{% trans 'Invitation Link' %}</p>
+                                    <button class="btn  col-3" id="btn-copy"
+                                            onclick="navigator.clipboard.writeText('{{ group.get_invitation_link }}')">
 
-                                    <p class="col">{% trans 'Invitation Link' %}</p>
-                                    <button class="btn-sm btn-outline-success col-md-2 mr-3"
-                                            onclick="navigator.clipboard.writeText('{{ group.get_invitation_link }}')">{% trans 'Copy link' %}</button>
+                                        {% trans 'Copy link' %}
+                                    </button>
                                 </div>
-                                <p style="font-size: 13px; border:1px solid #f4623a; padding:2px;"
-                                   class="mt-3">{{ group.get_invitation_link }}</p>
-                            </div>
-
-                            <div class="">
-                                <p>{{ group.description|linebreaks }}</p>
-
+                                <p id="inv-link" class="mt-3 bg-white">{{ group.get_invitation_link }}</p>
                             </div>
 
 
@@ -68,16 +58,18 @@
 
                         <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="true" data-bs-toggle="tab"
+                                <a class="nav-link text-primary" aria-current="true" data-bs-toggle="tab"
                                    href="#todos">{% trans 'Todo-Lists' %}</a>
                             </li>
                             {% if group.enable_chat %}
                                 <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#chat">{% trans 'Chat' %}</a>
+                                    <a class="nav-link text-primary" data-bs-toggle="tab"
+                                       href="#chat">{% trans 'Chat' %}</a>
                                 </li>
                             {% endif %}
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#members">{% trans 'Members' %}</a>
+                                <a class="nav-link text-primary" data-bs-toggle="tab"
+                                   href="#members">{% trans 'Members' %}</a>
                             </li>
                         </ul>
                     </div>
@@ -90,32 +82,41 @@
 
                             <div class="card shadow bg-dark">
 
-                                <div class="card-header flex-row" style="background-color: #f4623a;">
+                                <div class="card-header flex-row bg-primary">
 
                                     <div class="col">
 
-                                        <div class="{% if  LANGUAGE == 'en' %} justify-content-end {% else %} justify-content-start{% endif %} "></div>
-                                        <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group todos' %}</h2>
+                                        <div class="justify-content-start"></div>
+                                        <h2 class="text-white">{% trans 'Group todos' %}</h2>
                                     </div>
 
                                 </div>
                                 <div class="card-body bg-dark">
-
                                     {% if todos %}
                                         <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
                                             {% for todo in todos %}
                                                 <li class="list-group-item d-flex justify-content-between align-items-start">
-
                                                     <div class="ms-2 me-auto">
-                                                        <div class="fw-bold"><a
-                                                                href="{{ todo.get_absolute_url }}">{{ todo.name }}</a>
+                                                        <div class="fw-bold">
+                                                            <a href="{{ todo.get_absolute_url }}"
+                                                               class="text-primary unlink">
+                                                                {{ todo.name }}
+                                                                <span class="mx-2 badge bg-success rounded-pill"
+                                                                      id="job-badge-on-title">
+                                                                    {{ todo.jobs.count }}
+                                                                </span>
+                                                            </a>
 
                                                         </div>
                                                     </div>
-                                                    <div class="mr-auto text-center my-auto">
-                                                        <p><span class="fw-bolder"
-                                                                 style="color:#f4623a; ">{% trans 'undone Jobs' %}:</span><span
-                                                                class="ml-2 badge bg-success rounded-pill  mt-0"> {{ todo.get_jobs| length }}</span>
+                                                    <div class="mr-auto text-center my-auto" id="job-badge">
+                                                        <p><span class="fw-bolder text-primary">
+                                                            {% trans 'Jobs' %}:
+                                                        </span>
+                                                            <span class="mx-2 badge bg-success rounded-pill"
+                                                            >
+                                                                {{ todo.jobs.count }}
+                                                            </span>
                                                         </p>
                                                     </div>
                                                 </li>
@@ -153,10 +154,10 @@
                                     <div class="col mb-4">
 
 
-                                        <img src="{{ admin.get_profile_pic_or_blank }}" alt="profile_pic" width="55"
-                                             height="55">
+                                        <img src="{{ admin.get_profile_pic_or_blank }}" alt="profile_pic"
+                                             class="circular--landscape">
 
-                                        <span class="ml-2 mr-2">{{ admin.username }}</span>
+                                        <span class="mx-2">{{ admin.username }}</span>
                                         <span class="badge bg-info rounded-pill mb-3">{% trans 'admin' %}</span>
                                         {% if user == group.admins.first  and admin != group.admins.first %}
 
@@ -167,7 +168,8 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <form action="{% url 'manage_members_grade' group.id %}" method="post">
+                                                        <form action="{% url 'manage_members_grade' group.id %}"
+                                                              method="post">
                                                             {% csrf_token %}
                                                             <button class="dropdown-item" name="{{ admin.id }}"
                                                                     type="submit"><i
@@ -200,7 +202,8 @@
                                     <div class="col mb-4">
 
 
-                                        <img class="rounded" src="{{ member.get_profile_pic_or_blank }}" alt="prof_pic"
+                                        <img class="circular--landscape" src="{{ member.get_profile_pic_or_blank }}"
+                                             alt="prof_pic"
                                              width="55" height="55">
                                         <span class="ml-2 mr-2">{{ member.username }}</span>
 
