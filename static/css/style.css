@@ -138,6 +138,10 @@ hr {
     text-decoration: none;
 }
 
+.dropdown-toggle::after{
+    display: none;
+}
+
 
 /* home page */
 hr.divider {
@@ -232,7 +236,6 @@ header.masthead {
     padding-right: .5rem;
     padding-left: .5rem;
     width: 100%;
-
 }
 
 @media only screen and (max-width: 460px) {
@@ -304,15 +307,16 @@ header.masthead {
 #inv-link {
     font-size: 13px;
     border-radius: 5px;
-    padding: 4px 8px;
+    padding: 8px 10px;
 }
 
 #btn-copy {
     width: auto;
     font-size: 14px;
-    padding: 4px 10px;
+    padding: 5px 12px;
     margin-right: 20px;
-    border: 4px solid white
+    border: 5px solid white;
+    border-radius: 5px;
 }
 
 #btn-copy:hover {
@@ -340,4 +344,45 @@ header.masthead {
     #job-badge-on-title {
         display: inline;
     }
+}
+
+#chat-item-container {
+    max-height: 220px;
+    overflow-y: auto;
+
+}
+
+.chat-user-image {
+    margin: 4px 5px;
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 50%;
+
+}
+
+#chat-box-this-user {
+    background-color: rgba(130, 243, 183, 0.72);
+    padding: 5px;
+    margin-right: 5px;
+    width: auto;
+    max-width: 200px;
+}
+
+#chat-box-other-user {
+    background-color: rgba(47, 193, 239, 0.68);
+    padding: 5px;
+    margin-left: 5px;
+    width: auto;
+    max-width: 200px;
+}
+
+.f-12 {
+    font-size: 12px;
+}
+
+#online-users-container {
+    max-height: 205px;
+    overflow-y: auto;
+    overflow-x: auto;
 }

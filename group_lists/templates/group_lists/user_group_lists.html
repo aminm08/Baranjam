@@ -12,9 +12,7 @@
     <div class="container-fluid">
         <div class="card shadow bg-dark mt-5">
             <div class="card-header flex-row bg-primary">
-
                 <div class="col">
-
                     <div class=" justify-content-start ">
                         <a href="{% url 'group_create' %}"
                            class="btn btn-dark float-end text-white">{% trans 'Add Group' %}</a>
@@ -25,13 +23,10 @@
 
             </div>
             <div class="card-body bg-dark">
-
                 {% if groups %}
-
                     <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
                         {% for group in groups %}
                             <li class="list-group-item d-flex justify-content-between align-items-start">
-
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold">
                                         <img src="{{ group.get_group_picture_or_blank }}" alt="group pic"
@@ -39,7 +34,7 @@
                                         <a href="{{ group.get_absolute_url }}" class="unlink text-primary mx-2"
                                            id="group-title">
                                             {{ group.title|capfirst|truncatechars:15 }}
-                                            <span class=" badge bg-success rounded-pill " id="badge-on-title">
+                                            <span class=" badge bg-success rounded-pill" id="badge-on-title">
                                             {{ group.get_all_members_length }}
                                             </span>
                                         </a>
@@ -60,12 +55,11 @@
                                     <button class="btn btn-primary dropdown-toggle" type="button" id="btn-options"
                                             id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
                                             style="border:none;">
-                                        {% trans 'Options' %}
+                                        {% trans 'Options' %} <i class="fas fa-ellipsis-v f-12"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li>
                                             {% if user == group.admins.first %}
-
                                                 <a class="dropdown-item" href="{% url 'group_delete' group.id %}">
                                                     <i class="fas fa-trash text-danger mr-1"></i> {% trans 'Delete Group' %}
                                                 </a>
@@ -90,7 +84,7 @@
                         {% endfor %}
                     </ol>
                 {% else %}
-                    <p class="text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'you have no shared group yet' %}</p>
+                    <p class="text-white">{% trans 'you have no shared group yet' %}</p>
 
                 {% endif %}
             </div>

@@ -10,11 +10,11 @@ let setupChats = async (groupUUID, username) => {
         + "/"
     );
 
-    chatSocket.onopen = function (e) {
+    chatSocket.onopen = function () {
         console.log("The connection was setup successfully !");
     };
 
-    chatSocket.onclose = function (e) {
+    chatSocket.onclose = function () {
         console.error('Chat socket closed unexpectedly');
     };
     document.querySelector("#id_message_send_input").focus();
@@ -23,8 +23,8 @@ let setupChats = async (groupUUID, username) => {
             document.querySelector("#id_message_send_button").click();
         }
     };
-    document.querySelector("#id_message_send_button").onclick = function (e) {
-        var messageInput = document.querySelector(
+    document.querySelector("#id_message_send_button").onclick = function () {
+        let messageInput = document.querySelector(
             "#id_message_send_input"
         ).value;
 
@@ -35,10 +35,10 @@ let setupChats = async (groupUUID, username) => {
     };
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        var div = document.createElement("div");
-        var innerdiv = document.createElement("div");
-        var MessageContainer = document.createElement("span");
-        var usernameAndCreateDateContainer = document.createElement("p");
+        let div = document.createElement("div");
+        let innerdiv = document.createElement("div");
+        let MessageContainer = document.createElement("span");
+        let usernameAndCreateDateContainer = document.createElement("p");
 
         usernameAndCreateDateContainer.style.fontSize = '12px';
 
@@ -50,18 +50,19 @@ let setupChats = async (groupUUID, username) => {
 
         if (username == data.username) {
             usernameAndCreateDateContainer.innerHTML = `
-                <span class="float-right">${data.username}</span>
-                <span class="float-left" dir="ltr">${data.datetime}</span>`
-            div.innerHTML = `<img src="${data.img}" width="50" height="50" class="float-right"> `
+                <span class="float-end">${data.username}</span>
+                <span class="float-start" dir="ltr">${data.datetime}</span>`
+            div.innerHTML = `<img src="${data.img}" class="chat-user-image" alt="user-img"> `
             div.dir = 'rtl'
+            innerdiv.id = 'chat-box-this-user';
 
-            innerdiv.style.backgroundColor = "rgba(130, 243, 183, 0.72)"
+
         } else {
             usernameAndCreateDateContainer.innerHTML = `
-                <span class="float-left">${data.username}</span>
-                <span class="float-right" dir="ltr">${data.datetime}</span>`
-            div.innerHTML = `<img src="${data.img}" width="50" height="50" class="float-left"> `
-            innerdiv.style.backgroundColor = "rgba(47, 193, 239, 0.68)"
+                <span class="float-end">${data.username}</span>
+                <span class="float-start" >${data.datetime}</span>`
+            div.innerHTML = `<img src="${data.img}" class="chat-user-image" alt="user-img"> `
+            innerdiv.id = 'chat-box-other-user'
 
         }
 
@@ -76,7 +77,7 @@ let setupChats = async (groupUUID, username) => {
         console.log(div)
 
         document.querySelector("#id_message_send_input").value = "";
-        document.querySelector("#id_chat_item_container").appendChild(div);
+        document.querySelector("#chat-item-container").appendChild(div);
     };
 
 
@@ -93,7 +94,8 @@ const getOnlineUsersList = async (group_id) => {
                 if (Array.isArray(data)) {
                     data.forEach(function (obj) {
                         console.log(obj);
-                        online_user_container.innerHTML += `<img src="${obj[1]}" class="mr-2 " width="50" height="50">` + obj[0] + '<br>'
+                        online_user_container.innerHTML += `<img src="${obj[1]}" class="mr-2 chat-user-image"  alt="user-img">`
+                            + obj[0] + '<br>'
                     })
                 }
 
