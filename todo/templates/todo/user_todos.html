@@ -23,12 +23,12 @@
             <div class="card-header bg-primary">
 
                 <a class="float-end btn btn-dark text-left" data-bs-toggle="modal"
-                   data-bs-target="#exampleModal">{% trans 'Add todo-list' %}</a>
+                   data-bs-target="#exampleModal" id="add-list-btn">{% trans 'Add todo-list' %}</a>
                 {% if todos %}
 
-                    <h2 class=" text-white text-right">{% trans 'Your todo lists' %}</h2>
+                    <h2 class=" text-white text-right" id="user-todos-title">{% trans 'Your todo lists' %}</h2>
                 {% else %}
-                    <h2 class=" text-white text-right">{% trans 'Add todo-list to start' %}</h2>
+                    <h2 class=" text-white text-right" id="user-todos-title">{% trans 'Add todo-list to start' %}</h2>
                 {% endif %}
             </div>
             <div class="card-body bg-dark">

@@ -154,7 +154,7 @@ hr {
     font-size: 14px;
 }
 
-.radius-5{
+.radius-5 {
     border-radius: 5px;
 }
 
@@ -236,14 +236,26 @@ header.masthead {
 
 /* user todos */
 
-@media only screen and (max-width: 530px) {
+
+@media only screen and (max-width: 580px) {
     #finished-container {
         display: none;
     }
 }
 
+@media only screen and (max-width: 480px) {
+    #user-todos-title {
+        font-size: 1.1rem;
+    }
+
+    #add-list-btn {
+        font-size: .75rem;
+    }
+}
+
 
 /* todo main page */
+
 #input-container input {
     border: #f4623a solid 2px;
 }
@@ -252,6 +264,25 @@ header.masthead {
     padding-right: .5rem;
     padding-left: .5rem;
     width: 100%;
+}
+
+#todo-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+#job-duration, #user-date {
+    width: 15%;
+}
+
+.todo-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #000000
 }
 
 @media only screen and (max-width: 460px) {
@@ -263,9 +294,44 @@ header.masthead {
 
 @media only screen and (max-width: 770px) {
     #job-duration, #user-date {
-        font-size: 12px;
+        font-size: .8rem;
 
     }
+}
+
+
+@media only screen and (max-width: 555px) {
+    .todo-text {
+        font-size: .95rem;
+
+    }
+
+    #todo-info {
+        font-size: .73rem;
+    }
+
+    #job-duration, #user-date {
+        font-size: .76rem;
+
+    }
+
+}
+
+@media only screen and (max-width: 440px) {
+    .todo-text {
+        font-size: .87rem;
+
+    }
+
+    #todo-info {
+        font-size: .7rem;
+    }
+
+    #job-duration, #user-date {
+        font-size: .73rem;
+
+    }
+
 }
 
 

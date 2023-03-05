@@ -146,98 +146,96 @@
                                 <ul class="list-group">
                                     {% for user_job in user_jobs %}
 
-                                        <li class="list-group-item  align-items-center  border-2 ">
-                                            <div class="row">
+                                        <li class="list-group-item  align-items-center  border-2 " id="todo-container">
+                                            <div class="form-check  ml-1" id="todo-first-part">
+                                                {% if user == todo.user %}
 
-                                                <div class="form-check col ml-1">
-                                                    {% if user == todo.user %}
+                                                    <form method="post" action="{% url 'job_assign' user_job.id %}">
+                                                        {% csrf_token %}
+                                                        {% if user_job.is_done %}
+                                                            <input class="form-check-input " type="checkbox"
+                                                                   onchange="this.form.submit();"
+                                                                   checked/>
 
-                                                        <form method="post" action="{% url 'job_assign' user_job.id %}">
-                                                            {% csrf_token %}
-                                                            {% if user_job.is_done %}
-                                                                <input class="form-check-input " type="checkbox"
-                                                                       onchange="this.form.submit();"
-                                                                       checked/>
-
-                                                            {% else %}
-                                                                <input class="form-check-input me-0" type="checkbox"
-                                                                       onchange="this.form.submit();"/>
-                                                            {% endif %}
-                                                        </form>
-                                                    {% endif %}
-                                                    {% if user_job.is_done %}
-                                                        <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
-                                                           style="color:#000000;text-decoration: none;">
-                                                            <p class="lead fw-normal mb-0">
-                                                                <del>{{ user_job.text|truncatechars:30 }}</del>
-                                                            </p>
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
-                                                           style="color:#000000;text-decoration: none;">
-                                                            <p class="lead fw-normal mb-0 ">
-                                                                {{ user_job.text|truncatechars:25 }}
-                                                            </p>
-                                                        </a>
-                                                    {% endif %}
-
-
-
-
-                                                    {% if user_job.is_done %}
-                                                        <p class="small mr-lg-3  mb-0 text-muted">
-                                                            done date:
-
-                                                            {{ user_job.user_done_date|to_jalali:'%Y %B %d'|translate_numbers }}
-
+                                                        {% else %}
+                                                            <input class="form-check-input me-0" type="checkbox"
+                                                                   onchange="this.form.submit();"/>
+                                                        {% endif %}
+                                                    </form>
+                                                {% endif %}
+                                                {% if user_job.is_done %}
+                                                    <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
+                                                       class="unlink">
+                                                        <p class="todo-text mb-0">
+                                                            <del>{{ user_job.text|truncatechars:20 }}</del>
                                                         </p>
-                                                    {% else %}
-                                                        <p class="small mr-lg-3  mb-0 text-muted">
-                                                            created:
-
-                                                            {{ user_job.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ todo.get_absolute_url }}{{ user_job.id }}/"
+                                                       class="unlink">
+                                                        <p class="todo-text mb-0">
+                                                            {{ user_job.text|truncatechars:20 }}
                                                         </p>
-                                                    {% endif %}
+                                                    </a>
+                                                {% endif %}
+
+
+
+
+                                                {% if user_job.is_done %}
+                                                    <p class="small mr-lg-3  mb-0 text-muted" id="todo-info">
+                                                        done date:
+
+                                                        {{ user_job.user_done_date|to_jalali:'%Y %B %d'|translate_numbers }}
+
+                                                    </p>
+                                                {% else %}
+                                                    <p class="small mr-lg-3  mb-0 text-muted" id="todo-info">
+                                                        created:
+
+                                                        {{ user_job.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
+                                                    </p>
+                                                {% endif %}
+
+                                            </div>
+
+                                            {% if user_job.duration %}
+                                                <div class=" border text-center border-warning  rounded-3 align-self-center bg-light"
+                                                     id="job-duration">
+
+                                                    <i class="fas fa-solid fa-clock  text-info "></i>
+                                                    {{ user_job.get_duration }}
+                                                </div>
+                                            {% endif %}
+
+                                            {% if user_job.user_date %}
+
+                                                <div class=" border text-center border-warning  rounded-3 align-self-center bg-light"
+                                                     id="user-date">
+
+                                                    <i class="fas fa-hourglass-half text-warning"></i>
+                                                    {{ user_job.user_date|to_jalali:'%Y %B %d'|translate_numbers }}
+
 
                                                 </div>
+                                            {% endif %}
 
-                                                {% if user_job.duration %}
-                                                    <div class=" border text-center border-warning rounded-3 align-self-center bg-light"
-                                                         style="width: 15%;" id="job-duration">
+                                            {% if todo.user == user %}
+                                                <div class=" float-end align-self-center" id="todo-trash">
+                                                    <form action="{% url 'job_delete' user_job.id %}" method="post">
 
-                                                        <i class="fas fa-solid fa-clock  text-info "></i>
-                                                        {{ user_job.get_duration }}
-                                                    </div>
-                                                {% endif %}
-
-                                                {% if user_job.user_date %}
-
-                                                    <div class=" border text-center border-warning rounded-3 align-self-center bg-light"
-                                                         style="width: 15%;" id="user-date">
-
-                                                        <i class="fas fa-hourglass-half text-warning"></i>
-                                                        {{ user_job.user_date|to_jalali:'%Y %B %d'|translate_numbers }}
+                                                        {% csrf_token %}
+                                                        <button type="submit"
+                                                                class="text-danger bg-transparent border-0"
+                                                                data-mdb-toggle="tooltip"
+                                                                title="Delete todo"><i
+                                                                class="fa fa-trash-alt"></i></button>
+                                                    </form>
 
 
-                                                    </div>
-                                                {% endif %}
+                                                </div>
+                                            {% endif %}
 
-                                                {% if todo.user == user %}
-                                                    <div class="col-sm-1 float-end align-self-center">
-                                                        <form action="{% url 'job_delete' user_job.id %}" method="post">
-
-                                                            {% csrf_token %}
-                                                            <button type="submit"
-                                                                    class="text-danger bg-transparent border-0"
-                                                                    data-mdb-toggle="tooltip"
-                                                                    title="Delete todo"><i
-                                                                    class="fa fa-trash-alt"></i></button>
-                                                        </form>
-
-
-                                                    </div>
-                                                {% endif %}
-                                            </div>
 
                                         </li>
                                     {% endfor %}
