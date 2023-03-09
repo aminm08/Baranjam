@@ -29,23 +29,15 @@ def dashboard_view(request):
     user_goals = request.user.goals.all()
     apply_date_form = DashboardApplyDateForm(request.GET)
     dashboard = get_dashboard_obj(request, apply_date_form)
-
+    context = {"goal_form": goal_form,
+               "apply_date_form": apply_date_form,
+               "general_date_jalali": date2jalali(dashboard.general_date),
+               "general_date": dashboard.general_date,
+               "all_tasks_done_in_range": 0,
+               "tasks_done_in_general_date": 0}
     if not dashboard.get_done_dates_in_range():
         messages.warning(request, _('date range you entered has no data'))
-    context = {
-        "goal_form": goal_form,
-        "apply_date_form": apply_date_form,
-        "user_goals": user_goals,
-        "general_date_jalali": date2jalali(dashboard.general_date),
-        "general_date": dashboard.general_date,
-        "tasks_done_in_general_date": dashboard.get_tasks_done_in_general_date().count(),
-        "all_tasks_done_in_range": dashboard.get_done_jobs_in_range().count(),
-        'todos': request.user.todos.all(),
-        'total_hours_spent': dashboard.get_total_hours_spent(),
-        'hours_spent_in_general_date': dashboard.get_general_date_hours_spent(),
-
-    }
-    if dashboard.all_done_jobs:
+    if dashboard.has_data():
         context = {
             # charts
             "jalali_done_dates_in_range": json.dumps(
@@ -62,7 +54,7 @@ def dashboard_view(request):
             "user_goals": user_goals,
             "general_date_jalali": date2jalali(dashboard.general_date),
             "general_date": dashboard.general_date,
-            "tasks_done_in_general_date": dashboard.get_tasks_done_in_general_date().count(),
+            "tasks_done_in_general_date": dashboard.get_done_jobs_in_general_date().count(),
             "all_tasks_done_in_range": dashboard.get_done_jobs_in_range().count(),
             'todos': request.user.todos.all(),
             'most_productive_day_info': dashboard.get_most_productive_day_info(),
@@ -71,5 +63,4 @@ def dashboard_view(request):
             'hour_status': dashboard.get_user_hours_spent_status(),
             'hours_spent_in_general_date': dashboard.get_general_date_hours_spent(),
         }
-
     return render(request, 'dashboard.html', context)

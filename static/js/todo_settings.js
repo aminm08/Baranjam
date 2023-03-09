@@ -5,7 +5,7 @@ const button_update= document.getElementById('update_button');
 
 const form = document.getElementById('search_form');
 const search_input = document.getElementById('search_input');
-const result_box = document.getElementById('result_box');
+
 const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
 
 

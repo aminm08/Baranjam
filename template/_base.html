@@ -12,7 +12,7 @@
     {% endblock meta %}
     <title>{% block title %}{% endblock title %}</title>
 
-    <link rel="icon" type="image/png" href="{% static 'icons/favicon2.png' %}"/>
+    <link rel="icon" type="image/png" size="96x96" href="{% static 'icons/favicon2.png' %}"/>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
@@ -20,8 +20,11 @@
 
     <!-- font awesome -->
     <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <!-- vazir font -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet"
           type="text/css"/>
+
+
     <!-- Bootstrap Icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
 
@@ -40,15 +43,12 @@
 
 
 <body lang="{{ LANGUAGE }}">
-<style>
 
 
-</style>
-
-<nav class="navbar navbar-expand-lg navbar-dark px-3" style="background-color: #292424; ">
+<nav class="navbar navbar-expand-lg navbar-dark px-3" id="nav">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'homepage' %}">
-            <img src="{% static 'icons/favicon2.png' %}" alt="baranjam icon" height="50" width="50">
+            <img src="{% static 'icons/favicon.png' %}" alt="baranjam icon" height="55" width="55">
         </a>
         <a class="navbar-brand text-primary" href="{% url 'homepage' %}">{% trans 'BarAnjam' %}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -87,31 +87,45 @@
                            aria-expanded="false">
                             <i class="fas fa-solid fa-inbox text-white " style="font-size: 18px;"></i><span
                                 class="badge bg-info rounded-circle ">{{ inbox|length }}</span>
+                            <i class="fas fa-arrow-down" style="font-size: 10px;"></i>
                         </a>
-                        <ul class="dropdown-menu text-center" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif %}>
+                        <div class="dropdown-menu mb-3" {% if LANGUAGE == 'fa' %} dir="rtl" {% endif %}>
                             {% if inbox %}
-
                                 {% for inv in inbox %}
-                                    <form action="{% url 'accept_inv' inv.group_list.id inv.id %}" method="post">
-                                        {% csrf_token %}
-                                        <div class="ml-2">
-                                            <li>
-                                                {% trans 'from' %}: {{ inv.user_sender }}<br>
-                                                {% trans 'group-list' %}: {{ inv.group_list.title }}
-                                                <button type="submit"
-                                                        class="float-end btn btn-sm btn-success">{% trans 'join' %}
-                                                </button>
-                                            </li>
-
-
+                                    <div class="inv-container card">
+                                        <div class="mb-2">
+                                            {% trans 'from' %}: {{ inv.user_sender }}<br>
+                                            {% trans 'group-list' %}: {{ inv.group_list.title }}
                                         </div>
-                                    </form>
+
+                                        <div class="inv-btn">
+                                            <form action="{% url 'accept_inv' inv.group_list.id inv.id %}" method="post"
+                                                  class="col">
+                                                {% csrf_token %}
+                                                <button type="submit" class=" btn btn-sm btn-outline-success ">
+                                                    <i class="fas fa-check " style="color:#34ed34"></i>
+                                                </button>
+
+                                            </form>
+
+                                            <form action="{% url 'delete_inv' inv.id %}" method="post" class="col">
+                                                {% csrf_token %}
+                                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                    &#10060;
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                    </div>
 
                                 {% endfor %}
                             {% else %}
-                                {% trans 'nothing here' %}
+                                <div class="inv-container">
+
+                                    {% trans 'No invitation' %}
+                                </div>
                             {% endif %}
-                        </ul>
+                        </div>
                     </li>
                 {% endif %}
 

@@ -1,0 +1,84 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load jalali_tags %}
+{% load persian_trans_tags %}
+{% load static %}
+
+{% block links %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+{% endblock links %}
+
+
+{% block content %}
+    {% get_current_language as LANGUAGE %}
+
+    <div class="container-fluid">
+        <div class="card shadow bg-dark mt-5">
+            <div class="card-header " style="background-color: #f4623a;">
+
+
+                <h2 class=" text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'Group lists' %}</h2>
+
+            </div>
+            <div class="card-body bg-dark">
+
+                {% if groups %}
+
+                    <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
+                        {% for group in groups %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold"><a
+                                            href="{{ group.todo.get_absolute_url }}">{{ group.todo }}</a>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="mr-auto text-center my-auto">
+                                    <p><span class="fw-bolder"
+                                             style="color:#f4623a; ">{% trans 'Members' %}:</span><span
+                                            class="ml-2 badge bg-success rounded-pill  mt-0"> {{ group.users.all|length }}</span>
+                                    </p>
+                                </div>
+
+
+                                <p>
+                                <form method="post" class="me-2" action="{% url 'leave_group' group.id %}">
+                                    {% csrf_token %}
+                                    <button class="btn-sm btn-danger" type="submit"><i class="fa fa-sign-out-alt"></i></button>
+                                    <span class="text-success fw-bolder">{% trans 'owner' %}</span>:
+                                    {% if group.todo.user.profile_picture %}
+                                        <img src="{{ group.todo.user.profile_picture.url }}" alt="user_profile"
+                                             width="30px"
+                                             height="30px" class="ml-1">
+                                    {% else %}
+                                        <img src="{% static 'img/blank_user.png' %}" alt="blank_profile"
+                                             width="30px"
+                                             height="30px" class="ml-1">
+                                    {% endif %} {{ group.todo.user.username }}
+                                </form>
+                                </p>
+
+
+                            </li>
+
+
+
+
+                        {% endfor %}
+                    </ol>
+                {% else %}
+                    <p class="text-white {% if  LANGUAGE == 'fa' %} text-right {% endif %}">{% trans 'you have no shared group yet' %}</p>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+{% endblock content %}

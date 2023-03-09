@@ -19,6 +19,7 @@ class GroupListTests(TestCase):
         cls.username2 = 'group_member_user'
         cls.username3 = 'regular_user'
         cls.password = 'myusername123'
+
         cls.ownerUser = get_user_model().objects.create_user(
             username=cls.username,
             email=cls.ownerUserEmail,
@@ -70,19 +71,19 @@ class GroupListTests(TestCase):
         self.client.login(email=self.ownerUserEmail, password=self.password)
         response = self.client.get(reverse('group_lists'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.group_list_1.title)
+        self.assertContains(response, str(self.group_list_1.title).title())
 
     def test_group_list_regular_user_cant_see_group_on_list(self):
         self.client.login(email=self.regularUserEmail, password=self.password)
         response = self.client.get(reverse('group_lists'))
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, self.group_list_1.title)
+        self.assertNotContains(response, str(self.group_list_1.title).title())
 
     def test_group_list_url_member_can_see_group_list(self):
         self.client.login(email=self.memberUserEmail, password=self.password)
         response = self.client.get('/group_lists/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.group_list_1.title)
+        self.assertContains(response, str(self.group_list_1.title).title())
 
     def test_group_list_shown_members_count(self):
         self.client.login(email=self.adminUser2Email, password=self.password)

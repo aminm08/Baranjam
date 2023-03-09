@@ -1,7 +1,7 @@
 let online_user_container = document.getElementById('online-users-container')
 
 let setupChats = async (groupUUID, username) => {
-    console.log(groupUUID)
+
     const chatSocket = new WebSocket(
         'ws://'
         + window.location.host
@@ -42,9 +42,7 @@ let setupChats = async (groupUUID, username) => {
 
         usernameAndCreateDateContainer.style.fontSize = '12px';
 
-
         MessageContainer.innerHTML = `${data.message}`
-
 
         innerdiv.classList.add('col-md-4', 'card', 'shadow')
 
@@ -54,6 +52,7 @@ let setupChats = async (groupUUID, username) => {
                 <span class="float-start" dir="ltr">${data.datetime}</span>`
             div.innerHTML = `<img src="${data.img}" class="chat-user-image" alt="user-img"> `
             div.dir = 'rtl'
+            MessageContainer.dir = 'ltr';
             innerdiv.id = 'chat-box-this-user';
 
 
@@ -74,10 +73,10 @@ let setupChats = async (groupUUID, username) => {
 
 
         div.classList.add('mb-2')
-        console.log(div)
 
         document.querySelector("#id_message_send_input").value = "";
         document.querySelector("#chat-item-container").appendChild(div);
+
     };
 
 

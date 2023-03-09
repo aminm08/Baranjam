@@ -221,3 +221,12 @@ def group_invite_user_search_view(request, group_id):
 
         return JsonResponse({'data': res})
     raise PermissionDenied
+
+
+@login_required()
+def delete_invitation_view(request, inv_id):
+    invitation = get_object_or_404(Invitation, pk=inv_id)
+    if invitation.user_receiver == request.user:
+        invitation.delete()
+        return redirect('homepage')
+    raise PermissionDenied

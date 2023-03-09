@@ -40,7 +40,7 @@
                     <div class="card-block">
                         <h6>{% trans "All tasks done" %}</h6>
                         <h2 class="text-end">
-                            <i class="fas fa-tasks f-left mt-2"></i><span>{{ all_tasks_done_in_range }}</span>
+                            <i class="fas fa-tasks f-left mt-2"></i><span>{{ all_tasks_done_in_range  }}</span>
                         </h2>
                     </div>
                 </div>
@@ -95,10 +95,13 @@
                                 <span class="f-14"> ({{ general_date|simplify_date }})</span>
                                 <span class="float-end">{{ job_status|first }}%</span>
                             </h6>
-                            <h2 class="text-end"><img src="/static/icons/{{ job_status|get_obj_by_index:1 }}.png"
-                                                      alt="arrow icon" width="30"
-                                                      height="30" class="f-left mt-2"><span style="font-size: 15px;">
-                                                                                         {{ job_status|get_obj_by_index:2 }}</span>
+                            <h2 class="text-end"><img
+                                    src="/static/icons/{{ job_status|get_obj_by_index:1|get_status_arrow }}.png"
+                                    alt="arrow icon" width="30"
+                                    height="30" class="f-left mt-2">
+                                <span style="font-size: 15px;">
+                                    {{ job_status|get_obj_by_index:1|get_verbose_status:'jobs' }}
+                                </span>
                             </h2>
 
                         </div>
@@ -186,11 +189,11 @@
                                 <span class="f-14"> ({{ general_date|simplify_date }})</span>
                                 <span class="float-end">{{ hour_status|first }}%</span></h6>
                             <h2 class="text-end">
-                                <img src="/static/icons/{{ hour_status|get_obj_by_index:1 }}.png"
+                                <img src="/static/icons/{{ hour_status|get_obj_by_index:1|get_status_arrow }}.png"
                                      alt="arrow icon" width="30"
                                      height="30" class="f-left mt-2">
                                 <span class="f-14">
-                                                 {{ hour_status|get_obj_by_index:2 }}
+                                                 {{ hour_status|get_obj_by_index:1|get_verbose_status:'hours' }}
                                 </span>
                             </h2>
 
@@ -200,9 +203,7 @@
             {% endif %}
 
             {% if done_jobs_count_per_day_in_range %}
-
                 <div class="col-md-9 ">
-
                     <div class="dashboard-card">
                         <div class="card-body">
                             <div class="chart-area">
@@ -358,8 +359,8 @@
                                                     </button>
                                                 </form>
                                                 <span class="badge bg-info col-2">{{ goal.get_measure_display }}</span>
-                                                <span class="col">{% trans 'Jobs target' %}: {{ goal.jobs }}</span>
-                                                <span class="col">{% trans 'Hours target' %}: {{ goal.hours }}</span>
+                                                <span class="col f-14">{% trans 'Jobs target' %}: {{ goal.jobs }}</span>
+                                                <span class="col f-14">{% trans 'Hours target' %}: {{ goal.hours }}</span>
                                             </div>
                                         </li>
                                     {% endfor %}

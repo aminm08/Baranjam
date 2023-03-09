@@ -1,5 +1,5 @@
 const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
-
+const result_box = document.getElementById('result_box');
 
 const SendSearchData = async (series, group_id) => {
 
@@ -19,15 +19,15 @@ const SendSearchData = async (series, group_id) => {
 
                 data.forEach(series => {
                     result_box.innerHTML += `
-                            <div class="row align-items-center">
-                                <div class="col-1">
-                                <input type="checkbox" class="form-check text-center ml-2 pl-2"
-                                 name="${series.pk}">
+                            <div id="result-container" >
+                                <div class="justify-content-start align-self-center">
+                                    <input type="checkbox" class="form-check text-center mx-2 pl-2"
+                                     name="${series.pk}">
                                 </div>
-                                <div class="col-2 mt-1 ml-1">
-                                    <img src="${series.image}" class="image-circle">
+                                <div class="justify-content-center " id="search-result-img">
+                                    <img src="${series.image}" class="circular--landscape">
                                 </div>
-                                <div class="col  mt-1">
+                                <div class=" p-3">
                                     <p class=fw-bold>${series.username}</p>
                                 </div>
                             </div>

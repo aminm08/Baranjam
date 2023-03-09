@@ -98,7 +98,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+# WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
 CHANNEL_LAYERS = {
@@ -111,14 +111,18 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': 'postgres',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'postgres',
+        # 'HOST': 'db',
+        # 'PORT': '5432',
     }
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': BASE_DIR / 'db.sqlite3',
+    #     }
 }
 
 # Password validation
@@ -242,3 +246,10 @@ CSRF_COOKIE_SECURE = True
 RECAPTCHA_PUBLIC_KEY = '6LdAKX4jAAAAAOVRIJ1wRhYJWRQbyUB7OdAt4Dh_'
 RECAPTCHA_PRIVATE_KEY = '6LdAKX4jAAAAAFpun1tt7WSB6hEAjRDooo1nAG8n'
 # RECAPTCHA_USE_SSL = True
+
+
+# jazzmin
+JAZZMIN_SETTINGS = {
+
+    "site_title": "Baranjam",
+}
