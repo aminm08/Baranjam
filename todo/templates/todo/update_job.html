@@ -1,26 +1,27 @@
 {% extends '_base.html' %}
-
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load jalali_tags %}
 {% load persian_trans_tags %}
 
 {% block title %}{% trans 'Update job' %}{% endblock title %}
+
+
+
+
+
 {% block content %}
     {% get_current_language as LANGUAGE %}
-    <div class="container mt-5" >
-        <p>
+    <div class="container mt-5 p-5">
 
         <h2 class="text-center">{% trans 'Update job' %}</h2>
 
 
-        <form method="post" class="mb-lg-5">
+        <form method="post">
             {% csrf_token %}
-            <div>
-                {{ form.media }}
-                {{ form|crispy }}
-            </div>
             {{ form.media }}
+            {{ form|crispy }}
+
 
             <button type="submit" class="btn btn-success float-end">{% trans 'Submit' %}</button>
             <a href="{{ todo.get_absolute_url }}" class="btn btn-info float-start">{% trans 'Back to list' %}</a>
@@ -28,6 +29,7 @@
         </form>
     </div>
     <br><br>
+   >
 
     {% include 'footer.html' %}
 

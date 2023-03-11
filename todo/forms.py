@@ -20,8 +20,10 @@ class JobForm(forms.ModelForm):
         super(JobForm, self).__init__(*args, **kwargs)
 
         self.fields['user_date'] = JalaliDateField(label=_('Due date time'), widget=AdminJalaliDateWidget,
-                                                   required=False)
-        self.fields['user_done_date'] = JalaliDateField(label=_('Done date'), widget=AdminJalaliDateWidget, required=False)
+                                                   required=False, )
+        self.fields['user_done_date'] = JalaliDateField(label=_('Done date'), widget=AdminJalaliDateWidget,
+                                                        required=False)
         self.fields['text'].required = True
 
         self.fields['notes'].required = False
+        self.fields['notes'].widget = forms.Textarea(attrs={'rows': 5})

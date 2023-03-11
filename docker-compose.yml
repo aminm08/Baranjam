@@ -5,11 +5,11 @@ version: '3.9'
 services:
   web:
     build: .
-    command: python /code/manage.py runserver 0.0.0.0:7000
+    command: python /code/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - 7000:7000
+      - 8000:8000
     depends_on:
       - db
   db:
