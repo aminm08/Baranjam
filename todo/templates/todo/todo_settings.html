@@ -1,4 +1,4 @@
-\{% extends '_base.html' %}
+{% extends '_base.html' %}
 
 
 {% load static %}
@@ -13,26 +13,10 @@
 
 {% block content %}
 
-    <style>
-
-
-        .not-visible {
-            display: none;
-        }
-
-        .image-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-    </style>
-
-
     {% get_current_language as LANGUAGE %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-10 ml-auto mr-auto mt-lg-5">
+            <div class="col-md-6  center-container">
 
                 <div class="card shadow">
                     <div id="setting_title">
@@ -70,45 +54,6 @@
                                  height="40">
                         {% endif %} {{ todo.user }}</p>
 
-
-                    <div class="card-body" {% if LANGUAGE == 'fa' %} dir="rtl" {% else %} dir="ltr" {% endif %}>
-
-                        {% if todo.group_todo.exists %}
-                            <h5>{% trans 'group members' %}:</h5>
-                            <div class="mt-3">
-
-                                {% for group_user in todo.group_todo.last.users.all %}
-
-                                    <p>
-                                    <form action="{% url 'delete_group_user' todo.group_todo.last.id %}" method="post">
-                                        {% csrf_token %}
-                                        {% if group_user.profile_pic %}
-                                            <img src="{{ group_user.profile_pic.url }}" alt="user profile"
-                                                 width="40"
-                                                 height="40">
-                                        {% else %}
-                                            <img src="{% static 'img/blank_user.png' %}" alt="blank user profile"
-                                                 width="40" height="40">
-                                        {% endif %} {{ group_user.username }}
-                                        {% if group_user != todo.user %}
-                                            <button type="submit" class="bg-transparent border-0"
-                                                    name="{{ group_user.id }}"><i
-                                                    class="fa fa-trash mr-1 text-danger"></i>
-                                            </button>
-                                        {% endif %}
-                                    </form>
-                                    </p>
-
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-
-
-                        <br>
-
-
-                    </div>
 
                 </div>
 

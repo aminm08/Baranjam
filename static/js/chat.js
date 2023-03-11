@@ -3,7 +3,7 @@ let online_user_container = document.getElementById('online-users-container')
 let setupChats = async (groupUUID, username) => {
 
     const chatSocket = new WebSocket(
-        'ws://'
+        'wss://'
         + window.location.host
         + "/"
         + groupUUID
@@ -92,7 +92,7 @@ const getOnlineUsersList = async (group_id) => {
 
                 if (Array.isArray(data)) {
                     data.forEach(function (obj) {
-                        console.log(obj);
+
                         online_user_container.innerHTML += `<img src="${obj[1]}" class="mr-2 chat-user-image"  alt="user-img">`
                             + obj[0] + '<br>'
                     })

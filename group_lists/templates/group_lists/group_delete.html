@@ -14,7 +14,7 @@
                         {% csrf_token %}
                         <button class="btn btn-primary w-75 center-btn mt-4"
                                 type="submit">{% trans 'Yes, Delete' %}</button>
-                        <a class="btn btn-dark w-75 text-white center-btn mt-2">{% trans "No back" %}</a>
+                        <a class="btn btn-dark w-75 text-white center-btn mt-2" href="{% url 'group_lists' %}">{% trans "No back" %}</a>
                     </form>
                 </div>
             </div>

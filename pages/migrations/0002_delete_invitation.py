@@ -6,12 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0002_customuser_all_jobs_done'),
+        ('pages', '0001_initial'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='customuser',
-            name='all_jobs_done',
+        migrations.DeleteModel(
+            name='Invitation',
         ),
     ]
