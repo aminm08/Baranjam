@@ -44,7 +44,8 @@
                                                     <div class="col-3 align-self-center">
                                                         <input type="text" name="user_date"
                                                                class="jalali_date-date form-control"
-                                                               placeholder="{% trans 'Date' %}">
+                                                               placeholder="{% trans 'Date' %}"
+                                                               autocomplete="off">
                                                     </div>
                                                     <div class="col-3 align-self-center">
                                                         <input type="text" name="duration"
@@ -69,25 +70,22 @@
                                 <div class="d-flex justify-content-end align-items-center mb-4 pt-2 pb-3">
                                     <form method="get" class="me-3">
 
-                                        <select class="form-select text-dark  bg-light shadow"
+                                        <select class="form-select text-dark  bg-light shadow arrow-padding"
                                                 onchange="this.form.submit();"
-                                                name="filter" aria-label="size 3 select example">
+                                                name="filter" aria-label="size 3 select example"
+                                                {% if LANGUAGE == 'fa' %}dir="rtl"{% endif %}>
                                             {% if todo.jobs.exists %}
 
-                                                <option selected disabled
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                <option selected disabled>
                                                     {% trans '--Apply filter--' %}
                                                 </option>
-                                                <option value="all"
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                <option value="all">
                                                     {% trans 'All' %}
                                                 </option>
-                                                <option value="done"
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                <option value="done">
                                                     {% trans 'Completed' %}
                                                 </option>
-                                                <option value="actives"
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                                <option value="actives">
                                                     {% trans 'Active' %}
                                                 </option>
                                             {% else %}
@@ -101,37 +99,23 @@
                                     <form action="{% url 'apply_todo_actions' todo.id %}" method="post">
                                         {% csrf_token %}
 
-                                        <select class="form-select  text-dark bg-light shadow"
-                                                onchange="this.form.submit();" name="action">
-                                            <option selected disabled
-                                                    {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
+                                        <select class="form-select  text-dark bg-light shadow dropdown-end arrow-padding"
+                                                onchange="this.form.submit();" name="action"
+                                                {% if LANGUAGE == 'fa' %}dir="rtl"{% endif %} style="width: 130px;">
+                                            <option selected disabled>
                                                 {% trans 'actions' %}
                                             </option>
                                             {% if todo.jobs.exists %}
 
-                                                <option value="1"
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
-                                                    {% trans 'clear this list' %}
-                                                </option>
+                                                <option value="1">{% trans 'clear this list' %}</option>
 
                                                 {% if todo.get_jobs %}
-                                                    <option value="2"
-                                                            {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
-                                                        {% trans 'delete finished jobs' %}
-                                                    </option>
+                                                    <option value="2">{% trans 'delete finished jobs' %}</option>
                                                 {% endif %}
 
-                                                <option value="3"
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
-                                                    {% trans 'make all jobs active' %}
-                                                </option>
+                                                <option value="3">{% trans 'make all jobs active' %}</option>
 
-                                                <option value="4"
-                                                        {% if LANGUAGE == 'fa' %}class="text-end"{% endif %}>
-                                                    {% trans 'check all jobs' %}
-                                                </option>
-
-
+                                                <option value="4">{% trans 'check all jobs' %}</option>
                                             {% else %}
                                                 <option class="text-center " disabled>
                                                     {% trans 'List is empty' %}

@@ -138,6 +138,10 @@ hr {
     display: none;
 }
 
+.arrow-padding {
+    -moz-padding-start: 30px;
+}
+
 .f-12 {
     font-size: 12px;
 }
@@ -149,6 +153,11 @@ hr {
 .f-14 {
     font-size: 14px;
 }
+
+.f-18 {
+    font-size: 18px;
+}
+
 
 .radius-5 {
     border-radius: 5px;
@@ -259,6 +268,11 @@ header.masthead {
 
 #input-container input {
     border: #f4623a solid 2px;
+}
+
+#input-container input::placeholder {
+
+    align-self: center;
 }
 
 #todo-add-btn {
