@@ -1,20 +1,23 @@
 let online_user_container = document.getElementById('online-users-container')
 
-let setupChats = async (groupUUID, username) => {
+let setupChats = (groupUUID, username, groupID) => {
 
     const chatSocket = new WebSocket(
-        'wss://'
+        'ws://'
         + window.location.host
         + "/"
         + groupUUID
         + "/"
     );
 
+
     chatSocket.onopen = function () {
+        getOnlineUsersList(groupID);
         console.log("The connection was setup successfully !");
     };
 
     chatSocket.onclose = function () {
+        getOnlineUsersList(groupID);
         console.error('Chat socket closed unexpectedly');
     };
     document.querySelector("#id_message_send_input").focus();
@@ -82,13 +85,14 @@ let setupChats = async (groupUUID, username) => {
 
 }
 
-const getOnlineUsersList = async (group_id) => {
+const getOnlineUsersList = (group_id) => {
 
     $.ajax({
             'type': 'GET',
             'url': `/chats/group_online_users/${group_id}`,
             success: (res) => {
                 const data = res;
+                console.log(data)
 
                 if (Array.isArray(data)) {
                     data.forEach(function (obj) {

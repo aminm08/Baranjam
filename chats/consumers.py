@@ -17,16 +17,18 @@ class ChatConsumer(WebsocketConsumer):
         self.group = get_object_or_404(GroupList, uuid=self.scope['url_route']['kwargs']['group_id'])
         self.group_room_name = 'chat_%s' % self.group.uuid
         self.user = self.scope['user']
+        print(self.scope['headers'])
 
         self.update_online_users(self.user)
 
-        if self.user in self.group.get_all_members_obj():
+        if self.group.is_in_group(self.user):
             async_to_sync(self.channel_layer.group_add)(
                 self.group_room_name, self.channel_name
             )
             self.accept()
 
     def disconnect(self, message_code):
+        print('disc')
         async_to_sync(self.channel_layer.group_discard)(
             self.group_room_name, self.channel_name
         )

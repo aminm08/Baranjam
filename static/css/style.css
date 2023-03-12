@@ -266,6 +266,12 @@ header.masthead {
 
 /* todo main page */
 
+#list-card-container {
+    border-radius: 5px;
+    background-color: #e2e4e5;
+}
+
+
 #input-container input {
     border: #f4623a solid 2px;
 }

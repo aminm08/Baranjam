@@ -15,9 +15,10 @@ def get_group_online_users(request, group_id):
     if group.is_in_group(request.user) and group.enable_chat:
         data = []
         online_users_obj = get_object_or_404(OnlineUsers, group=group)
+        print(online_users_obj.online_users.all())
         for user in online_users_obj.online_users.all():
             data.append([user.username, user.get_profile_pic_or_blank()])
-
+        print(data)
         return JsonResponse(data, safe=False)
     raise PermissionDenied
 

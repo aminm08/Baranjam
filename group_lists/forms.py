@@ -1,16 +1,20 @@
 from django import forms
 from .models import GroupList
 from todo.models import Todo
+from django.utils.translation import gettext_lazy as _
 
 
 class GroupListForm(forms.ModelForm):
-    todos = forms.ModelMultipleChoiceField(queryset=Todo.objects.all(), widget=forms.CheckboxSelectMultiple,
-                                          required=False)
+    todos = forms.ModelMultipleChoiceField(label=_("Your Todo-lists"), queryset=Todo.objects.all(),
+                                           widget=forms.CheckboxSelectMultiple,
+                                           required=False)
+    title = forms.CharField(label=_('Group title'), widget=forms.TextInput(attrs={'placeholder': _('Title')}))
 
     def __init__(self, user, *args, **kwargs):
         super(GroupListForm, self).__init__(*args, **kwargs)
         self.user = user
         self.fields['todos'].queryset = user.todos.all()
+        self.fields['description'].widget = forms.Textarea(attrs={'rows': 5})
 
     class Meta:
         model = GroupList

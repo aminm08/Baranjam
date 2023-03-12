@@ -113,8 +113,7 @@
                                                         <p><span class="fw-bolder text-primary">
                                                             {% trans 'Jobs' %}:
                                                         </span>
-                                                            <span class="mx-2 badge bg-success rounded-pill"
-                                                            >
+                                                            <span class="mx-2 badge bg-success rounded-pill">
                                                                 {{ todo.jobs.count }}
                                                             </span>
                                                         </p>
@@ -411,6 +410,11 @@
         <script src="{% static 'js/script.js' %}"></script>
         <script>
 
+
+            setupChats("{{ group.uuid }}", "{{ user.username }}", "{{ group.id }}");
+
+
+
             search_input.addEventListener('keyup', e => {
 
 
@@ -419,9 +423,6 @@
                 }
                 SendSearchData(e.target.value, {{ group.id }});
             })
-
-            getOnlineUsersList('{{ group.id }}');
-            setupChats("{{ group.uuid }}", "{{ user.username }}");
 
 
         </script>
