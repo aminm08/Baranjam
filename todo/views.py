@@ -63,7 +63,8 @@ def todo_list_main_page(request, signed_pk):
 
     if request.user == todo.user or todo.user_from_group_has_permission(request.user):
 
-        user_jobs = Job.objects.filter(todo=todo).order_by('is_done', 'user_date', '-datetime_created')
+        user_undone_jobs = todo.jobs.filter(is_done=False).order_by('user_date', '-datetime_created')
+        user_done_jobs = todo.jobs.filter(is_done=True).order_by('-user_done_date')
         user_filter = str(request.GET.get('filter'))
 
         match user_filter:
@@ -75,7 +76,8 @@ def todo_list_main_page(request, signed_pk):
             case 'done':
                 user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('user_date', '-datetime_created')
 
-        return render(request, 'todo/todo_list.html', {'user_jobs': user_jobs, 'todo': todo, 'form': JobForm()})
+        return render(request, 'todo/todo_list.html',
+                      {'user_jobs': [*user_undone_jobs, *user_done_jobs], 'todo': todo, 'form': JobForm()})
 
     raise PermissionDenied
 
@@ -88,7 +90,7 @@ def job_set_is_done_status(request, job_id):
 
         if not job.is_done:
             job.is_done = True
-            job.user_done_date = date.today()  # for statistics
+            job.user_done_date = date.today()
             messages.success(request, _('job completed! congrats'))
 
         else:

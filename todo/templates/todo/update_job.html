@@ -6,16 +6,11 @@
 
 {% block title %}{% trans 'Update job' %}{% endblock title %}
 
-
-
-
-
 {% block content %}
     {% get_current_language as LANGUAGE %}
     <div class="container mt-5 p-5">
 
         <h2 class="text-center">{% trans 'Update job' %}</h2>
-
 
         <form method="post">
             {% csrf_token %}
@@ -29,7 +24,6 @@
         </form>
     </div>
     <br><br>
-   >
 
     {% include 'footer.html' %}
 
