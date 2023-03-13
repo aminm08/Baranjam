@@ -27,7 +27,7 @@ class Goal {
 
     getGoalDataById() {
         let data = Object
-        if (this.dropdown_id != null && this.goals[this.dropdown_id]) {
+        if (this.dropdown_id!=  null && this.goals[this.dropdown_id]) {
             data = this.goals[this.dropdown_id];
         } else {
 

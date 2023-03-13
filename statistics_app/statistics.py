@@ -138,7 +138,7 @@ class DashBoard(DoneJobs, Hours):
             productive_day_job_count = jobs_done[max_index]
             productive_day_date = done_dates[max_index]
             return productive_day_date, productive_day_hours_spent, productive_day_job_count
-        return None
+        return
 
     # return (date2jalali(datetime.strptime(labels[max_spent_time_index], "%Y-%m-%d")),
     #         round(spent_hours[max_spent_time_index], 2), data[max_spent_time_index],)

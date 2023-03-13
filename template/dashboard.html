@@ -40,7 +40,7 @@
                     <div class="card-block">
                         <h6>{% trans "All tasks done" %}</h6>
                         <h2 class="text-end">
-                            <i class="fas fa-tasks f-left mt-2"></i><span>{{ all_tasks_done_in_range  }}</span>
+                            <i class="fas fa-tasks f-left mt-2"></i><span>{{ all_tasks_done_in_range }}</span>
                         </h2>
                     </div>
                 </div>
@@ -132,16 +132,16 @@
                                         <label class="f-14">
                                             {{ user_goal.get_measure_display }}: {{ user_goal.jobs }}, {{ user_goal.hours }}
                                         </label>
-
                                     </div>
-
                                 {% endfor %}
                             </ul>
                             <div class="row">
                                 <h4 class="small text-white text-center fw-bold mt-2" id="measure-header"></h4>
                                 <div class="col">
 
-                                    <h4 class="small font-weight-bold  float-start  ">{% trans "Jobs" %}</h4>
+                                    <h4 class="small font-weight-bold  float-start" id="goal-type-header">
+                                        {% trans "Jobs" %}
+                                    </h4>
                                     <p class=" font-weight-bold small text-end"
                                        id="job-progress"></p>
                                     <div class="progress mb-4 mt-1">
@@ -154,7 +154,9 @@
 
                                 <div class="col">
 
-                                    <h4 class="small font-weight-bold  float-start">{% trans "Hours" %}</h4>
+                                    <h4 class="small font-weight-bold  float-start" id="goal-type-header">
+                                        {% trans "Hours" %}
+                                    </h4>
                                     <p class="text-success font-weight-bold small text-end"
                                        id="hour-progress"></p>
                                     <div class="progress mb-4 mt-1">
