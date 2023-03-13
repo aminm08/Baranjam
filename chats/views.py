@@ -18,7 +18,7 @@ def get_group_online_users(request, group_id):
         print(online_users_obj.online_users.all())
         for user in online_users_obj.online_users.all():
             data.append([user.username, user.get_profile_pic_or_blank()])
-        print(data)
+
         return JsonResponse(data, safe=False)
     raise PermissionDenied
 
