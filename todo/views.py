@@ -69,12 +69,14 @@ def todo_list_main_page(request, signed_pk):
 
         match user_filter:
             case 'all':
-                user_jobs = request.user.jobs.filter(todo=todo).order_by('is_done', 'user_date', '-datetime_created')
+                user_undone_jobs = todo.jobs.filter(is_done=False).order_by('user_date', '-datetime_created')
+                user_done_jobs = todo.jobs.filter(is_done=True).order_by('-user_done_date')
             case 'actives':
-                user_jobs = request.user.jobs.filter(todo=todo, is_done=False).order_by('user_date',
-                                                                                        '-datetime_created')
+                user_undone_jobs = todo.jobs.filter(is_done=False).order_by('user_date', '-datetime_created')
+                user_done_jobs = []
             case 'done':
-                user_jobs = request.user.jobs.filter(todo=todo, is_done=True).order_by('user_date', '-datetime_created')
+                user_done_jobs = todo.jobs.filter(is_done=True).order_by('-user_done_date')
+                user_undone_jobs = []
 
         return render(request, 'todo/todo_list.html',
                       {'user_jobs': [*user_undone_jobs, *user_done_jobs], 'todo': todo, 'form': JobForm()})
