@@ -3,6 +3,9 @@ import math
 from datetime import date, datetime
 from jalali_date import date2jalali
 from django.utils.translation import gettext as _
+import json
+from django.contrib import messages
+from goals.forms import GoalForm
 
 
 class Analytics:
@@ -140,9 +143,6 @@ class DashBoard(DoneJobs, Hours):
             return productive_day_date, productive_day_hours_spent, productive_day_job_count
         return
 
-    # return (date2jalali(datetime.strptime(labels[max_spent_time_index], "%Y-%m-%d")),
-    #         round(spent_hours[max_spent_time_index], 2), data[max_spent_time_index],)
-
     def get_goal_progress_percentage(self):
         goals = self.request.user.goals.all()
         result = {}
@@ -156,3 +156,53 @@ class DashBoard(DoneJobs, Hours):
                 result[str(goal.id)] = [goal.get_measure_display(), job_percentage, hours_percentage]
 
         return result
+
+
+def get_dashboard_obj(request, form):
+    if form.is_valid():
+        data_date_range = form.cleaned_data[0]
+        general_date = form.cleaned_data[1]
+    else:
+        data_date_range = ('all',)
+        general_date = date.today()
+
+    return DashBoard(request, data_date_range, general_date)
+
+
+def get_context_data(request, apply_date_form):
+    dashboard = get_dashboard_obj(request, apply_date_form)
+    goal_form = GoalForm()
+    user_goals = request.user.goals.all()
+    if dashboard.has_data():
+        return {
+            # charts
+            "jalali_done_dates_in_range": json.dumps(
+                dashboard.convert_done_dates_to_jalali_date(dashboard.get_done_dates_in_range())),
+            "done_jobs_count_per_day_in_range": json.dumps(
+                dashboard.get_done_jobs_count_per_day(dashboard.get_done_dates_in_range())),
+            'general_date_done_jobs_titles': json.dumps(dashboard.get_done_jobs_titles_by_general_date()),
+            'general_date_hours_spent_per_job': json.dumps(dashboard.get_hours_per_job_in_general_date()),
+            'spent_time': json.dumps(dashboard.get_hours_spent_per_day(dashboard.get_done_dates_in_range())),
+
+            "goal_form": goal_form,
+            "apply_date_form": apply_date_form,
+            "goals_progress": json.dumps(dashboard.get_goal_progress_percentage()),
+            "user_goals": user_goals,
+            "general_date_jalali": date2jalali(dashboard.general_date),
+            "general_date": dashboard.general_date,
+            "tasks_done_in_general_date": dashboard.get_done_jobs_in_general_date().count(),
+            "all_tasks_done_in_range": dashboard.get_done_jobs_in_range().count(),
+            'todos': request.user.todos.all(),
+            'most_productive_day_info': dashboard.get_most_productive_day_info(),
+            'total_hours_spent': dashboard.get_total_hours_spent(),
+            'job_status': dashboard.get_user_jobs_status(),
+            'hour_status': dashboard.get_user_hours_spent_status(),
+            'hours_spent_in_general_date': dashboard.get_general_date_hours_spent(),
+        }
+    messages.warning(request, _('date range you entered has no data'))
+    return {"goal_form": goal_form,
+            "apply_date_form": apply_date_form,
+            "general_date_jalali": date2jalali(dashboard.general_date),
+            "general_date": dashboard.general_date,
+            "all_tasks_done_in_range": 0,
+            "tasks_done_in_general_date": 0}
