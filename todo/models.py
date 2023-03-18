@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.signing import Signer
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from datetime import date
 
 
 class Todo(models.Model):
@@ -24,26 +25,55 @@ class Todo(models.Model):
     def get_signed_pk(self):
         return self.signer.sign(self.pk)
 
-    # completed jobs percent
-    def complete_rate(self):
+    def complete_rate_percentage(self):
         completed_jobs = self.jobs.filter(is_done=True)
-        not_completed = self.jobs.filter(is_done=False)
+        not_completed_jobs = self.jobs.filter(is_done=False)
         if completed_jobs:
-            return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed)))
+            return int(len(completed_jobs) * 100 / (len(completed_jobs) + len(not_completed_jobs)))
         else:
             return None
 
-    def get_jobs(self, finished=True):
-        return self.jobs.all().filter(is_done=finished)
-        
+    def get_finished_jobs(self):
+        return self.jobs.all().filter(is_done=True)
+
+    def get_unfinished_jobs(self):
+        return self.jobs.all().filter(is_done=False)
+
     def user_from_group_has_permission(self, user):
         for group in self.group_todos.all():
-            if user in group.members.all() or user in group.admins.all():
+            if group.is_in_group(user):
                 return True
         return False
 
+    def is_owner(self, user):
+        return self.user == user
+
     def is_group_list(self):
         return self.group_todos.exists()
+
+    def delete_all_jobs(self):
+        self.jobs.all().delete()
+
+    def active_all_jobs(self):
+        for job in self.get_finished_jobs():
+            job.is_done = False
+            job.user_done_date = None
+            job.save()
+
+    def check_all_jobs(self):
+        for job in self.get_unfinished_jobs():
+            job.is_done = True
+            job.user_done_date = date.today()
+            job.save()
+
+    def get_user_jobs_by_filter(self, filter: str):
+        user_undone_jobs = self.jobs.filter(is_done=False).order_by('user_date', '-datetime_created')
+        user_done_jobs = self.jobs.filter(is_done=True).order_by('-user_done_date')
+        if filter == 'actives':
+            user_done_jobs = []
+        elif filter == 'done':
+            user_undone_jobs = []
+        return [*user_undone_jobs, *user_done_jobs]
 
 
 class Job(models.Model):
