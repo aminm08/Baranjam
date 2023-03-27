@@ -19,17 +19,19 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('aminm08_todo_admin/', admin.site.urls),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
+    path('admin/', admin.site.urls),
     path('i18n/', include('django.conf.urls.i18n')),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
-    path('', include('pages.urls')),
-    path('', include('statistics_app.urls')),
     path('todo/', include('todo.urls')),
     path('group_lists/', include('group_lists.urls')),
+    path('invitations/', include('invitations.urls')),
     path('chats/', include('chats.urls')),
     path('goals/', include('goals.urls')),
     path('rosetta/', include('rosetta.urls')),
+    path('', include('pages.urls')),
+    path('', include('statistics_app.urls')),
 
 ]
 if settings.DEBUG:

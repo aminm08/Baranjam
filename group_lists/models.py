@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.core.signing import Signer
 from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
+
 import uuid
 
 
@@ -32,7 +33,7 @@ class GroupList(models.Model):
         return self.members.count() + self.admins.count()
 
     def get_group_picture_or_blank(self):
-        return self.picture.url if self.picture else '/static/img/blank_user.png'
+        return self.picture.url if self.picture else '/static/img/blank_group.png'
 
     def get_all_members_obj(self):
         return [*self.admins.all(), *self.members.all()]
@@ -65,17 +66,13 @@ class GroupList(models.Model):
     def user_has_invitation(self, receiver, sender):
         return self.invitations.filter(user_receiver=receiver, user_sender=sender).exists()
 
+    def remove_user_from_group_by_role(self, user):
+        self.members.remove(user) if self.is_member(user) else self.admins.remove(user)
 
-class Invitation(models.Model):
-    user_sender = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='sender',
-                                    verbose_name=_('the sender user'))
-    user_receiver = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='receiver',
-                                      verbose_name=_('the receiver user'))
-    group_list = models.ForeignKey(GroupList, on_delete=models.CASCADE, related_name='invitations',
-                                   verbose_name=_('group list'))
-    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_('date time created'))
+    def degrade_user(self, user):
+        self.admins.remove(user)
+        self.members.add(user)
 
-    def __str__(self):
-        return f'{self.user_sender}->{self.user_receiver}'
-
-
+    def promote_user(self, user):
+        self.members.remove(user)
+        self.admins.add(user)

@@ -7,7 +7,7 @@ class AdminLocaleMiddleware:
         self.process_request = process_request
 
     def __call__(self, request):
-        if request.path.startswith('/aminm08_todo_admin'):
+        if request.path.startswith('/admin'):
             translation.activate("en")
             request.LANGUAGE_CODE = translation.get_language()
 

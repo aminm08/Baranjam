@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PersianTranslatingConfig(AppConfig):
+class InvitationsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'persian_translating'
+    name = 'invitations'

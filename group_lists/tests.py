@@ -1,10 +1,10 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
-from .models import GroupList
+
 from chats.models import OnlineUsers
-from .models import Invitation
 from todo.models import Todo, Job
+from .models import GroupList
 
 
 class GroupListTests(TestCase):
@@ -278,55 +278,6 @@ class GroupListTests(TestCase):
         self.assertTrue(group.is_admin(self.adminUser))
         self.assertFalse(group.is_member(self.adminUser))
 
-    # invite new members
-    def test_invite_members_denies_not_admin_users(self):
-        self.client.login(email=self.memberUserEmail, password=self.password)
-        response = self.client.post(reverse('invite_members', args=[self.group_list_1.id]))
-        self.assertEqual(response.status_code, 403)
-
-    def test_invite_members_does_not_send_inv_for_already_joined_users(self):
-        self.client.login(email=self.ownerUserEmail, password=self.password)
-        self.client.post(reverse('invite_members', args=[self.group_list_1.id]), {'': '', str(self.memberUser.id): ''})
-        self.assertFalse(GroupList.objects.last().user_has_invitation(receiver=self.memberUser, sender=self.ownerUser))
-
-    def test_invite_members_does_not_send_inv_twice_for_one_user(self):
-        self.client.login(email=self.ownerUserEmail, password=self.password)
-        Invitation.objects.create(group_list=self.group_list_1, user_receiver=self.regularUser,
-                                  user_sender=self.ownerUser)
-        self.client.post(reverse('invite_members', args=[self.group_list_1.id]), {'': '', str(self.regularUser.id): ''})
-        self.assertEqual(Invitation.objects.count(), 1)
-
-    def test_invite_members_functionality(self):
-        self.client.login(email=self.ownerUserEmail, password=self.password)
-        user_ids_inv = {'': '', str(self.regularUser.id): ''}
-        response = self.client.post(reverse('invite_members', args=[self.group_list_1.id]), user_ids_inv)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(GroupList.objects.last().user_has_invitation(receiver=self.regularUser, sender=self.ownerUser))
-
-    # accept invite
-    def test_accept_invite_denies_not_receiver_users_request(self):
-        self.client.login(email=self.adminUser2Email, password=self.password)
-        inv = Invitation.objects.create(group_list=self.group_list_1, user_sender=self.adminUser,
-                                        user_receiver=self.regularUser)
-        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, inv.id]))
-        self.assertEqual(response.status_code, 403)
-
-    def test_accept_invite_denies_already_joined_users(self):
-        self.client.login(email=self.memberUserEmail, password=self.password)
-        inv = Invitation.objects.create(group_list=self.group_list_1, user_sender=self.adminUser,
-                                        user_receiver=self.memberUser)
-        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, inv.id]))
-        self.assertEqual(response.status_code, 403)
-
-    def test_accept_invite_functionality(self):
-        self.client.login(email=self.regularUserEmail, password=self.password)
-        inv = Invitation.objects.create(group_list=self.group_list_1, user_sender=self.adminUser,
-                                        user_receiver=self.regularUser)
-        response = self.client.post(reverse('accept_inv', args=[self.group_list_1.id, inv.id]))
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(self.group_list_1.is_in_group(self.regularUser))
-        self.assertEqual(Invitation.objects.count(), 0)
-
         # remove user from group
 
     def test_remove_user_from_group_denies_not_admin_request(self):
@@ -360,53 +311,3 @@ class GroupListTests(TestCase):
         response = self.client.post(reverse('remove_group_member', args=[self.group_list_1.id]), user_post_data)
         self.assertEqual(response.status_code, 302)
         self.assertFalse(self.group_list_1.is_in_group(self.memberUser))
-
-    # foreign invite show info
-
-    def test_foreign_invitation_show_info_url_by_name(self):
-        self.client.login(email=self.regularUserEmail, password=self.password)
-        response = self.client.get(reverse('foreign_inv_show_info', args=[self.group_list_1.get_signed_pk()]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.group_list_1.title)
-
-    def test_foreign_invitation_show_info_url(self):
-        self.client.login(email=self.adminUser2Email, password=self.password)
-        response = self.client.get(f'/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/')
-        self.assertEqual(response.status_code, 200)
-
-    # accept foreign invitation
-
-    def test_accept_foreign_invite_redirect_unauthenticated_users(self):
-        response = self.client.post(reverse('accept_inv_foreign', args=[self.group_list_1.id]))
-        redirect_url = f'/accounts/login/?next=/group_lists/invite/accept_foreign/{self.group_list_1.get_signed_pk()}/'
-        self.assertRedirects(response, redirect_url, status_code=302)
-
-    def test_accept_foreign_invite_functionality(self):
-        self.client.login(email=self.regularUserEmail, password=self.password)
-        response = self.client.post(reverse('accept_inv_foreign', args=[self.group_list_1.id]))
-        self.assertRedirects(response, self.group_list_1.get_absolute_url(), status_code=302)
-        self.assertTrue(self.group_list_1.is_member(self.regularUser))
-        self.assertFalse(self.group_list_1.is_admin(self.regularUser))
-
-    # group invite user search
-
-    def test_group_invite_user_search_denies_not_admin_request(self):
-        self.client.login(email=self.memberUserEmail, password=self.password)
-        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'a'})
-        self.assertEqual(response.status_code, 403)
-
-    def test_group_invite_user_search_functionality_with_no_data(self):
-        self.client.login(email=self.adminUser2Email, password=self.password)
-        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'No data!!'})
-        self.assertJSONEqual(str(response.content, encoding='utf-8'), {"data": "No data"})
-
-    def test_group_invite_user_search_functionality(self):
-        # response has to contain not member users result
-        self.client.login(email=self.adminUser2Email, password=self.password)
-        response = self.client.post(reverse('search_users_view', args=[self.group_list_1.id]), {'series': 'a'})
-        self.assertJSONEqual(str(response.content, encoding='utf-8'),
-                             {"data": [{
-                                 "pk": self.regularUser.id,
-                                 "username": self.regularUser.username,
-                                 "image": self.regularUser.get_profile_pic_or_blank(),
-                             }]})

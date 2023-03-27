@@ -1,15 +1,12 @@
 const update_name_form = document.getElementById('update_name_form');
 const title = document.getElementById('setting_title');
 const button_edit = document.getElementById('edit_button');
-const button_update= document.getElementById('update_button');
+const button_update = document.getElementById('update_button');
 
 const form = document.getElementById('search_form');
 const search_input = document.getElementById('search_input');
 
 const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
-
-
-
 
 
 let setupForUpdate = function () {

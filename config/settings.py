@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
+    'django.contrib.admindocs',
     # 3rd party apps
     'crispy_forms',
     'crispy_bootstrap5',
@@ -52,10 +52,10 @@ INSTALLED_APPS = [
 
     # my apps
     'accounts',
-    'persian_translating',
     'pages',
     'todo',
     'group_lists',
+    'invitations',
     'statistics_app',
     'chats',
     'goals',
@@ -119,10 +119,10 @@ DATABASES = {
     #     # 'HOST': 'db',
     #     # 'PORT': '5432',
     # }
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Password validation

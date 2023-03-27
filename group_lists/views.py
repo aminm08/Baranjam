@@ -1,24 +1,21 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
-from django.shortcuts import reverse
-from django.core.exceptions import PermissionDenied
+from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.views import redirect_to_login
-from django.views.decorators.http import require_POST
-from django.views import generic
-from django.contrib import messages
-from django.utils.translation import gettext as _
-from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
-
-from .models import GroupList, Invitation
-from .forms import GroupListForm
-from .decorators import admin_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.utils.translation import gettext as _
+from django.views import generic
+from django.views.decorators.http import require_POST
 
 from chats.models import Message
 from chats.models import OnlineUsers
+from .decorators import admin_required
+from .forms import GroupListForm
+from .models import GroupList
 
 
 @login_required()
@@ -86,12 +83,8 @@ def group_update_view(request, group_id):
 @require_POST
 def leave_group_view(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
-
-    if request.user != group.admins.first() and request.user in group.get_all_members_obj():
-        if request.user in group.members.all():
-            group.members.remove(request.user)
-        else:
-            group.admins.remove(request.user)
+    if request.user != group.admins.first() and group.is_in_group(request.user):
+        group.remove_user_from_group_by_role(request.user)
         messages.success(request, _('you successfully left the group'))
         return redirect('group_lists')
     raise PermissionDenied
@@ -106,55 +99,14 @@ def manage_group_members_grade(request, group_id):
         user = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
         if not group.is_owner(user):
             if group.is_member(user):
-                group.members.remove(user)
-                group.admins.add(user)
+                group.promote_user(user)
                 messages.success(request, _('User promoted to admin'))
             elif group.is_admin(user):
-                group.admins.remove(user)
-                group.members.add(user)
+                group.degrade_user(user)
                 messages.success(request, _('User degraded to regular member'))
             else:
                 messages.error(request, _('user is not a member of %s ' % group.title))
             return redirect('group_detail', group_id)
-    raise PermissionDenied
-
-
-@login_required()
-@require_POST
-@admin_required
-def invite_new_members(request, group_id):
-    group = get_object_or_404(GroupList, pk=group_id)
-    user_ids = list(request.POST.keys())[1:]
-    users = [get_object_or_404(get_user_model(), pk=pk) for pk in user_ids]
-    send_group_list_invitation(request, users, group)
-    messages.success(request, _("Invitations successfully sent"))
-    return redirect('group_detail', group_id)
-
-
-def send_group_list_invitation(request, users, group_list):
-    errors = {}
-    for user in users:
-
-        if not group_list.is_in_group(user):
-            if not group_list.user_has_invitation(sender=request.user, receiver=user):
-                Invitation.objects.create(user_sender=request.user, user_receiver=user, group_list=group_list)
-            else:
-                errors[user] = 'is already invited'
-        else:
-            errors[user] = 'is already in the group'
-    return errors
-
-
-@login_required()
-@require_POST
-def accept_invite(request, group_id, inv_id):
-    group = get_object_or_404(GroupList, pk=group_id)
-    inv = get_object_or_404(Invitation, pk=inv_id)
-    if request.user == inv.user_receiver and not group.is_in_group(inv.user_receiver):
-        group.members.add(inv.user_receiver)
-        inv.delete()
-        messages.success(request, _('invite accepted you are now a member of the group-list'))
-        return redirect('group_lists')
     raise PermissionDenied
 
 
@@ -166,6 +118,7 @@ def remove_user_from_group(request, group_id):
     user_for_delete = get_object_or_404(get_user_model(), pk=list(request.POST.keys())[1])
     if not group.is_owner(user_for_delete):
         if group.is_admin(user_for_delete):
+
             if group.is_owner(request.user):
                 group.admins.remove(user_for_delete)
             else:
@@ -177,25 +130,6 @@ def remove_user_from_group(request, group_id):
 
         return redirect('group_detail', group.id)
     raise PermissionDenied
-
-
-def foreign_invitation_show_info(request, signed_pk):
-    group = get_object_or_404(GroupList, pk=GroupList.InvLink.unsign(signed_pk))
-    return render(request, 'group_lists/foreign_invite_page.html', {'group': group})
-
-
-@require_POST
-def accept_foreign_invite_view(request, group_id):
-    group = get_object_or_404(GroupList, pk=group_id)
-    if request.user.is_authenticated:
-        if not group.is_in_group(request.user):
-            group.members.add(request.user)
-            messages.success(request, _('Welcome! you are now a member of this group'))
-            return redirect('group_detail', group.id)
-        messages.warning(request, _('you are already in this group'))
-        return redirect(group.get_invitation_link())
-
-    return redirect_to_login(reverse('foreign_inv_show_info', args=[group.get_signed_pk()]))
 
 
 @require_POST
@@ -220,13 +154,4 @@ def group_invite_user_search_view(request, group_id):
             res = 'No data'
 
         return JsonResponse({'data': res})
-    raise PermissionDenied
-
-
-@login_required()
-def delete_invitation_view(request, inv_id):
-    invitation = get_object_or_404(Invitation, pk=inv_id)
-    if invitation.user_receiver == request.user:
-        invitation.delete()
-        return redirect('homepage')
     raise PermissionDenied

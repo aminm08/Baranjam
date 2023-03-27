@@ -15,7 +15,6 @@ def get_group_online_users(request, group_id):
     if group.is_in_group(request.user) and group.enable_chat:
         data = []
         online_users_obj = get_object_or_404(OnlineUsers, group=group)
-        print(online_users_obj.online_users.all())
         for user in online_users_obj.online_users.all():
             data.append([user.username, user.get_profile_pic_or_blank()])
 
@@ -27,7 +26,7 @@ def get_group_online_users(request, group_id):
 @require_POST
 def delete_group_chat_history(request, group_id):
     group = get_object_or_404(GroupList, pk=group_id)
-    if request.user in group.admins.all():
+    if group.is_admin(request.user):
         group.messages.all().delete()
         messages.success(request, _("Group chat successfully cleared"))
         return redirect(group.get_absolute_url())

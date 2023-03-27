@@ -17,4 +17,4 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('profile_picture',), }),
     )
 
-    list_display = ['username', 'id', 'email', 'date_joined', 'last_login']
+    list_display = ('username', 'id', 'email', 'date_joined', 'last_login',)

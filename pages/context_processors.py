@@ -1,4 +1,4 @@
-from group_lists.models import Invitation
+from invitations.models import Invitation
 
 
 def inbox(request):
