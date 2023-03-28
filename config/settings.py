@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'statistics_app',
     'chats',
     'goals',
+    'habits',
 
 ]
 

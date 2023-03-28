@@ -29,6 +29,7 @@ urlpatterns = [
     path('invitations/', include('invitations.urls')),
     path('chats/', include('chats.urls')),
     path('goals/', include('goals.urls')),
+    path('habits/', include('habits.urls')),
     path('rosetta/', include('rosetta.urls')),
     path('', include('pages.urls')),
     path('', include('statistics_app.urls')),
