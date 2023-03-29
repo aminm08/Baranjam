@@ -1,0 +1,24 @@
+{% extends '_base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="col-md-6  center-container">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h1>{% trans 'Remove habit ' %}( {{ habit.title }} )</h1>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-center mt-3">{% trans 'All the data within this group will be deleted forever' %}</h6>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-primary w-75 center-btn mt-4"
+                                type="submit">{% trans 'Yes, Delete' %}</button>
+                        <a class="btn btn-dark w-75 text-white center-btn mt-2"
+                           href="{% url 'group_lists' %}">{% trans "No back" %}</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
