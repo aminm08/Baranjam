@@ -12,12 +12,27 @@
 
 {% block content %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
+    <div class="container-fluid">
+        <div class="col-md-9 center-container">
+            <div class="card shadow">
+                <h1 class="card-header bg-primary text-white text-center">{{ habit.title }}</h1>
+                <div class="card-body ">
 
-        <button type="submit" class="btn btn-success">{% trans "Submit" %}</button>
-    </form>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <button type="submit" class="btn btn-success">{% trans "Submit" %}</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
 
 
 
