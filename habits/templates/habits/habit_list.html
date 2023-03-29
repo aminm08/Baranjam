@@ -1,0 +1,87 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load jalali_tags %}
+{% load persian_trans_tags %}
+{% load i18n %}
+
+{% block meta %}
+
+    <meta name="description" content="Create and use new baranjam lists">
+
+{% endblock meta %}
+
+
+{% block title %}{% trans 'Todo-lists' %}{% endblock title %}
+
+
+
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="card shadow bg-dark mt-5">
+            <div class="card-header bg-primary">
+
+                <a class="float-end btn btn-dark text-left" id="add-list-btn"
+                   href="{% url 'habit-create' %}">
+                    {% trans 'Add habits' %}
+                </a>
+                {% if habits %}
+
+                    <h2 class=" text-white text-right" id="user-todos-title">{% trans 'Your habits' %}</h2>
+                {% else %}
+                    <h2 class=" text-white text-right" id="user-todos-title">{% trans 'Add habits to start' %}</h2>
+                {% endif %}
+            </div>
+            <div class="card-body bg-dark">
+                <ol class="list-group list-group-flush list-group-numbered shadow-lg border-3">
+                    {% for habit in habits %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">
+                                    <a class="text-primary unlink">
+                                        {{ habit.title }}
+                                        {#                                        <span class="badge bg-primary rounded-pill ml-1" style="font-size: 14px;">#}
+                                        {#                                            {{ todo.jobs.all|length }}#}
+                                        {#                                        </span>#}
+                                    </a>
+                                    {#                                    {% if todo.is_group_list %}#}
+                                    {##}
+                                    {#                                        <i class="fa fa-users ml-2" aria-hidden="true" style="font-size: 19px;"></i>#}
+                                    {#                                    {% endif %}#}
+                                </div>
+                                {{ habit.datetime_created|to_jalali:'%Y %B %d'|translate_numbers }}
+                            </div>
+
+
+                            <span class="badge bg-success rounded-pill font-weight-bold align-self-center f-14">
+                                    {{ habit.get_repetitiveness_display }}
+                            </span>
+
+
+                            {% if user == habit.user %}
+
+                                <a href="{% url 'habit-update' habit.id %}" class="btn text-info ">
+                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'habit-delete' habit.id %}"
+                               class="btn text-danger shadow  border-secondary border-1 rounded-pill">
+
+                                <span class="fa fa-solid fa-trash px-3 "></span>
+                            </a>
+                        </li>
+
+                    {% endfor %}
+                </ol>
+            </div>
+
+
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+{% endblock content %}
