@@ -10,9 +10,33 @@ services:
       - .:/code
     ports:
       - 8000:8000
+    environment:
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
+      - db
+      - redis
+  
+  celery:
+    build: .
+    command: celery -A config worker --loglevel info --logfile log/celery.log
+    volumes:
+      - .:/code
+    environment:
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - web
       - db
   db:
     image: postgres:14
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
