@@ -30,7 +30,7 @@ def habit_create_view(request):
             form.instance.user = request.user
             form.save()
             messages.success(request, _('Habit successfully created'))
-            return redirect('user_todos')
+            return redirect('habit-list')
     return render(request, "habits/habit_create.html", {'form': form})
 
 
@@ -38,7 +38,7 @@ class HabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
     model = Habit
     template_name = "habits/habit_delete.html"
     context_object_name = 'habit'
-    success_url = reverse_lazy('user_todos')
+    success_url = reverse_lazy('habit-list')
     success_message = _("Habit successfully deleted")
 
     def test_func(self):
@@ -55,6 +55,6 @@ def habit_update_view(request, pk):
             if form.is_valid():
                 form.save()
                 messages.success(request, _('Habit successfully updated'))
-                return redirect('user_todos')
+                return redirect('habit-list')
         return render(request, "habits/habit_update.html", {'form': form, 'habit': habit})
     raise PermissionDenied
